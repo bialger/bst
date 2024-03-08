@@ -17,6 +17,10 @@ class ITreeNode {
   [[nodiscard]] virtual bool IsLeaf() const = 0;
   [[nodiscard]] virtual bool HasLeft() const = 0;
   [[nodiscard]] virtual bool HasRight() const = 0;
+
+  [[nodiscard]] virtual const ITreeNode* GetParent() const = 0;
+  [[nodiscard]] virtual const ITreeNode* GetLeft() const = 0;
+  [[nodiscard]] virtual const ITreeNode* GetRight() const = 0;
 };
 
 } // bialger

@@ -57,6 +57,18 @@ class TreeNode : public ITreeNode {
   [[nodiscard]] bool HasRight() const override {
     return right != nullptr;
   }
+
+  [[nodiscard]] const ITreeNode* GetParent() const override {
+    return parent;
+  }
+
+  [[nodiscard]] const ITreeNode* GetLeft() const override {
+    return left;
+  }
+
+  [[nodiscard]] const ITreeNode* GetRight() const override {
+    return right;
+  }
 };
 
 } // bialger
