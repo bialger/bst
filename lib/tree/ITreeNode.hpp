@@ -7,16 +7,16 @@ class ITreeNode {
  public:
   virtual ~ITreeNode() = default;
 
-  virtual bool IsLess(const ITreeNode* other) const = 0;
-  virtual bool IsLessOrEqual(const ITreeNode* other) const = 0;
-  virtual bool IsEqual(const ITreeNode* other) const = 0;
-  virtual bool IsMoreOrEqual(const ITreeNode* other) const = 0;
-  virtual bool IsMore(const ITreeNode* other) const = 0;
+  [[nodiscard]] virtual bool IsLess(const ITreeNode* other) const = 0;
+  [[nodiscard]] virtual bool IsLessOrEqual(const ITreeNode* other) const = 0;
+  [[nodiscard]] virtual bool IsEqual(const ITreeNode* other) const = 0;
+  [[nodiscard]] virtual bool IsMoreOrEqual(const ITreeNode* other) const = 0;
+  [[nodiscard]] virtual bool IsMore(const ITreeNode* other) const = 0;
 
-  virtual bool IsRoot() const = 0;
-  virtual bool IsLeaf() const = 0;
-  virtual bool HasLeft() const = 0;
-  virtual bool HasRight() const = 0;
+  [[nodiscard]] virtual bool IsRoot() const = 0;
+  [[nodiscard]] virtual bool IsLeaf() const = 0;
+  [[nodiscard]] virtual bool HasLeft() const = 0;
+  [[nodiscard]] virtual bool HasRight() const = 0;
 };
 
 } // bialger

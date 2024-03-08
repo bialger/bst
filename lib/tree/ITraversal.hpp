@@ -9,10 +9,10 @@ class ITraversal {
  public:
   virtual ~ITraversal() = default;
 
-  virtual const ITreeNode* GetFirst() = 0;
-  virtual const ITreeNode* GetLast() = 0;
-  virtual const ITreeNode* GetPredecessor(const ITreeNode* current) = 0;
-  virtual const ITreeNode* GetSuccessor(const ITreeNode* current) = 0;
+  [[nodiscard]] virtual const ITreeNode* GetFirst() const = 0;
+  [[nodiscard]] virtual const ITreeNode* GetLast() const = 0;
+  [[nodiscard]] virtual const ITreeNode* GetPredecessor(const ITreeNode* current) const = 0;
+  [[nodiscard]] virtual const ITreeNode* GetSuccessor(const ITreeNode* current) const = 0;
 };
 
 } // bialger
