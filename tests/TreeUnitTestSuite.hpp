@@ -6,9 +6,9 @@
 
 #include <gtest/gtest.h>
 #include "lib/tree/BinarySearchTree.hpp"
-#include "lib/tree/InorderTraversal.hpp"
-#include "lib/tree/PreorderTraversal.hpp"
-#include "lib/tree/PostorderTraversal.hpp"
+#include "lib/tree/InOrder.hpp"
+#include "lib/tree/PreOrder.hpp"
+#include "lib/tree/PostOrder.hpp"
 
 struct TreeUnitTestSuite : public testing::Test { // special test structure
   const std::string kTemporaryDirectoryName = "./gtest_tree_tmp";

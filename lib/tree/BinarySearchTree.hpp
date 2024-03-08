@@ -6,7 +6,8 @@
 
 namespace bialger {
 
-class BinarySearchTree {
+template <typename T, typename IsLess, typename Equals, typename More, typename Allocator>
+class BinarySearchTree : public ITree<T> {
 
 };
 

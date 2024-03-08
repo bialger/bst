@@ -1,13 +1,12 @@
-add_library(tree STATIC
-        tree.cpp
-        BaseTreeNode.hpp
+add_library(tree INTERFACE
+        ITreeNode.hpp
         ITree.hpp
         ITraversal.hpp
         TreeNode.hpp
         BinarySearchTree.hpp
-        PreorderTraversal.hpp
-        InorderTraversal.hpp
-        PostorderTraversal.hpp
+        PreOrder.hpp
+        InOrder.hpp
+        PostOrder.hpp
 )
 
-target_include_directories(tree PUBLIC ${PROJECT_SOURCE_DIR})
+target_include_directories(tree INTERFACE ${PROJECT_SOURCE_DIR})
