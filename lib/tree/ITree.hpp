@@ -19,9 +19,14 @@ class ITree {
   [[nodiscard]] virtual ITreeNode* Find(const T& key) const = 0;
   [[nodiscard]] virtual bool Contains(const T& key) const  = 0;
 
-  virtual void InOrder(std::function<void(ITreeNode*)> callback) = 0;
-  virtual void PreOrder(std::function<void(ITreeNode*)> callback) = 0;
-  virtual void PostOrder(std::function<void(ITreeNode*)> callback) = 0;
+  virtual void InOrder(const std::function<void(ITreeNode*)>& callback) = 0;
+  virtual void PreOrder(const std::function<void(ITreeNode*)>& callback) = 0;
+  virtual void PostOrder(const std::function<void(ITreeNode*)>& callback) = 0;
+
+  virtual void InOrder(const std::function<void(const ITreeNode*)>& callback) const = 0;
+  virtual void PreOrder(const std::function<void(const ITreeNode*)>& callback) const = 0;
+  virtual void PostOrder(const std::function<void(const ITreeNode*)>& callback) const = 0;
+
 
   [[nodiscard]] virtual const ITreeNode* GetRoot() const = 0;
   [[nodiscard]] virtual const ITreeNode* GetEnd() const = 0;

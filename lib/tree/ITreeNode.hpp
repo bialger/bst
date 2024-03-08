@@ -21,6 +21,10 @@ class ITreeNode {
   [[nodiscard]] virtual const ITreeNode* GetParent() const = 0;
   [[nodiscard]] virtual const ITreeNode* GetLeft() const = 0;
   [[nodiscard]] virtual const ITreeNode* GetRight() const = 0;
+
+  [[nodiscard]] virtual ITreeNode* GetParent() = 0;
+  [[nodiscard]] virtual ITreeNode* GetLeft() = 0;
+  [[nodiscard]] virtual ITreeNode* GetRight() = 0;
 };
 
 } // bialger

@@ -13,6 +13,11 @@ class ITraversal {
   [[nodiscard]] virtual const ITreeNode* GetLast() const = 0;
   [[nodiscard]] virtual const ITreeNode* GetPredecessor(const ITreeNode* current) const = 0;
   [[nodiscard]] virtual const ITreeNode* GetSuccessor(const ITreeNode* current) const = 0;
+
+  [[nodiscard]] virtual ITreeNode* GetFirst() = 0;
+  [[nodiscard]] virtual ITreeNode* GetLast() = 0;
+  [[nodiscard]] virtual ITreeNode* GetPredecessor(ITreeNode* current) const = 0;
+  [[nodiscard]] virtual ITreeNode* GetSuccessor(ITreeNode* current) const = 0;
 };
 
 } // bialger
