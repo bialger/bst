@@ -101,6 +101,10 @@ bialger::ITreeNode* bialger::InOrder::GetSuccessor(bialger::ITreeNode* current) 
 }
 
 const bialger::ITreeNode* bialger::InOrder::GetMin(const bialger::ITreeNode* current) {
+  if (current == nullptr) {
+    return current;
+  }
+
   while (current->HasLeft()) {
     current = current->GetLeft();
   }
@@ -109,6 +113,10 @@ const bialger::ITreeNode* bialger::InOrder::GetMin(const bialger::ITreeNode* cur
 }
 
 const bialger::ITreeNode* bialger::InOrder::GetMax(const bialger::ITreeNode* current) {
+  if (current == nullptr) {
+    return current;
+  }
+
   while (current->HasRight()) {
     current = current->GetRight();
   }
@@ -117,6 +125,10 @@ const bialger::ITreeNode* bialger::InOrder::GetMax(const bialger::ITreeNode* cur
 }
 
 bialger::ITreeNode* bialger::InOrder::GetMin(bialger::ITreeNode* current) {
+  if (current == nullptr) {
+    return current;
+  }
+
   while (current->HasLeft()) {
     current = current->GetLeft();
   }
@@ -125,6 +137,10 @@ bialger::ITreeNode* bialger::InOrder::GetMin(bialger::ITreeNode* current) {
 }
 
 bialger::ITreeNode* bialger::InOrder::GetMax(bialger::ITreeNode* current) {
+  if (current == nullptr) {
+    return current;
+  }
+
   while (current->HasRight()) {
     current = current->GetRight();
   }
