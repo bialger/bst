@@ -2,20 +2,19 @@
 #define LIB_TREE_POSTORDER_HPP_
 
 #include "ITraversal.hpp"
-#include "ITree.hpp"
+#include "ITemplateTree.hpp"
 #include "TreeNode.hpp"
 
 namespace bialger {
 
-template <typename T>
 class PostOrder : public ITraversal {
  public:
   PostOrder() = delete;
 
-  explicit PostOrder(const ITree<T>& tree) : tree_(tree) {};
+  explicit PostOrder(ITree& tree);
 
  private:
-  const ITree<T>& tree_;
+  ITree& tree_;
 };
 
 } // bialger

@@ -1,12 +1,16 @@
-add_library(tree INTERFACE
+add_library(tree
         ITreeNode.hpp
         ITree.hpp
+        ITemplateTree.hpp
         ITraversal.hpp
         TreeNode.hpp
         BinarySearchTree.hpp
+        PreOrder.cpp
         PreOrder.hpp
+        InOrder.cpp
         InOrder.hpp
+        PostOrder.cpp
         PostOrder.hpp
 )
 
-target_include_directories(tree INTERFACE ${PROJECT_SOURCE_DIR})
+target_include_directories(tree PUBLIC ${PROJECT_SOURCE_DIR})

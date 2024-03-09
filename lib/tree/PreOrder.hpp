@@ -2,20 +2,19 @@
 #define LIB_TREE_PREORDER_HPP_
 
 #include "ITraversal.hpp"
-#include "ITree.hpp"
+#include "ITemplateTree.hpp"
 #include "TreeNode.hpp"
 
 namespace bialger {
 
-template <typename T>
 class PreOrder : public ITraversal {
  public:
   PreOrder() = delete;
 
-  explicit PreOrder(const ITree<T>& tree) : tree_(tree) {}
+  explicit PreOrder(ITree& tree);
 
  private:
-  const ITree<T>& tree_;
+  ITree& tree_;
 };
 
 } // bialger
