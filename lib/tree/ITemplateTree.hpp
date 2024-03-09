@@ -17,7 +17,7 @@ class ITemplateTree : public ITree {
 
   [[nodiscard]] virtual ITreeNode* Insert(const T& key, const U& value) = 0;
   virtual void Delete(ITreeNode* node) = 0;
-  [[nodiscard]] virtual ITreeNode* Find(const T& key) const = 0;
+  [[nodiscard]] virtual ITreeNode* FindFirst(const T& key) const = 0;
   [[nodiscard]] virtual bool Contains(const T& key) const  = 0;
 
   virtual void InOrder(const std::function<void(ITreeNode*)>& callback) = 0;

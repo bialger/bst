@@ -1,6 +1,8 @@
 #ifndef LIB_TREE_BINARYSEARCHTREE_HPP_
 #define LIB_TREE_BINARYSEARCHTREE_HPP_
 
+#include <memory>
+
 #include "ITemplateTree.hpp"
 #include "TreeNode.hpp"
 
@@ -45,8 +47,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
 
   void Clear() override {
     PostOrder([&](ITreeNode* current) {
-      const auto* current_ = static_cast<const NodeType*>(current);
-      this->allocator_.deallocate(current_, 1);
+      DeleteNode(static_cast<const NodeType*>(current));
     });
 
     end_ = nullptr;
@@ -54,22 +55,37 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   }
 
   [[nodiscard]] virtual ITreeNode* Insert(const T& key, const U& value) {
-
+    root_ = Insert(root_, key, value);
   }
 
   virtual void Delete(ITreeNode* node) {
-    // TODO: implement
-    // TODO: implement
+    if (node == nullptr) {
+      return;
+    }
+
+    const auto* node_ = static_cast<const NodeType*>(node);
+    NodeType* deleted = Delete(node_);
+
+    if (node == root_) {
+      root_ = end_;
+      return;
+    }
+
+    NodeType* parent = node_->parent;
+
+    if (parent->left == node_) {
+      parent->left = deleted;
+    } else {
+      parent->right = deleted;
+    }
   }
 
-  [[nodiscard]] ITreeNode* Find(const T& key) const override {
-    // TODO: implement
-    // TODO: implement
+  [[nodiscard]] ITreeNode* FindFirst(const T& key) const override {
+    return FindFirst(root_, key);
   }
 
   [[nodiscard]] bool Contains(const T& key) const override {
-    // TODO: implement
-    // TODO: implement
+    return FindFirst(key) != nullptr;
   }
 
   void InOrder(const std::function<void(const ITreeNode*)>& callback) const override {
@@ -118,27 +134,28 @@ class BinarySearchTree : public ITemplateTree<T, U> {
 
  protected:
   using NodeType = TreeNode<T, U, Less, Equals, More>;
-  using AllocatorType = Allocator::template rebind<NodeType>::other;
+  using NodeAllocatorType = Allocator::template rebind<NodeType>::other;
+  using NodeAllocatorTraits = std::allocator_traits<NodeAllocatorType>;
 
   bool allow_duplicates_;
   NodeType* end_;
   NodeType* root_;
-  AllocatorType allocator_;
+  NodeAllocatorType allocator_;
 
   NodeType* CreateNode(const T& key, const U& value) {
-    NodeType* new_node = allocator_.allocate(1);
-    allocator_.construct(new_node, key, value);
+    NodeType* new_node =  NodeAllocatorTraits::allocate(allocator_, 1);
+    NodeAllocatorTraits::construct(allocator_, new_node, key, value);
 
     return new_node;
   }
 
-  NodeType* Insert(NodeType* node, const T& key, const U& value) {
+  void DeleteNode(NodeType* node) {
+    NodeAllocatorTraits::deallocate(allocator_,node, 1);
+  }
+
+  virtual NodeType* Insert(NodeType* node, const T& key, const U& value) {
     if (node == nullptr) {
       NodeType* new_node = CreateNode(key, value);
-
-      if (root_ == nullptr) {
-        root_ = new_node;
-      }
 
       return new_node;
     }
@@ -147,11 +164,80 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       node->left = Insert(node->left, key, value);
     } else if (Equals()(key, node->key) && !allow_duplicates_) {
       node->value = value;
-    } else {
+    } else if (More()(key, node->key)) {
       node->right = Insert(node->right, key, value);
     }
 
     return node;
+  }
+
+  virtual NodeType* Delete(NodeType* node) {
+    if (node == nullptr || node == end_) {
+      return node;
+    }
+
+    if (node->IsLeaf()) {
+      DeleteNode(node);
+      return nullptr;
+    }
+
+    if (node->HasLeft() && node->HasRight()) {
+      NodeType* min = GetMin(node->right);
+      std::swap(node->key, min->key);
+      std::swap(node->value, min->value);
+      node->right = remove(node->right, min->data);
+    } else if (node->HasLeft()) {
+      NodeType* left = node->left;
+      DeleteNode(node);
+      return left;
+    } else if (node->HasRight()) {
+      NodeType* right = node->right;
+      DeleteNode(node);
+      return right;
+    } else {
+      DeleteNode(node);
+      return nullptr;
+    }
+
+    return node;
+  }
+
+  NodeType* FindFirst(NodeType* node, const T& key) {
+    if (node == nullptr) {
+      return nullptr;
+    }
+
+    if (Less()(key, node->data)) {
+      return FindFirst(node->left, key);
+    } else if (More()(key, node->data)) {
+      return FindFirst(node->right, key);
+    }
+
+    return node;
+  }
+
+  NodeType* GetMin(NodeType* current) {
+    if (current == nullptr) {
+      return current;
+    }
+
+    while (current->HasLeft()) {
+      current = current->GetLeft();
+    }
+
+    return current;
+  }
+
+  NodeType* GetMax(NodeType* current) {
+    if (current == nullptr) {
+      return current;
+    }
+
+    while (current->HasRight()) {
+      current = current->GetRight();
+    }
+
+    return current;
   }
 
   void InOrder(NodeType* node, const std::function<void(ITreeNode*)>& callback) {
@@ -184,8 +270,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     callback(node);
   }
 
-  void InOrder(const NodeType* node,
-               const std::function<void(const ITreeNode*)>& callback) const {
+  void InOrder(const NodeType* node, const std::function<void(const ITreeNode*)>& callback) const {
     if (node == nullptr) {
       return;
     }
@@ -195,8 +280,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     InOrder(node->right, callback);
   }
 
-  void PreOrder(const NodeType* node,
-                const std::function<void(const ITreeNode*)>& callback) const {
+  void PreOrder(const NodeType* node, const std::function<void(const ITreeNode*)>& callback) const {
     if (node == nullptr) {
       return;
     }
@@ -206,8 +290,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     PreOrder(node->right, callback);
   }
 
-  void PostOrder(const NodeType* node,
-                 const std::function<void(const ITreeNode*)>& callback) const {
+  void PostOrder(const NodeType* node, const std::function<void(const ITreeNode*)>& callback) const {
     if (node == nullptr) {
       return;
     }
