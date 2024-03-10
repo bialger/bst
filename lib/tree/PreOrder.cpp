@@ -53,6 +53,8 @@ const bialger::ITreeNode* bialger::PreOrder::GetPredecessor(const bialger::ITree
 const bialger::ITreeNode* bialger::PreOrder::GetSuccessor(const bialger::ITreeNode* current) const {
   if (current == tree_.GetEnd()) {
     return GetFirst();
+  } else if (current == GetLast()) {
+    return tree_.GetEnd();
   }
 
   // If the given node has a left child, the successor is the left child
@@ -130,6 +132,8 @@ bialger::ITreeNode* bialger::PreOrder::GetPredecessor(bialger::ITreeNode* curren
 bialger::ITreeNode* bialger::PreOrder::GetSuccessor(bialger::ITreeNode* current) {
   if (current == tree_.GetEnd()) {
     return GetFirst();
+  } else if (current == GetLast()) {
+    return tree_.GetEnd();
   }
 
   // If the given node has a left child, the successor is the left child

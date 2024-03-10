@@ -31,51 +31,60 @@ const bialger::ITreeNode* bialger::PostOrder::GetPredecessor(const bialger::ITre
     return GetLast();
   }
 
-  // If the given node has a left child, find the rightmost node in the left subtree
-  if (current->HasLeft()) {
-    const ITreeNode* node = current->GetLeft();
+  if (current->HasRight()) {
+    return current->GetRight();
+  }
 
-    while (node->HasRight()) {
-      node = node->GetRight();
+  if (current->HasLeft()) {
+    return current->GetLeft();
+  }
+
+  const ITreeNode* parent = current->GetParent();
+
+  while (parent != nullptr) {
+    if (parent->HasLeft() && current == parent->GetRight()) {
+      return parent->GetLeft();
     }
 
-    return node;
+    current = parent;
+    parent = current->GetParent();
   }
 
-  // If the given node does not have a left child, traverse up the tree to find the first ancestor
-  // whose right child is also an ancestor of the given node
-  const ITreeNode* node = current;
-  while (!node->IsRoot() && node->GetParent()->GetLeft() == node) {
-    node = node->GetParent();
-  }
-
-  return node->GetParent();
+  return tree_.GetEnd();
 }
 
 const bialger::ITreeNode* bialger::PostOrder::GetSuccessor(const bialger::ITreeNode* current) const {
   if (current == tree_.GetEnd()) {
     return GetFirst();
+  } else if (current == GetLast()) {
+    return tree_.GetEnd();
   }
 
-  // If the given node has a right child, find the leftmost node in the right subtree
-  if (current->HasRight()) {
-    const ITreeNode* node = current->GetRight();
+  const ITreeNode* parent = current->GetParent();
 
-    while (node->HasLeft()) {
-      node = node->GetLeft();
+  if (parent != nullptr && parent->GetRight() == current) {
+    return parent;
+  }
+
+  if (parent != nullptr && parent->GetLeft() == current) {
+    if (parent->HasRight()) {
+      current = parent->GetRight();
+
+      while (!current->IsLeaf()) {
+        if (current->HasLeft()) {
+          current = current->GetLeft();
+        } else {
+          current = current->GetRight();
+        }
+      }
+
+      return current;
     }
 
-    return node;
+    return parent;
   }
 
-  // If the given node does not have a right child, traverse up the tree to find the first ancestor
-  // whose left child is also an ancestor of the given node
-  const ITreeNode* node = current;
-  while (!node->IsRoot() && node->GetParent()->GetRight() == node) {
-    node = node->GetParent();
-  }
-
-  return node->GetParent();
+  return tree_.GetEnd();
 }
 
 bialger::ITreeNode* bialger::PostOrder::GetFirst() {
@@ -107,49 +116,58 @@ bialger::ITreeNode* bialger::PostOrder::GetPredecessor(bialger::ITreeNode* curre
     return GetLast();
   }
 
-  // If the given node has a left child, find the rightmost node in the left subtree
-  if (current->HasLeft()) {
-    ITreeNode* node = current->GetLeft();
+  if (current->HasRight()) {
+    return current->GetRight();
+  }
 
-    while (node->HasRight()) {
-      node = node->GetRight();
+  if (current->HasLeft()) {
+    return current->GetLeft();
+  }
+
+  ITreeNode* parent = current->GetParent();
+
+  while (parent != nullptr) {
+    if (parent->HasLeft() && current == parent->GetRight()) {
+      return parent->GetLeft();
     }
 
-    return node;
+    current = parent;
+    parent = current->GetParent();
   }
 
-  // If the given node does not have a left child, traverse up the tree to find the first ancestor
-  // whose right child is also an ancestor of the given node
-  ITreeNode* node = current;
-  while (!node->IsRoot() && node->GetParent()->GetLeft() == node) {
-    node = node->GetParent();
-  }
-
-  return node->GetParent();
+  return tree_.GetEnd();
 }
 
 bialger::ITreeNode* bialger::PostOrder::GetSuccessor(bialger::ITreeNode* current) {
   if (current == tree_.GetEnd()) {
     return GetFirst();
+  } else if (current == GetLast()) {
+    return tree_.GetEnd();
   }
 
-  // If the given node has a right child, find the leftmost node in the right subtree
-  if (current->HasRight()) {
-    ITreeNode* node = current->GetRight();
+  ITreeNode* parent = current->GetParent();
 
-    while (node->HasLeft()) {
-      node = node->GetLeft();
+  if (parent != nullptr && parent->GetRight() == current) {
+    return parent;
+  }
+
+  if (parent != nullptr && parent->GetLeft() == current) {
+    if (parent->HasRight()) {
+      current = parent->GetRight();
+
+      while (!current->IsLeaf()) {
+        if (current->HasLeft()) {
+          current = current->GetLeft();
+        } else {
+          current = current->GetRight();
+        }
+      }
+
+      return current;
     }
 
-    return node;
+    return parent;
   }
 
-  // If the given node does not have a right child, traverse up the tree to find the first ancestor
-  // whose left child is also an ancestor of the given node
-  ITreeNode* node = current;
-  while (!node->IsRoot() && node->GetParent()->GetRight() == node) {
-    node = node->GetParent();
-  }
-
-  return node->GetParent();
+  return tree_.GetEnd();
 }
