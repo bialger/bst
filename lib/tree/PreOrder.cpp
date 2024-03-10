@@ -9,6 +9,10 @@ const bialger::ITreeNode* bialger::PreOrder::GetFirst() const {
 const bialger::ITreeNode* bialger::PreOrder::GetLast() const {
   const ITreeNode* node = tree_.GetRoot();
 
+  if (node == nullptr) {
+    return node;
+  }
+
   while (!node->IsLeaf()) {
     if (node->HasRight()) {
       node = node->GetRight();
@@ -23,8 +27,10 @@ const bialger::ITreeNode* bialger::PreOrder::GetLast() const {
 const bialger::ITreeNode* bialger::PreOrder::GetPredecessor(const bialger::ITreeNode* current) const {
   const ITreeNode* root = tree_.GetRoot();
 
-  if (root == nullptr || current == nullptr) {
-    return nullptr;
+  if (current == tree_.GetRoot()) {
+    return tree_.GetEnd();
+  } else if (current == tree_.GetEnd()) {
+    return GetLast();
   }
 
   if (current->HasLeft()) {
@@ -56,8 +62,8 @@ const bialger::ITreeNode* bialger::PreOrder::GetSuccessor(const bialger::ITreeNo
   const ITreeNode* root = tree_.GetRoot();
   bool allows_duplicates = tree_.AllowsDuplicates();
 
-  if (root == nullptr || current == nullptr) {
-    return nullptr;
+  if (current == tree_.GetEnd()) {
+    return tree_.GetRoot();
   }
 
   if (current->HasRight()) {
@@ -92,6 +98,10 @@ bialger::ITreeNode* bialger::PreOrder::GetFirst() {
 bialger::ITreeNode* bialger::PreOrder::GetLast() {
   ITreeNode* node = tree_.GetRoot();
 
+  if (node == nullptr) {
+    return node;
+  }
+
   while (!node->IsLeaf()) {
     if (node->HasRight()) {
       node = node->GetRight();
@@ -105,8 +115,10 @@ bialger::ITreeNode* bialger::PreOrder::GetLast() {
 bialger::ITreeNode* bialger::PreOrder::GetPredecessor(bialger::ITreeNode* current) {
   ITreeNode* root = tree_.GetRoot();
 
-  if (root == nullptr || current == nullptr) {
-    return nullptr;
+  if (current == tree_.GetRoot()) {
+    return tree_.GetEnd();
+  } else if (current == tree_.GetEnd()) {
+    return GetLast();
   }
 
   if (current->HasLeft()) {
@@ -138,8 +150,8 @@ bialger::ITreeNode* bialger::PreOrder::GetSuccessor(bialger::ITreeNode* current)
   ITreeNode* root = tree_.GetRoot();
   bool allows_duplicates = tree_.AllowsDuplicates();
 
-  if (root == nullptr || current == nullptr) {
-    return nullptr;
+  if (current == tree_.GetEnd()) {
+    return tree_.GetRoot();
   }
 
   if (current->HasRight()) {

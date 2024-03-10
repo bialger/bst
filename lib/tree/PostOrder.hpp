@@ -13,6 +13,15 @@ class PostOrder : public ITraversal {
 
   explicit PostOrder(ITree& tree);
 
+  [[nodiscard]] const ITreeNode* GetFirst() const override;
+  [[nodiscard]] const ITreeNode* GetLast() const override;
+  [[nodiscard]] const ITreeNode* GetPredecessor(const ITreeNode* current) const override;
+  [[nodiscard]] const ITreeNode* GetSuccessor(const ITreeNode* current) const override;
+
+  [[nodiscard]] ITreeNode* GetFirst() override;
+  [[nodiscard]] ITreeNode* GetLast() override;
+  [[nodiscard]] ITreeNode* GetPredecessor(ITreeNode* current) override;
+  [[nodiscard]] ITreeNode* GetSuccessor(ITreeNode* current) override;
  private:
   ITree& tree_;
 };
