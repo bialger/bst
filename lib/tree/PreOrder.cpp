@@ -31,28 +31,23 @@ const bialger::ITreeNode* bialger::PreOrder::GetPredecessor(const bialger::ITree
     return GetLast();
   }
 
-  // If the given node is the left child of its parent, the predecessor is the parent
-  if (!current->IsRoot() && current->GetParent()->GetLeft() == current) {
-    return current->GetParent();
-  }
+  const ITreeNode* parent = current->GetParent();
 
-  if (current->HasLeft()) {
-    const ITreeNode* node = current->GetLeft();
+  if (current == parent->GetRight() && parent->HasLeft()) {
+    current = parent->GetLeft();
 
-    while (node->HasRight()) {
-      node = node->GetRight();
+    while (!current->IsLeaf()) {
+      if (current->HasRight()) {
+        current = current->GetRight();
+      } else {
+        current = current->GetLeft();
+      }
     }
 
-    return node;
+    return current;
   }
 
-  // Traverse upwards until finding the node that is the right child of its parent
-  while (current != nullptr && !current->IsRoot() && current == current->GetParent()->GetLeft()) {
-    current = current->GetParent();
-  }
-
-  // Return the predecessor node
-  return current->GetParent();
+  return parent;
 }
 
 const bialger::ITreeNode* bialger::PreOrder::GetSuccessor(const bialger::ITreeNode* current) const {
@@ -113,28 +108,23 @@ bialger::ITreeNode* bialger::PreOrder::GetPredecessor(bialger::ITreeNode* curren
     return GetLast();
   }
 
-  // If the given node is the left child of its parent, the predecessor is the parent
-  if (!current->IsRoot() && current->GetParent()->GetLeft() == current) {
-    return current->GetParent();
-  }
+  ITreeNode* parent = current->GetParent();
 
-  if (current->HasLeft()) {
-    ITreeNode* node = current->GetLeft();
+  if (current == parent->GetRight() && parent->HasLeft()) {
+    current = parent->GetLeft();
 
-    while (node->HasRight()) {
-      node = node->GetRight();
+    while (!current->IsLeaf()) {
+      if (current->HasRight()) {
+        current = current->GetRight();
+      } else {
+        current = current->GetLeft();
+      }
     }
 
-    return node;
+    return current;
   }
 
-  // Traverse upwards until finding the node that is the right child of its parent
-  while (current != nullptr && !current->IsRoot() && current == current->GetParent()->GetLeft()) {
-    current = current->GetParent();
-  }
-
-  // Return the predecessor node
-  return current->GetParent();
+  return parent;
 }
 
 bialger::ITreeNode* bialger::PreOrder::GetSuccessor(bialger::ITreeNode* current) {
