@@ -11,15 +11,13 @@ namespace bialger {
 template<typename T, typename U, typename Less, typename Equals, typename Allocator>
 class BinarySearchTree : public ITemplateTree<T, U> {
  public:
-  using NodeType = TreeNode<T, U, Less, Equals>;
-  using KeyType = T;
-  using ValueType = U;
+  using NodeType = TreeNode<T, U>;
 
   explicit BinarySearchTree(bool allow_duplicates = false)
-      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(allow_duplicates) {};
+      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(allow_duplicates), size_{} {};
 
   BinarySearchTree(const BinarySearchTree& other)
-      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(other.allow_duplicates_) {
+      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(other.allow_duplicates_), size_{} {
     other.PreOrder([&](const ITreeNode* current) {
       const auto* current_ = static_cast<const NodeType*>(current);
       this->Insert(current_->key, current_->value);
@@ -58,8 +56,10 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     root_ = end_;
   }
 
-  void Insert(const T& key, const U& value) override {
-    root_ = Insert(root_, key, value);
+  ITreeNode* Insert(const T& key, const U& value) override {
+    NodeType* result_node = nullptr;
+    root_ = Insert(root_, result_node, key, value);
+    return result_node;
   }
 
   void Delete(ITreeNode* node) override {
@@ -150,20 +150,21 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     --size_;
   }
 
-  virtual NodeType* Insert(NodeType* node, const T& key, const U& value) {
+  virtual NodeType* Insert(NodeType* node, NodeType*& result_node, const T& key, const U& value) {
     if (node == nullptr) {
       NodeType* new_node = CreateNode(key, value);
+      result_node = new_node;
 
       return new_node;
     }
 
     if (Less()(key, node->key) || (allow_duplicates_ && Equals()(key, node->key))) {
-      node->left = Insert(node->left, key, value);
+      node->left = Insert(node->left, result_node, key, value);
       node->left->parent = node;
     } else if (Equals()(key, node->key) && !allow_duplicates_) {
       node->value = value;
     } else if (Less()(node->key, key)) {
-      node->right = Insert(node->right, key, value);
+      node->right = Insert(node->right, result_node, key, value);
       node->right->parent = node;
     }
 
@@ -244,16 +245,6 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     if (first == nullptr || second == nullptr || first == second) {
       return;
     }
-
-    NodeType* first_parent = first->parent;
-    NodeType* first_left = first->left;
-    NodeType* first_right = first->right;
-    NodeType* second_parent = second->parent;
-    NodeType* second_left = second->left;
-    NodeType* second_right = second->right;
-
-    bool first_left_son = !first->IsRoot() && (first == first->parent->left);
-    bool second_left_son = !second->IsRoot() && (second == second->parent->left);
 
     if (first->parent == nullptr) {
       root_ = second;
