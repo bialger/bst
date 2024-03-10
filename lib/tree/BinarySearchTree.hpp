@@ -69,15 +69,6 @@ class BinarySearchTree : public ITemplateTree<T, U> {
 
     auto* node_ = static_cast<NodeType*>(node);
     Delete(node_);
-//    NodeType* parent = node_->parent;
-//
-//    if (node_ == root_) {
-//      root_ = Delete(node_);
-//    } else if (node_ == parent->left) {
-//      parent->left = Delete(node_);
-//    } else {
-//      parent->right = Delete(node_);
-//    }
   }
 
   [[nodiscard]] ITreeNode* FindFirst(const T& key) const override {
@@ -132,11 +123,16 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     return allow_duplicates_;
   }
 
+  [[nodiscard]] size_t GetSize() const override {
+    return size_;
+  }
+
  protected:
   using NodeAllocatorType = typename std::allocator_traits<Allocator>::template rebind_alloc<NodeType>;
   using NodeAllocatorTraits = std::allocator_traits<NodeAllocatorType>;
 
   bool allow_duplicates_;
+  size_t size_;
   NodeType* end_;
   NodeType* root_;
   NodeAllocatorType allocator_;
@@ -144,12 +140,14 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   NodeType* CreateNode(const T& key, const U& value) {
     NodeType* new_node = NodeAllocatorTraits::allocate(allocator_, 1);
     NodeAllocatorTraits::construct(allocator_, new_node, key, value);
+    ++size_;
 
     return new_node;
   }
 
   void DeleteNode(NodeType* node) {
     NodeAllocatorTraits::deallocate(allocator_, node, 1);
+    --size_;
   }
 
   virtual NodeType* Insert(NodeType* node, const T& key, const U& value) {
