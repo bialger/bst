@@ -15,7 +15,7 @@ using namespace bialger;
 using IntTree = BinarySearchTree<int32_t, int32_t*, std::less<>, std::equal_to<>, std::allocator<int32_t>>;
 using StringTree = BinarySearchTree<std::string,
                                     std::string*,
-                                    std::less<>,
+                                    std::less<std::string>,
                                     std::equal_to<>,
                                     std::allocator<std::string>>;
 
@@ -42,8 +42,7 @@ TEST_F(TreeUnitTestSuite, InsertTreeTest2) {
 }
 
 TEST_F(TreeUnitTestSuite, InsertTreeTest3) {
-  StringTree
-      bst(true);
+  StringTree bst(true);
   std::vector<std::string> values{"test", "test1", "t", "test", "_", "", "r"};
 
   for (std::string& value : values) {
@@ -276,4 +275,36 @@ TEST_F(TreeUnitTestSuite, DeleteTreeTest6) {
 
   ASSERT_EQ(bst.GetRoot(), nullptr);
   ASSERT_EQ(bst.GetSize(), 0);
+}
+
+TEST_F(TreeUnitTestSuite, FindNextTreeTest1) {
+  IntTree bst{};
+  size_t size = 1000;
+  std::vector<int32_t> values(size);
+  std::random_device dev;
+  std::mt19937 rng(dev());
+  std::uniform_int_distribution<std::mt19937::result_type>
+      dist(0, std::numeric_limits<uint32_t>::max());
+
+  for (int32_t i = 0; i < 4 * size; i += 4) {
+    values[i / 4] = i + static_cast<int32_t>(dist(rng) % 4);
+  }
+
+  for (int32_t& value : values) {
+    bst.Insert(value, &value);
+  }
+
+  for (int32_t i = 0; i < 4 * size; ++i) {
+    auto vector_lower = std::lower_bound(values.begin(), values.end(), i);
+    auto* bst_find = dynamic_cast<IntTree::NodeType*>(bst.FindFirst(i));
+    auto* bst_next = dynamic_cast<IntTree::NodeType*>(bst.FindNext(i));
+    if (vector_lower == values.end()) {
+      ASSERT_EQ(bst_find, bst.GetEnd());
+      ASSERT_EQ(bst_next, bst.GetEnd());
+    } else if (bst_find != nullptr) {
+      ASSERT_EQ(bst_find->key, *vector_lower);
+    } else {
+      ASSERT_EQ(bst_next->key, *vector_lower);
+    }
+  }
 }

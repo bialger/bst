@@ -14,10 +14,17 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   using NodeType = TreeNode<T, U>;
 
   explicit BinarySearchTree(bool allow_duplicates = false)
-      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(allow_duplicates), size_{} {};
+      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(allow_duplicates), size_{} {
+    if (Less()(T{}, T{})) {
+      __assert_fail("Less()(T{}, T{})","BinarySearchTree.hpp",219,"Constructor");
+    }
+  };
 
   BinarySearchTree(const BinarySearchTree& other)
       : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(other.allow_duplicates_), size_{} {
+    if (Less()(T{}, T{})) {
+      __assert_fail("Less()(T{}, T{})","BinarySearchTree.hpp",26,"Copy constructor");
+    }
     other.PreOrder([&](const ITreeNode* current) {
       const auto* current_ = static_cast<const NodeType*>(current);
       this->Insert(current_->key, current_->value);
@@ -73,6 +80,10 @@ class BinarySearchTree : public ITemplateTree<T, U> {
 
   [[nodiscard]] ITreeNode* FindFirst(const T& key) const override {
     return FindFirst(root_, key);
+  }
+
+  [[nodiscard]] ITreeNode* FindNext(const T& key) const override {
+    return FindNextByKey(root_, key);
   }
 
   [[nodiscard]] bool Contains(const T& key) const override {
@@ -239,6 +250,24 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     }
 
     return node;
+  }
+
+  ITreeNode* FindNextByKey(NodeType* node, const T& key) const {
+    NodeType* next = nullptr;
+
+    while (node != nullptr) {
+      if (Less()(key, node->key) || (allow_duplicates_ && Equals()(key, node->key))) {
+        if (next == nullptr || Less()(node->key, next->key)) {
+          next = node;
+        }
+
+        node = node->left;
+      } else {
+        node = node->right;
+      }
+    }
+
+    return next;
   }
 
   void SwapNodes(NodeType* first, NodeType* second) {
