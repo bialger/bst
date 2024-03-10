@@ -25,12 +25,15 @@ const bialger::ITreeNode* bialger::PreOrder::GetLast() const {
 }
 
 const bialger::ITreeNode* bialger::PreOrder::GetPredecessor(const bialger::ITreeNode* current) const {
-  const ITreeNode* root = tree_.GetRoot();
-
   if (current == tree_.GetRoot()) {
     return tree_.GetEnd();
   } else if (current == tree_.GetEnd()) {
     return GetLast();
+  }
+
+  // If the given node is the left child of its parent, the predecessor is the parent
+  if (!current->IsRoot() && current->GetParent()->GetLeft() == current) {
+    return current->GetParent();
   }
 
   if (current->HasLeft()) {
@@ -43,52 +46,43 @@ const bialger::ITreeNode* bialger::PreOrder::GetPredecessor(const bialger::ITree
     return node;
   }
 
-  const ITreeNode* predecessor = nullptr;
-  const ITreeNode* node = root;
-
-  while (node != current) {
-    if (current->IsMore(node)) {
-      predecessor = node;
-      node = node->GetRight();
-    } else {
-      node = node->GetLeft();
-    }
+  // Traverse upwards until finding the node that is the right child of its parent
+  while (current != nullptr && !current->IsRoot() && current == current->GetParent()->GetLeft()) {
+    current = current->GetParent();
   }
 
-  return predecessor;
+  // Return the predecessor node
+  return current->GetParent();
 }
 
 const bialger::ITreeNode* bialger::PreOrder::GetSuccessor(const bialger::ITreeNode* current) const {
   const ITreeNode* root = tree_.GetRoot();
-  bool allows_duplicates = tree_.AllowsDuplicates();
 
   if (current == tree_.GetEnd()) {
-    return tree_.GetRoot();
+    return root;
   }
 
+  // If the given node has a left child, the successor is the left child
+  if (current->HasLeft()) {
+    return current->GetLeft();
+  }
+
+  // If the given node has a right child, the successor is the right child
   if (current->HasRight()) {
-    const ITreeNode* node = current->GetRight();
-
-    while (node->HasLeft()) {
-      node = node->GetLeft();
-    }
-
-    return node;
+    return current->GetRight();
   }
 
-  const ITreeNode* successor = nullptr;
-  const ITreeNode* node = root;
-
-  while (node != current) {
-    if (current->IsLess(node) || (allows_duplicates && current->IsEqual(node))) {
-      successor = node;
-      node = node->GetLeft();
-    } else {
-      node = node->GetRight();
-    }
+  // Traverse upwards until finding the node that is the left child of its parent
+  while (current != nullptr && !current->IsRoot() && current == current->GetParent()->GetRight()) {
+    current = current->GetParent();
   }
 
-  return successor;
+  // Return the successor node
+  if (current != nullptr && !current->IsRoot()) {
+    return current->GetParent()->GetRight();
+  }
+
+  return root;
 }
 
 bialger::ITreeNode* bialger::PreOrder::GetFirst() {
@@ -113,12 +107,15 @@ bialger::ITreeNode* bialger::PreOrder::GetLast() {
   return node;
 }
 bialger::ITreeNode* bialger::PreOrder::GetPredecessor(bialger::ITreeNode* current) {
-  ITreeNode* root = tree_.GetRoot();
-
   if (current == tree_.GetRoot()) {
     return tree_.GetEnd();
   } else if (current == tree_.GetEnd()) {
     return GetLast();
+  }
+
+  // If the given node is the left child of its parent, the predecessor is the parent
+  if (!current->IsRoot() && current->GetParent()->GetLeft() == current) {
+    return current->GetParent();
   }
 
   if (current->HasLeft()) {
@@ -131,50 +128,41 @@ bialger::ITreeNode* bialger::PreOrder::GetPredecessor(bialger::ITreeNode* curren
     return node;
   }
 
-  ITreeNode* predecessor = nullptr;
-  ITreeNode* node = root;
-
-  while (node != current) {
-    if (current->IsMore(node)) {
-      predecessor = node;
-      node = node->GetRight();
-    } else {
-      node = node->GetLeft();
-    }
+  // Traverse upwards until finding the node that is the right child of its parent
+  while (current != nullptr && !current->IsRoot() && current == current->GetParent()->GetLeft()) {
+    current = current->GetParent();
   }
 
-  return predecessor;
+  // Return the predecessor node
+  return current->GetParent();
 }
 
 bialger::ITreeNode* bialger::PreOrder::GetSuccessor(bialger::ITreeNode* current) {
   ITreeNode* root = tree_.GetRoot();
-  bool allows_duplicates = tree_.AllowsDuplicates();
 
   if (current == tree_.GetEnd()) {
-    return tree_.GetRoot();
+    return root;
   }
 
+  // If the given node has a left child, the successor is the left child
+  if (current->HasLeft()) {
+    return current->GetLeft();
+  }
+
+  // If the given node has a right child, the successor is the right child
   if (current->HasRight()) {
-    ITreeNode* node = current->GetRight();
-
-    while (node->HasLeft()) {
-      node = node->GetLeft();
-    }
-
-    return node;
+    return current->GetRight();
   }
 
-  ITreeNode* successor = nullptr;
-  ITreeNode* node = root;
-
-  while (node != current) {
-    if (current->IsLess(node) || (allows_duplicates && current->IsEqual(node))) {
-      successor = node;
-      node = node->GetLeft();
-    } else {
-      node = node->GetRight();
-    }
+  // Traverse upwards until finding the node that is the left child of its parent
+  while (current != nullptr && !current->IsRoot() && current == current->GetParent()->GetRight()) {
+    current = current->GetParent();
   }
 
-  return successor;
+  // Return the successor node
+  if (current != nullptr && !current->IsRoot()) {
+    return current->GetParent()->GetRight();
+  }
+
+  return root;
 }
