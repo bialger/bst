@@ -11,6 +11,10 @@ namespace bialger {
 template<typename T, typename U, typename Less, typename Equals, typename Allocator>
 class BinarySearchTree : public ITemplateTree<T, U> {
  public:
+  using NodeType = TreeNode<T, U, Less, Equals>;
+  using KeyType = T;
+  using ValueType = U;
+
   explicit BinarySearchTree(bool allow_duplicates = false)
       : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(allow_duplicates) {};
 
@@ -64,19 +68,14 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     }
 
     auto* node_ = static_cast<NodeType*>(node);
-    NodeType* deleted = Delete(node_);
-
-    if (node == root_) {
-      root_ = end_;
-      return;
-    }
-
     NodeType* parent = node_->parent;
 
-    if (parent->left == node_) {
-      parent->left = deleted;
+    if (node_ == root_) {
+      root_ = Delete(node_);
+    } else if (node_ == parent->left) {
+      parent->left = Delete(node_);
     } else {
-      parent->right = deleted;
+      parent->right = Delete(node_);
     }
   }
 
@@ -133,7 +132,6 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   }
 
  protected:
-  using NodeType = TreeNode<T, U, Less, Equals>;
   using NodeAllocatorType = typename std::allocator_traits<Allocator>::template rebind_alloc<NodeType>;
   using NodeAllocatorTraits = std::allocator_traits<NodeAllocatorType>;
 
@@ -162,10 +160,12 @@ class BinarySearchTree : public ITemplateTree<T, U> {
 
     if (Less()(key, node->key) || (allow_duplicates_ && Equals()(key, node->key))) {
       node->left = Insert(node->left, key, value);
+      node->left->parent = node;
     } else if (Equals()(key, node->key) && !allow_duplicates_) {
       node->value = value;
     } else if (Less()(node->key, key)) {
       node->right = Insert(node->right, key, value);
+      node->right->parent = node;
     }
 
     return node;
