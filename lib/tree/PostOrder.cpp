@@ -25,7 +25,7 @@ const bialger::ITreeNode* bialger::PostOrder::GetLast() const {
 }
 
 const bialger::ITreeNode* bialger::PostOrder::GetPredecessor(const bialger::ITreeNode* current) const {
-  if (current == tree_.GetRoot()) {
+  if (current == GetFirst()) {
     return tree_.GetEnd();
   } else if (current == tree_.GetEnd()) {
     return GetLast();
@@ -54,7 +54,7 @@ const bialger::ITreeNode* bialger::PostOrder::GetPredecessor(const bialger::ITre
 
 const bialger::ITreeNode* bialger::PostOrder::GetSuccessor(const bialger::ITreeNode* current) const {
   if (current == tree_.GetEnd()) {
-    return tree_.GetRoot();
+    return GetFirst();
   }
 
   // If the given node has a right child, find the leftmost node in the right subtree
@@ -101,7 +101,7 @@ bialger::ITreeNode* bialger::PostOrder::GetLast() {
 }
 
 bialger::ITreeNode* bialger::PostOrder::GetPredecessor(bialger::ITreeNode* current) {
-  if (current == tree_.GetRoot()) {
+  if (current == GetFirst()) {
     return tree_.GetEnd();
   } else if (current == tree_.GetEnd()) {
     return GetLast();
@@ -130,7 +130,7 @@ bialger::ITreeNode* bialger::PostOrder::GetPredecessor(bialger::ITreeNode* curre
 
 bialger::ITreeNode* bialger::PostOrder::GetSuccessor(bialger::ITreeNode* current) {
   if (current == tree_.GetEnd()) {
-    return tree_.GetRoot();
+    return GetFirst();
   }
 
   // If the given node has a right child, find the leftmost node in the right subtree

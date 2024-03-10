@@ -9,7 +9,7 @@ const bialger::ITreeNode* bialger::InOrder::GetLast() const {
 }
 
 const bialger::ITreeNode* bialger::InOrder::GetPredecessor(const bialger::ITreeNode* current) const {
-  if (current == tree_.GetRoot()) {
+  if (current == GetFirst()) {
     return tree_.GetEnd();
   } else if (current == tree_.GetEnd()) {
     return GetLast();
@@ -32,7 +32,7 @@ const bialger::ITreeNode* bialger::InOrder::GetPredecessor(const bialger::ITreeN
 
 const bialger::ITreeNode* bialger::InOrder::GetSuccessor(const bialger::ITreeNode* current) const {
   if (current == tree_.GetEnd()) {
-    return tree_.GetRoot();
+    return GetFirst();
   }
 
   if (current->HasRight()) {
@@ -59,7 +59,7 @@ bialger::ITreeNode* bialger::InOrder::GetLast() {
 }
 
 bialger::ITreeNode* bialger::InOrder::GetPredecessor(bialger::ITreeNode* current) {
-  if (current == tree_.GetRoot()) {
+  if (current == GetFirst()) {
     return tree_.GetEnd();
   } else if (current == tree_.GetEnd()) {
     return GetLast();
@@ -82,7 +82,7 @@ bialger::ITreeNode* bialger::InOrder::GetPredecessor(bialger::ITreeNode* current
 
 bialger::ITreeNode* bialger::InOrder::GetSuccessor(bialger::ITreeNode* current) {
   if (current == tree_.GetEnd()) {
-    return tree_.GetRoot();
+    return GetFirst();
   }
 
   if (current->HasRight()) {

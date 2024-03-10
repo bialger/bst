@@ -25,7 +25,7 @@ const bialger::ITreeNode* bialger::PreOrder::GetLast() const {
 }
 
 const bialger::ITreeNode* bialger::PreOrder::GetPredecessor(const bialger::ITreeNode* current) const {
-  if (current == tree_.GetRoot()) {
+  if (current == GetFirst()) {
     return tree_.GetEnd();
   } else if (current == tree_.GetEnd()) {
     return GetLast();
@@ -56,10 +56,8 @@ const bialger::ITreeNode* bialger::PreOrder::GetPredecessor(const bialger::ITree
 }
 
 const bialger::ITreeNode* bialger::PreOrder::GetSuccessor(const bialger::ITreeNode* current) const {
-  const ITreeNode* root = tree_.GetRoot();
-
   if (current == tree_.GetEnd()) {
-    return root;
+    return GetFirst();
   }
 
   // If the given node has a left child, the successor is the left child
@@ -82,7 +80,7 @@ const bialger::ITreeNode* bialger::PreOrder::GetSuccessor(const bialger::ITreeNo
     return current->GetParent()->GetRight();
   }
 
-  return root;
+  return tree_.GetRoot();
 }
 
 bialger::ITreeNode* bialger::PreOrder::GetFirst() {
@@ -107,7 +105,7 @@ bialger::ITreeNode* bialger::PreOrder::GetLast() {
   return node;
 }
 bialger::ITreeNode* bialger::PreOrder::GetPredecessor(bialger::ITreeNode* current) {
-  if (current == tree_.GetRoot()) {
+  if (current == GetFirst()) {
     return tree_.GetEnd();
   } else if (current == tree_.GetEnd()) {
     return GetLast();
@@ -138,10 +136,8 @@ bialger::ITreeNode* bialger::PreOrder::GetPredecessor(bialger::ITreeNode* curren
 }
 
 bialger::ITreeNode* bialger::PreOrder::GetSuccessor(bialger::ITreeNode* current) {
-  ITreeNode* root = tree_.GetRoot();
-
   if (current == tree_.GetEnd()) {
-    return root;
+    return GetFirst();
   }
 
   // If the given node has a left child, the successor is the left child
@@ -164,5 +160,5 @@ bialger::ITreeNode* bialger::PreOrder::GetSuccessor(bialger::ITreeNode* current)
     return current->GetParent()->GetRight();
   }
 
-  return root;
+  return tree_.GetRoot();
 }
