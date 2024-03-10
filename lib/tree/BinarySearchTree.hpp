@@ -54,11 +54,11 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     root_ = end_;
   }
 
-  virtual void Insert(const T& key, const U& value) {
+  void Insert(const T& key, const U& value) override {
     root_ = Insert(root_, key, value);
   }
 
-  virtual void Delete(ITreeNode* node) {
+  void Delete(ITreeNode* node) override {
     if (node == nullptr) {
       return;
     }

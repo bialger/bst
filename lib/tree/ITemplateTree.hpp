@@ -11,7 +11,7 @@ namespace bialger {
 template <typename T, typename U>
 class ITemplateTree : public ITree {
  public:
-  virtual ~ITemplateTree() = default;
+  ~ITemplateTree() override = default;
 
   virtual void Clear() = 0;
 
