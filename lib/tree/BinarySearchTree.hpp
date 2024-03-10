@@ -12,10 +12,10 @@ template<typename T, typename U, typename Less, typename Equals, typename Alloca
 class BinarySearchTree : public ITemplateTree<T, U> {
  public:
   explicit BinarySearchTree(bool allow_duplicates = false)
-      : end_(nullptr), root_(end_), allocator_(), allow_duplicates_(allow_duplicates) {};
+      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(allow_duplicates) {};
 
   BinarySearchTree(const BinarySearchTree& other)
-      : end_(nullptr), root_(end_), allocator_(), allow_duplicates_(other.allow_duplicates_) {
+      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(other.allow_duplicates_) {
     other.PreOrder([&](const ITreeNode* current) {
       const auto* current_ = static_cast<const NodeType*>(current);
       this->Insert(current_->key, current_->value);
@@ -46,7 +46,8 @@ class BinarySearchTree : public ITemplateTree<T, U> {
 
   void Clear() override {
     PostOrder([&](ITreeNode* current) {
-      DeleteNode(static_cast<const NodeType*>(current));
+      auto* current_ = static_cast<NodeType*>(current);
+      DeleteNode(current_);
     });
 
     end_ = nullptr;
@@ -62,7 +63,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       return;
     }
 
-    const auto* node_ = static_cast<const NodeType*>(node);
+    auto* node_ = static_cast<NodeType*>(node);
     NodeType* deleted = Delete(node_);
 
     if (node == root_) {
@@ -133,7 +134,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
 
  protected:
   using NodeType = TreeNode<T, U, Less, Equals>;
-  using NodeAllocatorType = Allocator::template rebind<NodeType>::other;
+  using NodeAllocatorType = typename std::allocator_traits<Allocator>::template rebind_alloc<NodeType>;
   using NodeAllocatorTraits = std::allocator_traits<NodeAllocatorType>;
 
   bool allow_duplicates_;
@@ -184,7 +185,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       NodeType* min = GetMin(node->right);
       std::swap(node->key, min->key);
       std::swap(node->value, min->value);
-      node->right = remove(node->right, min->key);
+      node->right = Delete(FindFirst(node->right, min->key));
     } else if (node->HasLeft()) {
       NodeType* left = node->left;
       DeleteNode(node);
@@ -201,7 +202,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     return node;
   }
 
-  NodeType* FindFirst(NodeType* node, const T& key) {
+  NodeType* FindFirst(NodeType* node, const T& key) const {
     if (node == nullptr) {
       return nullptr;
     }
@@ -221,7 +222,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     }
 
     while (current->HasLeft()) {
-      current = current->GetLeft();
+      current = current->left;
     }
 
     return current;
@@ -233,7 +234,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     }
 
     while (current->HasRight()) {
-      current = current->GetRight();
+      current = current->right;
     }
 
     return current;
