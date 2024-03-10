@@ -70,17 +70,19 @@ const bialger::ITreeNode* bialger::PreOrder::GetSuccessor(const bialger::ITreeNo
     return current->GetRight();
   }
 
+  const ITreeNode* parent = current->GetParent();
+
   // Traverse upwards until finding the node that is the left child of its parent
-  while (current != nullptr && !current->IsRoot() && current == current->GetParent()->GetRight()) {
-    current = current->GetParent();
+  while (parent != nullptr) {
+    if (parent->HasRight() && current == parent->GetLeft()) {
+      return parent->GetRight();
+    }
+
+    current = parent;
+    parent = current->GetParent();
   }
 
-  // Return the successor node
-  if (current != nullptr && !current->IsRoot()) {
-    return current->GetParent()->GetRight();
-  }
-
-  return tree_.GetRoot();
+  return tree_.GetEnd();
 }
 
 bialger::ITreeNode* bialger::PreOrder::GetFirst() {
@@ -150,15 +152,17 @@ bialger::ITreeNode* bialger::PreOrder::GetSuccessor(bialger::ITreeNode* current)
     return current->GetRight();
   }
 
+  ITreeNode* parent = current->GetParent();
+
   // Traverse upwards until finding the node that is the left child of its parent
-  while (current != nullptr && !current->IsRoot() && current == current->GetParent()->GetRight()) {
-    current = current->GetParent();
+  while (parent != nullptr) {
+    if (parent->HasRight() && current == parent->GetLeft()) {
+      return parent->GetRight();
+    }
+
+    current = parent;
+    parent = current->GetParent();
   }
 
-  // Return the successor node
-  if (current != nullptr && !current->IsRoot()) {
-    return current->GetParent()->GetRight();
-  }
-
-  return tree_.GetRoot();
+  return tree_.GetEnd();
 }
