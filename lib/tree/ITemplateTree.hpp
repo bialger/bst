@@ -15,7 +15,7 @@ class ITemplateTree : public ITree {
 
   virtual void Clear() = 0;
 
-  [[nodiscard]] virtual ITreeNode* Insert(const T& key, const U& value) = 0;
+  virtual void Insert(const T& key, const U& value) = 0;
   virtual void Delete(ITreeNode* node) = 0;
   [[nodiscard]] virtual ITreeNode* FindFirst(const T& key) const = 0;
   [[nodiscard]] virtual bool Contains(const T& key) const  = 0;

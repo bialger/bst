@@ -8,7 +8,7 @@
 
 namespace bialger {
 
-template<typename T, typename U, typename Less, typename Equals, typename More, typename Allocator>
+template<typename T, typename U, typename Less, typename Equals, typename Allocator>
 class BinarySearchTree : public ITemplateTree<T, U> {
  public:
   explicit BinarySearchTree(bool allow_duplicates = false)
@@ -22,12 +22,11 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     });
   }
 
-  BinarySearchTree<T, U, Less, Equals, More, Allocator>& operator=(const BinarySearchTree<T,
-                                                                                          U,
-                                                                                          Less,
-                                                                                          Equals,
-                                                                                          More,
-                                                                                          Allocator>& other) {
+  BinarySearchTree<T, U, Less, Equals, Allocator>& operator=(const BinarySearchTree<T,
+                                                                                    U,
+                                                                                    Less,
+                                                                                    Equals,
+                                                                                    Allocator>& other) {
     if (this == &other) {
       return *this;
     }
@@ -54,7 +53,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     root_ = end_;
   }
 
-  [[nodiscard]] virtual ITreeNode* Insert(const T& key, const U& value) {
+  virtual void Insert(const T& key, const U& value) {
     root_ = Insert(root_, key, value);
   }
 
@@ -133,7 +132,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   }
 
  protected:
-  using NodeType = TreeNode<T, U, Less, Equals, More>;
+  using NodeType = TreeNode<T, U, Less, Equals>;
   using NodeAllocatorType = Allocator::template rebind<NodeType>::other;
   using NodeAllocatorTraits = std::allocator_traits<NodeAllocatorType>;
 
@@ -143,14 +142,14 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   NodeAllocatorType allocator_;
 
   NodeType* CreateNode(const T& key, const U& value) {
-    NodeType* new_node =  NodeAllocatorTraits::allocate(allocator_, 1);
+    NodeType* new_node = NodeAllocatorTraits::allocate(allocator_, 1);
     NodeAllocatorTraits::construct(allocator_, new_node, key, value);
 
     return new_node;
   }
 
   void DeleteNode(NodeType* node) {
-    NodeAllocatorTraits::deallocate(allocator_,node, 1);
+    NodeAllocatorTraits::deallocate(allocator_, node, 1);
   }
 
   virtual NodeType* Insert(NodeType* node, const T& key, const U& value) {
@@ -164,7 +163,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       node->left = Insert(node->left, key, value);
     } else if (Equals()(key, node->key) && !allow_duplicates_) {
       node->value = value;
-    } else if (More()(key, node->key)) {
+    } else if (Less()(node->key, key)) {
       node->right = Insert(node->right, key, value);
     }
 
@@ -185,7 +184,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       NodeType* min = GetMin(node->right);
       std::swap(node->key, min->key);
       std::swap(node->value, min->value);
-      node->right = remove(node->right, min->data);
+      node->right = remove(node->right, min->key);
     } else if (node->HasLeft()) {
       NodeType* left = node->left;
       DeleteNode(node);
@@ -207,9 +206,9 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       return nullptr;
     }
 
-    if (Less()(key, node->data)) {
+    if (Less()(key, node->key)) {
       return FindFirst(node->left, key);
-    } else if (More()(key, node->data)) {
+    } else if (Less()(node->key, key)) {
       return FindFirst(node->right, key);
     }
 
