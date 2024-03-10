@@ -61,6 +61,70 @@ TEST_F(TreeUnitTestSuite, InsertTreeTest4) {
   }
 }
 
+TEST_F(TreeUnitTestSuite, InsertTreeTest5) {
+  IntTree bst{};
+  size_t size = 1000;
+  std::random_device dev;
+  std::mt19937 rng(dev());
+  std::vector<int32_t> values(size);
+
+  for (int32_t i = 0; i < size; ++i) {
+    values[i] = i;
+  }
+
+  std::shuffle(values.begin(), values.end(), rng);
+
+  for (int32_t& value : values) {
+    ITreeNode* new_node = bst.Insert(value, &value);
+    ASSERT_EQ(new_node, bst.FindFirst(value));
+  }
+}
+
+TEST_F(TreeUnitTestSuite, InsertTreeTest6) {
+  IntTree bst{};
+  size_t size = 1000;
+  std::vector<int32_t> values_tmp = GetRandomNumbers(size);
+  std::vector<int32_t> values(values_tmp);
+  std::random_device dev;
+  std::mt19937 rng(dev());
+
+  for (int32_t& value : values) {
+    bst.Insert(value, &value);
+  }
+
+  size_t unique = bst.GetSize();
+  values.insert(values.end(), values_tmp.begin(), values_tmp.end());
+  std::shuffle(values.begin(), values.end(), rng);
+
+  for (int32_t& value : values) {
+    bst.Insert(value, &value);
+  }
+
+  ASSERT_EQ(bst.GetSize(), unique);
+}
+
+TEST_F(TreeUnitTestSuite, InsertTreeTest7) {
+  IntTree bst(true);
+  size_t size = 1000;
+  std::vector<int32_t> values_tmp = GetRandomNumbers(size);
+  std::vector<int32_t> values(values_tmp);
+  std::random_device dev;
+  std::mt19937 rng(dev());
+
+  for (int32_t& value : values) {
+    bst.Insert(value, &value);
+  }
+
+  values.insert(values.end(), values_tmp.begin(), values_tmp.end());
+  std::shuffle(values.begin(), values.end(), rng);
+
+  for (int32_t& value : values) {
+    bst.Insert(value, &value);
+  }
+
+  ASSERT_EQ(bst.GetSize(), 3 * size);
+}
+
 TEST_F(TreeUnitTestSuite, CopyTreeTest1) {
   IntTree bst{};
   size_t size = 1000;
