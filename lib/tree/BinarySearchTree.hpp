@@ -68,15 +68,16 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     }
 
     auto* node_ = static_cast<NodeType*>(node);
-    NodeType* parent = node_->parent;
-
-    if (node_ == root_) {
-      root_ = Delete(node_);
-    } else if (node_ == parent->left) {
-      parent->left = Delete(node_);
-    } else {
-      parent->right = Delete(node_);
-    }
+    Delete(node_);
+//    NodeType* parent = node_->parent;
+//
+//    if (node_ == root_) {
+//      root_ = Delete(node_);
+//    } else if (node_ == parent->left) {
+//      parent->left = Delete(node_);
+//    } else {
+//      parent->right = Delete(node_);
+//    }
   }
 
   [[nodiscard]] ITreeNode* FindFirst(const T& key) const override {
@@ -171,35 +172,60 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     return node;
   }
 
-  virtual NodeType* Delete(NodeType* node) {
+  virtual void Delete(NodeType* node) {
     if (node == nullptr || node == end_) {
-      return node;
-    }
-
-    if (node->IsLeaf()) {
-      DeleteNode(node);
-      return nullptr;
+      return;
     }
 
     if (node->HasLeft() && node->HasRight()) {
       NodeType* min = GetMin(node->right);
-      std::swap(node->key, min->key);
-      std::swap(node->value, min->value);
-      node->right = Delete(FindFirst(node->right, min->key));
+      SwapNodes(node, min);
+      Delete(node);
     } else if (node->HasLeft()) {
       NodeType* left = node->left;
+      NodeType* parent = node->parent;
+
+      if (node == root_) {
+        root_ = left;
+        left->parent = nullptr;
+      } else if (parent->left == node) {
+        parent->left = left;
+        left->parent = parent;
+      } else {
+        parent->right = left;
+        left->parent = parent;
+      }
+
       DeleteNode(node);
-      return left;
     } else if (node->HasRight()) {
       NodeType* right = node->right;
-      DeleteNode(node);
-      return right;
-    } else {
-      DeleteNode(node);
-      return nullptr;
-    }
+      NodeType* parent = node->parent;
 
-    return node;
+      if (node == root_) {
+        root_ = right;
+        right->parent = nullptr;
+      } else if (parent->left == node) {
+        parent->left = right;
+        right->parent = parent;
+      } else {
+        parent->right = right;
+        right->parent = parent;
+      }
+
+      DeleteNode(node);
+    } else {
+      NodeType* parent = node->parent;
+
+      if (node == root_) {
+        root_ = end_;
+      } else if (parent->left == node) {
+        parent->left = nullptr;
+      } else {
+        parent->right = nullptr;
+      }
+
+      DeleteNode(node);
+    }
   }
 
   NodeType* FindFirst(NodeType* node, const T& key) const {
@@ -214,6 +240,58 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     }
 
     return node;
+  }
+
+  void SwapNodes(NodeType* first, NodeType* second) {
+    if (first == nullptr || second == nullptr || first == second) {
+      return;
+    }
+
+    NodeType* first_parent = first->parent;
+    NodeType* first_left = first->left;
+    NodeType* first_right = first->right;
+    NodeType* second_parent = second->parent;
+    NodeType* second_left = second->left;
+    NodeType* second_right = second->right;
+
+    bool first_left_son = !first->IsRoot() && (first == first->parent->left);
+    bool second_left_son = !second->IsRoot() && (second == second->parent->left);
+
+    if (first->parent == nullptr) {
+      root_ = second;
+    } else if (first == first->parent->left) {
+      first->parent->left = second;
+    } else {
+      first->parent->right = second;
+    }
+
+    if (second->parent == nullptr) {
+      root_ = first;
+    } else if (second == second->parent->left) {
+      second->parent->left = first;
+    } else {
+      second->parent->right = first;
+    }
+
+    std::swap(first->left, second->left);
+    std::swap(first->right, second->right);
+    std::swap(first->parent, second->parent);
+
+    if (first->HasLeft()) {
+      first->left->parent = first;
+    }
+
+    if (first->HasRight()) {
+      first->right->parent = first;
+    }
+
+    if (second->HasLeft()) {
+      second->left->parent = second;
+    }
+
+    if (second->HasRight()) {
+      second->right->parent = second;
+    }
   }
 
   NodeType* GetMin(NodeType* current) {
