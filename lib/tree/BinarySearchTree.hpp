@@ -14,17 +14,10 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   using NodeType = TreeNode<T, U>;
 
   explicit BinarySearchTree(bool allow_duplicates = false)
-      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(allow_duplicates), size_{} {
-    if (Less()(T{}, T{})) {
-      __assert_fail("Less()(T{}, T{})","BinarySearchTree.hpp",219,"Constructor");
-    }
-  };
+      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(allow_duplicates), size_{} {};
 
   BinarySearchTree(const BinarySearchTree& other)
       : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(other.allow_duplicates_), size_{} {
-    if (Less()(T{}, T{})) {
-      __assert_fail("Less()(T{}, T{})","BinarySearchTree.hpp",26,"Copy constructor");
-    }
     other.PreOrder([&](const ITreeNode* current) {
       const auto* current_ = static_cast<const NodeType*>(current);
       this->Insert(current_->key, current_->value);
@@ -169,12 +162,12 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       return new_node;
     }
 
-    if (Less()(key, node->key) || (allow_duplicates_ && Equals()(key, node->key))) {
+    if (Equals()(key, node->key) && !allow_duplicates_) {
+      node->value = value;
+    } else if ((Less()(key, node->key)) || (allow_duplicates_ && Equals()(key, node->key))) {
       node->left = Insert(node->left, result_node, key, value);
       node->left->parent = node;
-    } else if (Equals()(key, node->key) && !allow_duplicates_) {
-      node->value = value;
-    } else if (Less()(node->key, key)) {
+    } else  if (Less()(node->key, key)) {
       node->right = Insert(node->right, result_node, key, value);
       node->right->parent = node;
     }
@@ -243,6 +236,10 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       return nullptr;
     }
 
+    if (Equals()(key, node->key)) {
+      return node;
+    }
+
     if (Less()(key, node->key)) {
       return FindFirst(node->left, key);
     } else if (Less()(node->key, key)) {
@@ -256,7 +253,9 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     NodeType* next = nullptr;
 
     while (node != nullptr) {
-      if (Less()(key, node->key) || (allow_duplicates_ && Equals()(key, node->key))) {
+      if (Equals()(key, node->key) && !allow_duplicates_) {
+        node = node->right;
+      } else if (Less()(key, node->key) || (allow_duplicates_ && Equals()(key, node->key))) {
         if (next == nullptr || Less()(node->key, next->key)) {
           next = node;
         }
