@@ -30,11 +30,11 @@ class BstIterator {
 
   BstIterator() = delete;
 
-  explicit BstIterator(ITraversal& traversal) : traversal_(&traversal) {
-    current_ = is_reversed ? traversal_->GetLast() : traversal_->GetFirst();
+  explicit BstIterator(const ITraversal& traversal) : traversal_(&traversal) {
+    current_ = dynamic_cast<NodeType*>(is_reversed ? traversal_->GetLast() : traversal_->GetFirst());
   }
 
-  BstIterator(ITreeNode* node, ITraversal& traversal) : traversal_(&traversal) {
+  BstIterator(ITreeNode* node, const ITraversal& traversal) : traversal_(&traversal) {
     current_ = dynamic_cast<NodeType*>(node);
   }
 
@@ -95,7 +95,7 @@ class BstIterator {
 
  private:
   NodeType* current_;
-  ITraversal* traversal_;
+  const ITraversal* traversal_;
 };
 
 } // bialger

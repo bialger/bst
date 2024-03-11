@@ -112,6 +112,26 @@ class BST {
     return true;
   }
 
+  auto operator<=>(const BST& other) const {
+    if (tree_.GetSize() < other.tree_.GetSize()) {
+      return std::weak_ordering::less;
+    } else if (tree_.GetSize() > other.tree_.GetSize()) {
+      return std::weak_ordering::greater;
+    }
+
+    for (const_iterator this_it = cbegin(), other_it = other.cbegin();
+         this_it != cend() && other_it != cend();
+         ++this_it, ++other_it) {
+      if (Compare()(*this_it, *other_it)) {
+        return std::weak_ordering::less;
+      } else if (Compare()(*other_it, *this_it)) {
+        return std::weak_ordering::greater;
+      }
+    }
+
+    return std::weak_ordering::equivalent;
+  }
+
   [[nodiscard]] size_type size() const {
     return tree_.GetSize();
   }
@@ -132,7 +152,7 @@ class BST {
   PostOrder post_order_;
 
   template<typename Traversal>
-  ITraversal& GetTraversalLink() {
+  [[nodiscard]] const ITraversal& GetTraversalLink() const {
     if constexpr (std::is_same<Traversal, PreOrder>::value) {
       return pre_order_;
     } else if (std::is_same<Traversal, InOrder>::value) {

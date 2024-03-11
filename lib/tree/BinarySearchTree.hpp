@@ -156,19 +156,11 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     PostOrder(root_, callback);
   }
 
-  [[nodiscard]] ITreeNode* GetRoot() override {
+  [[nodiscard]] ITreeNode* GetRoot() const override {
     return root_;
   }
 
-  [[nodiscard]] ITreeNode* GetEnd() override {
-    return end_;
-  }
-
-  [[nodiscard]] const ITreeNode* GetRoot() const override {
-    return root_;
-  }
-
-  [[nodiscard]] const ITreeNode* GetEnd() const override {
+  [[nodiscard]] ITreeNode* GetEnd() const override {
     return end_;
   }
 

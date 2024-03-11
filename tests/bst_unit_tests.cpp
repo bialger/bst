@@ -6,4 +6,5 @@
 
 TEST_F(BstUnitTestSuite, EmptyTest) {
   bialger::BST<int32_t> bst;
+  ASSERT_EQ(bst, bst);
 }

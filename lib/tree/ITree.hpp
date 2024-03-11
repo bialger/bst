@@ -9,10 +9,8 @@ class ITree {
  public:
   virtual ~ITree() = default;
 
-  [[nodiscard]] virtual ITreeNode* GetRoot() = 0;
-  [[nodiscard]] virtual ITreeNode* GetEnd() = 0;
-  [[nodiscard]] virtual const ITreeNode* GetRoot() const = 0;
-  [[nodiscard]] virtual const ITreeNode* GetEnd() const = 0;
+  [[nodiscard]] virtual ITreeNode* GetRoot() const = 0;
+  [[nodiscard]] virtual ITreeNode* GetEnd() const = 0;
   [[nodiscard]] virtual bool AllowsDuplicates() const = 0;
   [[nodiscard]] virtual size_t GetSize() const = 0;
 };

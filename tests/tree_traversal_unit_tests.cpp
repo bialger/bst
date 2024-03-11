@@ -21,34 +21,7 @@ using StringTree = BinarySearchTree<std::string,
                                     std::equal_to<>,
                                     std::allocator<std::string>>;
 
-TEST(TreeTraversalUnitTestSuite, InOrderTraverseTreeTest1) {
-  std::vector<int32_t> real_traverse;
-  std::vector<int32_t> class_traverse;
-  IntTree bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-  InOrder in_order(bst);
-  ITraversal& traversal = in_order;
-
-  for (int32_t& value : values) {
-    bst.Insert(value, &value);
-  }
-
-  bst.InOrder([&](const bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(node)->key);
-  });
-
-  const ITreeNode* begin = traversal.GetFirst();
-  const ITreeNode* end = bst.GetEnd();
-
-  for (const ITreeNode* it = begin; it != end; it = traversal.GetSuccessor(it)) {
-    class_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(it)->key);
-  }
-
-  ASSERT_EQ(real_traverse, class_traverse);
-}
-
-TEST(TreeTraversalUnitTestSuite, InOrderTraverseTreeTest2) {
+TEST(TreeTraversalUnitTestSuite, InOrderTraverseTreeTest0) {
   std::vector<std::string> real_traverse;
   std::vector<std::string> class_traverse;
   StringTree bst{};
@@ -60,157 +33,16 @@ TEST(TreeTraversalUnitTestSuite, InOrderTraverseTreeTest2) {
     bst.Insert(value, &value);
   }
 
-  bst.InOrder([&](const bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<const StringTree::NodeType*>(node)->key);
+  bst.InOrder([&](bialger::ITreeNode* node) -> void {
+    real_traverse.push_back(dynamic_cast<StringTree::NodeType*>(node)->key);
   });
 
-  const ITreeNode* begin = traversal.GetFirst();
-  const ITreeNode* end = bst.GetEnd();
+  ITreeNode* begin = traversal.GetFirst();
+  ITreeNode* end = bst.GetEnd();
 
-  for (const ITreeNode* it = begin; it != end; it = traversal.GetSuccessor(it)) {
-    class_traverse.push_back(dynamic_cast<const StringTree::NodeType*>(it)->key);
+  for (ITreeNode* it = begin; it != end; it = traversal.GetSuccessor(it)) {
+    class_traverse.push_back(dynamic_cast<StringTree::NodeType*>(it)->key);
   }
-
-  ASSERT_EQ(real_traverse, class_traverse);
-}
-
-TEST(TreeTraversalUnitTestSuite, InOrderReversedTraverseTreeTest1) {
-  std::vector<int32_t> real_traverse;
-  std::vector<int32_t> class_traverse;
-  IntTree bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-  InOrder in_order(bst);
-  ITraversal& traversal = in_order;
-
-  for (int32_t& value : values) {
-    bst.Insert(value, &value);
-  }
-
-  bst.InOrder([&](const bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(node)->key);
-  });
-
-  const ITreeNode* rbegin = traversal.GetLast();
-  const ITreeNode* rend = bst.GetEnd();
-
-  for (const ITreeNode* it = rbegin; it != rend; it = traversal.GetPredecessor(it)) {
-    class_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(it)->key);
-  }
-
-  std::reverse(real_traverse.begin(), real_traverse.end());
-
-  ASSERT_EQ(real_traverse, class_traverse);
-}
-
-TEST(TreeTraversalUnitTestSuite, PreOrderTraverseTreeTest1) {
-  std::vector<int32_t> real_traverse;
-  std::vector<int32_t> class_traverse;
-  IntTree bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-  PreOrder pre_order(bst);
-  ITraversal& traversal = pre_order;
-
-  for (int32_t& value : values) {
-    bst.Insert(value, &value);
-  }
-
-  bst.PreOrder([&](const bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(node)->key);
-  });
-
-  const ITreeNode* begin = traversal.GetFirst();
-  const ITreeNode* end = bst.GetEnd();
-
-  for (const ITreeNode* it = begin; it != end; it = traversal.GetSuccessor(it)) {
-    class_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(it)->key);
-  }
-
-  ASSERT_EQ(real_traverse, class_traverse);
-}
-
-TEST(TreeTraversalUnitTestSuite, PreOrderReversedTraverseTreeTest1) {
-  std::vector<int32_t> real_traverse;
-  std::vector<int32_t> class_traverse;
-  IntTree bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-  PreOrder pre_order(bst);
-  ITraversal& traversal = pre_order;
-
-  for (int32_t& value : values) {
-    bst.Insert(value, &value);
-  }
-
-  bst.PreOrder([&](const bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(node)->key);
-  });
-
-  const ITreeNode* rbegin = traversal.GetLast();
-  const ITreeNode* rend = bst.GetEnd();
-
-  for (const ITreeNode* it = rbegin; it != rend; it = traversal.GetPredecessor(it)) {
-    class_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(it)->key);
-  }
-
-  std::reverse(real_traverse.begin(), real_traverse.end());
-
-  ASSERT_EQ(real_traverse, class_traverse);
-}
-
-TEST(TreeTraversalUnitTestSuite, PostOrderTraverseTreeTest1) {
-  std::vector<int32_t> real_traverse;
-  std::vector<int32_t> class_traverse;
-  IntTree bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-  PostOrder post_order(bst);
-  ITraversal& traversal = post_order;
-
-  for (int32_t& value : values) {
-    bst.Insert(value, &value);
-  }
-
-  bst.PostOrder([&](const bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(node)->key);
-  });
-
-  const ITreeNode* begin = traversal.GetFirst();
-  const ITreeNode* end = bst.GetEnd();
-
-  for (const ITreeNode* it = begin; it != end; it = traversal.GetSuccessor(it)) {
-    class_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(it)->key);
-  }
-
-  ASSERT_EQ(real_traverse, class_traverse);
-}
-
-TEST(TreeTraversalUnitTestSuite, PostOrderReversedTraverseTreeTest1) {
-  std::vector<int32_t> real_traverse;
-  std::vector<int32_t> class_traverse;
-  IntTree bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-  PostOrder post_order(bst);
-  ITraversal& traversal = post_order;
-
-  for (int32_t& value : values) {
-    bst.Insert(value, &value);
-  }
-
-  bst.PostOrder([&](const bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(node)->key);
-  });
-
-  const ITreeNode* rbegin = traversal.GetLast();
-  const ITreeNode* rend = bst.GetEnd();
-
-  for (const ITreeNode* it = rbegin; it != rend; it = traversal.GetPredecessor(it)) {
-    class_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(it)->key);
-  }
-
-  std::reverse(real_traverse.begin(), real_traverse.end());
 
   ASSERT_EQ(real_traverse, class_traverse);
 }
@@ -397,21 +229,6 @@ TEST(TreeTraversalUnitTestSuite, InOrderFullTraverseTreeTest) {
     bst.Insert(value, &value);
   }
 
-  bst.InOrder([&](const bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(node)->key);
-  });
-
-  const ITreeNode* cbegin = traversal.GetFirst();
-  const ITreeNode* cend = bst.GetEnd();
-
-  for (const ITreeNode* it = cbegin; it != cend; it = traversal.GetSuccessor(it)) {
-    class_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(it)->key);
-  }
-
-  ASSERT_EQ(real_traverse, class_traverse);
-  real_traverse.clear();
-  class_traverse.clear();
-
   bst.InOrder([&](bialger::ITreeNode* node) -> void {
     real_traverse.push_back(dynamic_cast<IntTree::NodeType*>(node)->key);
   });
@@ -422,23 +239,6 @@ TEST(TreeTraversalUnitTestSuite, InOrderFullTraverseTreeTest) {
   for (ITreeNode* it = begin; it != end; it = traversal.GetSuccessor(it)) {
     class_traverse.push_back(dynamic_cast<IntTree::NodeType*>(it)->key);
   }
-
-  ASSERT_EQ(real_traverse, class_traverse);
-  real_traverse.clear();
-  class_traverse.clear();
-
-  bst.InOrder([&](const bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(node)->key);
-  });
-
-  const ITreeNode* crbegin = traversal.GetLast();
-  const ITreeNode* crend = bst.GetEnd();
-
-  for (const ITreeNode* it = crbegin; it != crend; it = traversal.GetPredecessor(it)) {
-    class_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(it)->key);
-  }
-
-  std::reverse(real_traverse.begin(), real_traverse.end());
 
   ASSERT_EQ(real_traverse, class_traverse);
   real_traverse.clear();
@@ -474,21 +274,6 @@ TEST(TreeTraversalUnitTestSuite, PreOrderFullTraverseTreeTest) {
     bst.Insert(value, &value);
   }
 
-  bst.PreOrder([&](const bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(node)->key);
-  });
-
-  const ITreeNode* cbegin = traversal.GetFirst();
-  const ITreeNode* cend = bst.GetEnd();
-
-  for (const ITreeNode* it = cbegin; it != cend; it = traversal.GetSuccessor(it)) {
-    class_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(it)->key);
-  }
-
-  ASSERT_EQ(real_traverse, class_traverse);
-  real_traverse.clear();
-  class_traverse.clear();
-
   bst.PreOrder([&](bialger::ITreeNode* node) -> void {
     real_traverse.push_back(dynamic_cast<IntTree::NodeType*>(node)->key);
   });
@@ -499,23 +284,6 @@ TEST(TreeTraversalUnitTestSuite, PreOrderFullTraverseTreeTest) {
   for (ITreeNode* it = begin; it != end; it = traversal.GetSuccessor(it)) {
     class_traverse.push_back(dynamic_cast<IntTree::NodeType*>(it)->key);
   }
-
-  ASSERT_EQ(real_traverse, class_traverse);
-  real_traverse.clear();
-  class_traverse.clear();
-
-  bst.PreOrder([&](const bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(node)->key);
-  });
-
-  const ITreeNode* crbegin = traversal.GetLast();
-  const ITreeNode* crend = bst.GetEnd();
-
-  for (const ITreeNode* it = crbegin; it != crend; it = traversal.GetPredecessor(it)) {
-    class_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(it)->key);
-  }
-
-  std::reverse(real_traverse.begin(), real_traverse.end());
 
   ASSERT_EQ(real_traverse, class_traverse);
   real_traverse.clear();
@@ -551,21 +319,6 @@ TEST(TreeTraversalUnitTestSuite, PostOrderFullTraverseTreeTest) {
     bst.Insert(value, &value);
   }
 
-  bst.PostOrder([&](const bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(node)->key);
-  });
-
-  const ITreeNode* cbegin = traversal.GetFirst();
-  const ITreeNode* cend = bst.GetEnd();
-
-  for (const ITreeNode* it = cbegin; it != cend; it = traversal.GetSuccessor(it)) {
-    class_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(it)->key);
-  }
-
-  ASSERT_EQ(real_traverse, class_traverse);
-  real_traverse.clear();
-  class_traverse.clear();
-
   bst.PostOrder([&](bialger::ITreeNode* node) -> void {
     real_traverse.push_back(dynamic_cast<IntTree::NodeType*>(node)->key);
   });
@@ -576,23 +329,6 @@ TEST(TreeTraversalUnitTestSuite, PostOrderFullTraverseTreeTest) {
   for (ITreeNode* it = begin; it != end; it = traversal.GetSuccessor(it)) {
     class_traverse.push_back(dynamic_cast<IntTree::NodeType*>(it)->key);
   }
-
-  ASSERT_EQ(real_traverse, class_traverse);
-  real_traverse.clear();
-  class_traverse.clear();
-
-  bst.PostOrder([&](const bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(node)->key);
-  });
-
-  const ITreeNode* crbegin = traversal.GetLast();
-  const ITreeNode* crend = bst.GetEnd();
-
-  for (const ITreeNode* it = crbegin; it != crend; it = traversal.GetPredecessor(it)) {
-    class_traverse.push_back(dynamic_cast<const IntTree::NodeType*>(it)->key);
-  }
-
-  std::reverse(real_traverse.begin(), real_traverse.end());
 
   ASSERT_EQ(real_traverse, class_traverse);
   real_traverse.clear();
