@@ -21,9 +21,6 @@ class InOrder : public ITraversal {
  protected:
   const ITree& tree_;
 
-  [[nodiscard]] static const ITreeNode* GetMin(const ITreeNode* current);
-  [[nodiscard]] static const ITreeNode* GetMax(const ITreeNode* current);
-
   [[nodiscard]] static ITreeNode* GetMin(ITreeNode* current);
   [[nodiscard]] static ITreeNode* GetMax(ITreeNode* current);
 };

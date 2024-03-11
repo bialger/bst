@@ -54,30 +54,6 @@ bialger::ITreeNode* bialger::InOrder::GetSuccessor(bialger::ITreeNode* current) 
   return parent;
 }
 
-const bialger::ITreeNode* bialger::InOrder::GetMin(const bialger::ITreeNode* current) {
-  if (current == nullptr) {
-    return current;
-  }
-
-  while (current->HasLeft()) {
-    current = current->GetLeft();
-  }
-
-  return current;
-}
-
-const bialger::ITreeNode* bialger::InOrder::GetMax(const bialger::ITreeNode* current) {
-  if (current == nullptr) {
-    return current;
-  }
-
-  while (current->HasRight()) {
-    current = current->GetRight();
-  }
-
-  return current;
-}
-
 bialger::ITreeNode* bialger::InOrder::GetMin(bialger::ITreeNode* current) {
   if (current == nullptr) {
     return current;
