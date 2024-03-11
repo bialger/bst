@@ -5,5 +5,5 @@
 #include <gtest/gtest.h>
 
 TEST_F(BstUnitTestSuite, EmptyTest) {
-
+  bialger::BST<int32_t> bst;
 }
