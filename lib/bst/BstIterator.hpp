@@ -69,7 +69,7 @@ class BstIterator {
   }
 
   [[nodiscard]] BstIterator operator++(int) {
-    BstIterator<T, Container, is_reversed> tmp = *this;
+    BstIterator tmp = *this;
     ++*this;
     return tmp;
   }
@@ -81,9 +81,17 @@ class BstIterator {
   }
 
   [[nodiscard]] BstIterator operator--(int) {
-    BstIterator<T, Container, is_reversed> tmp = *this;
+    BstIterator tmp = *this;
     --*this;
     return tmp;
+  }
+
+  bool operator==(const BstIterator& other) {
+    return current_ == other.current_ && &traversal_ == &other.traversal_;
+  }
+
+  bool operator!=(const BstIterator& other) {
+    return current_ != other.current_ || &traversal_ != &other.traversal_;
   }
 
  private:
