@@ -14,30 +14,31 @@ namespace bialger {
 
 template<typename T, typename Compare = std::less<>, typename Allocator = std::allocator<T>>
 class BST {
- private:
-  using TreeType = BinarySearchTree<T, T*, Compare, std::equal_to<>, Allocator>;
-  using DefaultTraversal = InOrder;
-  using BstType = BST<T, Compare, Allocator>;
-
  public:
   using reference = T&;
   using const_reference = const T&;
   using size_type = size_t;
   using difference_type = ptrdiff_t;
-  using iterator = BstIterator<T, BstType>;
-  using const_iterator = BstIterator<T, BstType>;
-  using reverse_iterator = BstIterator<T, BstType, true>;
-  using const_reverse_iterator = BstIterator<T, BstType, true>;
+  using iterator = BstIterator<T, Compare, Allocator>;
+  using const_iterator = BstIterator<T, Compare, Allocator>;
+  using reverse_iterator = BstIterator<T, Compare, Allocator, true>;
+  using const_reverse_iterator = BstIterator<T, Compare, Allocator, true>;
   using key_type = T;
   using value_type = key_type;
   using key_compare = Compare;
   using value_compare = key_compare;
   using key_allocator = Allocator;
-  using TreeInterface = ITemplateTree<typename TreeType::key_type, typename TreeType::value_type>;
 
-  template<typename U, typename Less = std::less<>, typename Alloc = std::allocator<T>>
-  using Container = BST<U, Less, Alloc>;
+ private:
+  using NodeType = iterator::NodeType;
+  using TreeType = BinarySearchTree<typename NodeType::key_type,
+                                    typename NodeType::value_type,
+                                    Compare,
+                                    std::equal_to<>,
+                                    Allocator>;
+  using DefaultTraversal = InOrder;
 
+ public:
   BST() : tree_(), pre_order_(tree_), in_order_(tree_), post_order_(tree_) {
     end_ = tree_.GetEnd();
   }
@@ -57,28 +58,12 @@ class BST {
 
   template<typename Traversal = DefaultTraversal>
   iterator begin() const {
-    if constexpr (std::is_same<Traversal, PreOrder>::value) {
-      return iterator(pre_order_);
-    } else if (std::is_same<Traversal, PostOrder>::value) {
-      return iterator(in_order_);
-    } else if (std::is_same<Traversal, InOrder>::value) {
-      return iterator(post_order_);
-    } else {
-      throw std::invalid_argument("Incorrect traversal type");
-    }
+    return iterator(GetTraversalLink<Traversal>());
   }
 
   template<typename Traversal = DefaultTraversal>
   iterator end() const {
-    if constexpr (std::is_same<Traversal, PreOrder>::value) {
-      return iterator(end_, pre_order_);
-    } else if (std::is_same<Traversal, PostOrder>::value) {
-      return iterator(end_, in_order_);
-    } else if (std::is_same<Traversal, InOrder>::value) {
-      return iterator(end_, post_order_);
-    } else {
-      throw std::invalid_argument("Incorrect traversal type");
-    }
+    return iterator(end_, GetTraversalLink<Traversal>());
   }
 
   template<typename Traversal = DefaultTraversal>
@@ -93,28 +78,12 @@ class BST {
 
   template<typename Traversal = DefaultTraversal>
   reverse_iterator rbegin() const {
-    if constexpr (std::is_same<Traversal, PreOrder>::value) {
-      return reverse_iterator(pre_order_);
-    } else if (std::is_same<Traversal, PostOrder>::value) {
-      return reverse_iterator(in_order_);
-    } else if (std::is_same<Traversal, InOrder>::value) {
-      return reverse_iterator(post_order_);
-    } else {
-      throw std::invalid_argument("Incorrect traversal type");
-    }
+    return reverse_iterator(GetTraversalLink<Traversal>());
   }
 
   template<typename Traversal = DefaultTraversal>
   reverse_iterator rend() const {
-    if constexpr (std::is_same<Traversal, PreOrder>::value) {
-      return reverse_iterator(end_, pre_order_);
-    } else if (std::is_same<Traversal, PostOrder>::value) {
-      return reverse_iterator(end_, in_order_);
-    } else if (std::is_same<Traversal, InOrder>::value) {
-      return reverse_iterator(end_, post_order_);
-    } else {
-      throw std::invalid_argument("Incorrect traversal type");
-    }
+    return reverse_iterator(end_, GetTraversalLink<Traversal>());
   }
 
   template<typename Traversal = DefaultTraversal>
@@ -143,20 +112,16 @@ class BST {
     return true;
   }
 
-  bool operator!=(const BST& other) const {
-    return !(*this == other);
-  }
-
-  void swap(BST& other) {
-    std::swap(tree_, other.tree_);
-  }
-
-  size_type size() const {
+  [[nodiscard]] size_type size() const {
     return tree_.GetSize();
   }
 
   static difference_type max_size() {
     return std::numeric_limits<difference_type>::max();
+  }
+
+  void swap(BST& other) {
+    std::swap(tree_, other.tree_);
   }
 
  private:
@@ -165,6 +130,19 @@ class BST {
   PreOrder pre_order_;
   InOrder in_order_;
   PostOrder post_order_;
+
+  template<typename Traversal>
+  ITraversal& GetTraversalLink() {
+    if constexpr (std::is_same<Traversal, PreOrder>::value) {
+      return pre_order_;
+    } else if (std::is_same<Traversal, InOrder>::value) {
+      return in_order_;
+    } else if (std::is_same<Traversal, PostOrder>::value) {
+      return post_order_;
+    } else {
+      throw std::invalid_argument("Incorrect traversal type");
+    }
+  }
 };
 
 template<typename T, typename Compare = std::less<>, typename Allocator = std::allocator<T>>

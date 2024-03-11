@@ -8,6 +8,9 @@ namespace bialger {
 template<typename T, typename U>
 class TreeNode : public ITreeNode {
  public:
+  using key_type = T;
+  using value_type = U;
+
   T key;
   U value;
   TreeNode<T, U>* parent;

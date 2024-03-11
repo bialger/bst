@@ -12,14 +12,13 @@ namespace bialger {
 template<typename T, typename Compare, typename Allocator>
 class BST;
 
-template<typename T, typename Container, bool is_reversed = false>
+template<typename T, typename Compare, typename Allocator, bool is_reversed = false>
 class BstIterator {
  private:
-  using TreeInterface = Container::TreeInterface;
-  using NodeType = TreeInterface::NodeType;
+  using NodeType = TreeNode<T, T*>;
 
  public:
-  friend class BST<typename Container::key_type, typename Container::key_compare, typename Container::key_allocator>;
+  friend class BST<T, Compare, Allocator>;
 
   using iterator_category = std::bidirectional_iterator_tag;
   using difference_type = ptrdiff_t;
@@ -31,22 +30,22 @@ class BstIterator {
 
   BstIterator() = delete;
 
-  explicit BstIterator(ITraversal& traversal) : traversal_(traversal) {
-    current_ = is_reversed ? traversal_.GetLast() : traversal_.GetFirst();
+  explicit BstIterator(ITraversal& traversal) : traversal_(&traversal) {
+    current_ = is_reversed ? traversal_->GetLast() : traversal_->GetFirst();
   }
 
-  BstIterator(ITreeNode* node, ITraversal& traversal) : traversal_(traversal) {
+  BstIterator(ITreeNode* node, ITraversal& traversal) : traversal_(&traversal) {
     current_ = dynamic_cast<NodeType*>(node);
   }
 
-  BstIterator(const BstIterator& other) : current_(other.current_), traversal_(other.traversal_) {}
+  BstIterator(const BstIterator& other) : current_(other.current_), traversal_(&other.traversal_) {}
 
   BstIterator& operator=(const BstIterator& other) {
     if (this == &other) {
       return *this;
     }
 
-    if (&traversal_ != &other.traversal_) {
+    if (traversal_ != other.traversal_) {
       throw std::invalid_argument("Can`t assign iterator with different traversals.");
     }
 
@@ -63,7 +62,7 @@ class BstIterator {
   }
 
   BstIterator& operator++() {
-    ITreeNode* next = is_reversed ? traversal_.GetPredecessor(current_) : traversal_.GetSuccessor(current_);
+    ITreeNode* next = is_reversed ? traversal_->GetPredecessor(current_) : traversal_->GetSuccessor(current_);
     current_ = dynamic_cast<NodeType*>(next);
     return *this;
   }
@@ -75,7 +74,7 @@ class BstIterator {
   }
 
   BstIterator& operator--() {
-    ITreeNode* next = is_reversed ? traversal_.GetSuccessor(current_) : traversal_.GetPredecessor(current_);
+    ITreeNode* next = is_reversed ? traversal_->GetSuccessor(current_) : traversal_->GetPredecessor(current_);
     current_ = dynamic_cast<NodeType*>(next);
     return *this;
   }
@@ -87,7 +86,7 @@ class BstIterator {
   }
 
   bool operator==(const BstIterator& other) {
-    return current_ == other.current_ && &traversal_ == &other.traversal_;
+    return current_ == other.current_ && traversal_ == other.traversal_;
   }
 
   bool operator!=(const BstIterator& other) {
@@ -96,7 +95,7 @@ class BstIterator {
 
  private:
   NodeType* current_;
-  ITraversal& traversal_;
+  ITraversal* traversal_;
 };
 
 } // bialger
