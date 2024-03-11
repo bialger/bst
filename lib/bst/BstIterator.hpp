@@ -91,7 +91,7 @@ class BstIterator {
   }
 
   bool operator!=(const BstIterator& other) {
-    return current_ != other.current_ || &traversal_ != &other.traversal_;
+    return !(*this == other);
   }
 
  private:
