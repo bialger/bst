@@ -19,7 +19,7 @@ class ITemplateTree : public ITree {
 
   virtual void Clear() = 0;
 
-  virtual NodeType* Insert(const T& key, const U& value) = 0;
+  virtual std::pair<NodeType*, bool> Insert(const T& key, const U& value) = 0;
   virtual void Delete(NodeType* node) = 0;
   [[nodiscard]] virtual NodeType* FindFirst(const T& key) const = 0;
   [[nodiscard]] virtual NodeType* FindNext(const T& key) const = 0;

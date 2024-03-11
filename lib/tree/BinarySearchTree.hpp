@@ -58,10 +58,10 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     root_ = end_;
   }
 
-  NodeType* Insert(const T& key, const U& value) override {
-    NodeType* result_node = nullptr;
-    root_ = Insert(root_, result_node, key, value);
-    return result_node;
+  std::pair<NodeType*, bool> Insert(const T& key, const U& value) override {
+    std::pair<NodeType*, bool> result = {end_, false};
+    root_ = Insert(root_, result, key, value);
+    return result;
   }
 
   void Delete(NodeType* node) override {
@@ -203,21 +203,24 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     --size_;
   }
 
-  virtual NodeType* Insert(NodeType* node, NodeType*& result_node, const T& key, const U& value) {
+  virtual NodeType* Insert(NodeType* node, std::pair<NodeType*, bool>& result, const T& key, const U& value) {
     if (node == nullptr) {
       NodeType* new_node = CreateNode(key, value);
-      result_node = new_node;
+      result.first = new_node;
+      result.second = true;
 
       return new_node;
     }
 
     if (Equals()(key, node->key) && !allow_duplicates_) {
       node->value = value;
+      result.first = node;
+      result.second = false;
     } else if ((Less()(key, node->key)) || (allow_duplicates_ && Equals()(key, node->key))) {
-      node->left = Insert(node->left, result_node, key, value);
+      node->left = Insert(node->left, result, key, value);
       node->left->parent = node;
     } else  if (Less()(node->key, key)) {
-      node->right = Insert(node->right, result_node, key, value);
+      node->right = Insert(node->right, result, key, value);
       node->right->parent = node;
     }
 

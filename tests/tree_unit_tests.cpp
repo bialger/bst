@@ -25,10 +25,10 @@ using UnstrictIntTree = BinarySearchTree<int32_t,
                                          std::equal_to<>,
                                          std::allocator<int32_t>>;
 using UnstrictStringTree = BinarySearchTree<std::string,
-                                    std::string*,
-                                    std::less_equal<std::string>,
-                                    std::equal_to<>,
-                                    std::allocator<std::string>>;
+                                            std::string*,
+                                            std::less_equal<std::string>,
+                                            std::equal_to<>,
+                                            std::allocator<std::string>>;
 
 TEST_F(TreeUnitTestSuite, EmptyTreeTest) {
   IntTree bst{};
@@ -91,12 +91,38 @@ TEST_F(TreeUnitTestSuite, InsertTreeTest5) {
   std::shuffle(values.begin(), values.end(), rng);
 
   for (int32_t& value : values) {
-    ITreeNode* new_node = bst.Insert(value, &value);
-    ASSERT_EQ(new_node, bst.FindFirst(value));
+    std::pair<IntTree::NodeType*, bool> new_node = bst.Insert(value, &value);
+    ASSERT_EQ(new_node.first, bst.FindFirst(value));
+    ASSERT_EQ(new_node.second, true);
   }
 }
 
 TEST_F(TreeUnitTestSuite, InsertTreeTest6) {
+  IntTree bst{};
+  size_t size = 1000;
+  std::vector<int32_t> values_tmp = GetRandomNumbers(size);
+  std::vector<int32_t> values(values_tmp);
+  std::random_device dev;
+  std::mt19937 rng(dev());
+
+  for (int32_t& value : values) {
+    bst.Insert(value, &value);
+  }
+
+  size_t unique = bst.GetSize();
+  values.insert(values.end(), values_tmp.begin(), values_tmp.end());
+  std::shuffle(values.begin(), values.end(), rng);
+
+  for (int32_t& value : values) {
+    std::pair<IntTree::NodeType*, bool> new_node = bst.Insert(value, &value);
+    ASSERT_EQ(new_node.first, bst.FindFirst(value));
+    ASSERT_EQ(new_node.second, false);
+  }
+
+  ASSERT_EQ(bst.GetSize(), unique);
+}
+
+TEST_F(TreeUnitTestSuite, InsertTreeTest7) {
   IntTree bst{};
   size_t size = 1000;
   std::vector<int32_t> values_tmp = GetRandomNumbers(size);
@@ -119,7 +145,7 @@ TEST_F(TreeUnitTestSuite, InsertTreeTest6) {
   ASSERT_EQ(bst.GetSize(), unique);
 }
 
-TEST_F(TreeUnitTestSuite, InsertTreeTest7) {
+TEST_F(TreeUnitTestSuite, InsertTreeTest8) {
   IntTree bst(true);
   size_t size = 1000;
   std::vector<int32_t> values_tmp = GetRandomNumbers(size);
@@ -390,12 +416,38 @@ TEST_F(TreeUnitTestSuite, InsertTreeUnstrictTest3) {
   std::shuffle(values.begin(), values.end(), rng);
 
   for (int32_t& value : values) {
-    ITreeNode* new_node = bst.Insert(value, &value);
-    ASSERT_EQ(new_node, bst.FindFirst(value));
+    std::pair<IntTree::NodeType*, bool> new_node = bst.Insert(value, &value);
+    ASSERT_EQ(new_node.first, bst.FindFirst(value));
+    ASSERT_EQ(new_node.second, true);
   }
 }
 
 TEST_F(TreeUnitTestSuite, InsertTreeUnstrictTest4) {
+  UnstrictIntTree bst{};
+  size_t size = 1000;
+  std::vector<int32_t> values_tmp = GetRandomNumbers(size);
+  std::vector<int32_t> values(values_tmp);
+  std::random_device dev;
+  std::mt19937 rng(dev());
+
+  for (int32_t& value : values) {
+    bst.Insert(value, &value);
+  }
+
+  size_t unique = bst.GetSize();
+  values.insert(values.end(), values_tmp.begin(), values_tmp.end());
+  std::shuffle(values.begin(), values.end(), rng);
+
+  for (int32_t& value : values) {
+    std::pair<IntTree::NodeType*, bool> new_node = bst.Insert(value, &value);
+    ASSERT_EQ(new_node.first, bst.FindFirst(value));
+    ASSERT_EQ(new_node.second, false);
+  }
+
+  ASSERT_EQ(bst.GetSize(), unique);
+}
+
+TEST_F(TreeUnitTestSuite, InsertTreeUnstrictTest5) {
   UnstrictIntTree bst{};
   size_t size = 1000;
   std::vector<int32_t> values_tmp = GetRandomNumbers(size);
@@ -418,7 +470,7 @@ TEST_F(TreeUnitTestSuite, InsertTreeUnstrictTest4) {
   ASSERT_EQ(bst.GetSize(), unique);
 }
 
-TEST_F(TreeUnitTestSuite, InsertTreeUnstrictTest5) {
+TEST_F(TreeUnitTestSuite, InsertTreeUnstrictTest6) {
   UnstrictIntTree bst(true);
   size_t size = 1000;
   std::vector<int32_t> values_tmp = GetRandomNumbers(size);
