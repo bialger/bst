@@ -37,15 +37,45 @@ class BST {
   using key_allocator = Allocator;
   using TreeInterface = TreeType::TreeInterface;
 
-  BST() : tree_(), pre_order_(tree_), in_order_(tree_), post_order_(tree_) {
+  BST() : tree_(),
+          pre_order_(tree_),
+          in_order_(tree_),
+          post_order_(tree_),
+          allocator_(),
+          key_compare_(),
+          value_compare_() {
     end_ = tree_.GetEnd();
   }
 
-  BST(const BST& other) : tree_(other.tree_), pre_order_(tree_), in_order_(tree_), post_order_(tree_) {
+  BST(const BST& other) : tree_(other.tree_),
+                          pre_order_(tree_),
+                          in_order_(tree_),
+                          post_order_(tree_),
+                          allocator_(other.allocator_),
+                          key_compare_(other.key_compare_),
+                          value_compare_(other.value_compare_) {
     end_ = tree_.GetEnd();
   }
 
-  BST(const std::initializer_list<T>& list) : tree_(), pre_order_(tree_), in_order_(tree_), post_order_(tree_) {
+  explicit BST(const Compare& comp, const Allocator& alloc = Allocator()) : tree_(),
+                                                                            pre_order_(tree_),
+                                                                            in_order_(tree_),
+                                                                            post_order_(tree_),
+                                                                            allocator_(alloc),
+                                                                            key_compare_(comp),
+                                                                            value_compare_(comp) {
+    end_ = tree_.GetEnd();
+  }
+
+  BST(const std::initializer_list<T>& list,
+      const Compare& comp = Compare(),
+      const Allocator& alloc = Allocator()) : tree_(),
+                                              pre_order_(tree_),
+                                              in_order_(tree_),
+                                              post_order_(tree_),
+                                              allocator_(alloc),
+                                              key_compare_(comp),
+                                              value_compare_(comp) {
     end_ = tree_.GetEnd();
     auto it = list.cbegin();
     auto end = list.cend();
@@ -55,17 +85,39 @@ class BST {
     }
   }
 
+  BST(std::initializer_list<value_type> init, const Allocator& alloc) : BST(init, Compare(), alloc) {
+    end_ = tree_.GetEnd();
+  }
+
   template<typename InputIt,
       std::enable_if_t<
           std::is_same<InputIt, T*>::value || std::is_same<InputIt, const T*>::value
               || (is_iterator<InputIt>::value && has_value_type<InputIt>::value),
           bool> = true>
-  BST(InputIt first, InputIt last) : tree_(), pre_order_(tree_), in_order_(tree_), post_order_(tree_) {
+  BST(InputIt first, InputIt last,
+      const Compare& comp = Compare(),
+      const Allocator& alloc = Allocator()) : tree_(),
+                                              pre_order_(tree_),
+                                              in_order_(tree_),
+                                              post_order_(tree_),
+                                              allocator_(alloc),
+                                              key_compare_(comp),
+                                              value_compare_(comp) {
     end_ = tree_.GetEnd();
 
     for (; first != last; ++first) {
       insert(*first);
     }
+  }
+
+  template<typename InputIt,
+      std::enable_if_t<
+          std::is_same<InputIt, T*>::value || std::is_same<InputIt, const T*>::value
+              || (is_iterator<InputIt>::value && has_value_type<InputIt>::value),
+          bool> = true>
+  BST(InputIt first, InputIt last,
+      const Allocator& alloc = Allocator()) : BST(first, last, Compare(), alloc) {
+    end_ = tree_.GetEnd();
   }
 
   BST& operator=(const BST& other) {
@@ -325,15 +377,15 @@ class BST {
   }
 
   Allocator get_allocator() const {
-    return Allocator();
+    return allocator_;
   }
 
   Compare key_compare() {
-    return Compare();
+    return key_compare_;
   }
 
   Compare value_compare() {
-    return Compare();
+    return value_compare_;
   }
 
  private:
@@ -342,6 +394,9 @@ class BST {
   PreOrder pre_order_;
   InOrder in_order_;
   PostOrder post_order_;
+  Allocator allocator_;
+  Compare key_compare_;
+  Compare value_compare_;
 
   template<typename Traversal>
   [[nodiscard]] const ITraversal& GetTraversalLink() const {
@@ -369,8 +424,7 @@ typename std::set<Key, Compare, Alloc>::size_type erase_if(std::set<Key, Compare
   for (auto first = c.begin(), last = c.end(); first != last;) {
     if (pred(*first)) {
       first = c.erase(first);
-    }
-    else {
+    } else {
       ++first;
     }
   }
