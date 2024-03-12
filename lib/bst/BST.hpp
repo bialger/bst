@@ -133,54 +133,64 @@ class BST {
     tree_.Clear();
   }
 
-  template<typename Traversal = DefaultTraversal>
+  template<typename Traversal = DefaultTraversal,
+      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   iterator begin() const {
     return iterator(GetTraversalLink<Traversal>());
   }
 
-  template<typename Traversal = DefaultTraversal>
+  template<typename Traversal = DefaultTraversal,
+      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   iterator end() const {
     return iterator(end_, GetTraversalLink<Traversal>());
   }
 
-  template<typename Traversal = DefaultTraversal>
+  template<typename Traversal = DefaultTraversal,
+      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   const_iterator cbegin() const {
     return begin<Traversal>();
   }
 
-  template<typename Traversal = DefaultTraversal>
+  template<typename Traversal = DefaultTraversal,
+      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   const_iterator cend() const {
     return end<Traversal>();
   }
 
-  template<typename Traversal = DefaultTraversal>
+  template<typename Traversal = DefaultTraversal,
+      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   reverse_iterator rbegin() const {
     return reverse_iterator(GetTraversalLink<Traversal>());
   }
 
-  template<typename Traversal = DefaultTraversal>
+  template<typename Traversal = DefaultTraversal,
+      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   reverse_iterator rend() const {
     return reverse_iterator(end_, GetTraversalLink<Traversal>());
   }
 
-  template<typename Traversal = DefaultTraversal>
+  template<typename Traversal = DefaultTraversal,
+      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   const_reverse_iterator crbegin() const {
     return rbegin<Traversal>();
   }
 
-  template<typename Traversal = DefaultTraversal>
+  template<typename Traversal = DefaultTraversal,
+      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   const_reverse_iterator crend() const {
     return rend<Traversal>();
   }
 
-  template<typename Traversal = DefaultTraversal>
+  template<typename Traversal = DefaultTraversal,
+      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   std::pair<iterator, bool> insert(const T& key) {
     auto result = tree_.Insert(key, &key);
     iterator it = iterator(result.first, GetTraversalLink<Traversal>());
     return {it, result.second};
   }
 
-  template<typename Traversal = DefaultTraversal>
+  template<typename Traversal = DefaultTraversal,
+      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   iterator insert(iterator pos, const T& key) {
    return insert(key);
   }
@@ -243,12 +253,14 @@ class BST {
     return counter;
   }
 
-  template<typename Traversal = DefaultTraversal>
+  template<typename Traversal = DefaultTraversal,
+      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   iterator find(const T& key) {
     return iterator(tree_.FindFirst(key), GetTraversalLink<Traversal>());
   }
 
-  template<typename Traversal = DefaultTraversal>
+  template<typename Traversal = DefaultTraversal,
+      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   const_iterator find(const T& key) const {
     return iterator(tree_.FindFirst(key), GetTraversalLink<Traversal>());
   }
@@ -391,16 +403,14 @@ class BST {
   Compare key_compare_;
   Compare value_compare_;
 
-  template<typename Traversal>
+  template<typename Traversal, std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   [[nodiscard]] const ITraversal& GetTraversalLink() const {
     if constexpr (std::is_same<Traversal, PreOrder>::value) {
       return pre_order_;
     } else if (std::is_same<Traversal, InOrder>::value) {
       return in_order_;
-    } else if (std::is_same<Traversal, PostOrder>::value) {
-      return post_order_;
     } else {
-      throw std::invalid_argument("Incorrect traversal type");
+      return post_order_;
     }
   }
 };
