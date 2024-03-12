@@ -48,6 +48,27 @@ TEST_F(BstUnitTestSuite, IsIterableTest3) {
 }
 
 TEST_F(BstUnitTestSuite, EmptyTest) {
-  bialger::BST<int32_t> bst;
+  BST<int32_t> bst;
   ASSERT_EQ(bst, bst);
 }
+
+TEST_F(BstUnitTestSuite, InsertTest1) {
+  BST<int32_t> bst;
+  std::vector<int32_t> values = {1, 2, 3, 4, 5};
+  std::vector<int32_t> data_inorder;
+  bst.insert(1);
+  bst.insert(2);
+  bst.insert(3);
+  bst.insert(4);
+  bst.insert(5);
+
+  ASSERT_EQ(bst.size(), 5);
+
+  for (const auto& val : bst) {
+    data_inorder.push_back(val);
+  }
+
+  ASSERT_EQ(values, data_inorder);
+}
+
+

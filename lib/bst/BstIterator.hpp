@@ -27,13 +27,21 @@ class is_iterable<X,
     : public ::std::true_type {
 };
 
+template<typename X, typename Enabled = void>
+class has_value_type final : public ::std::false_type {};
+
+template<typename X>
+class has_value_type<X, ::std::void_t<typename X::value_type>> final
+    : public ::std::true_type {
+};
+
 template<typename T, typename Compare, typename Allocator>
 class BST;
 
 template<typename T, typename Compare, typename Allocator, bool is_reversed = false>
 class BstIterator {
  private:
-  using NodeType = TreeNode<T, T*>;
+  using NodeType = TreeNode<T, const T*>;
 
  public:
   friend class BST<T, Compare, Allocator>;
@@ -56,7 +64,7 @@ class BstIterator {
     current_ = dynamic_cast<NodeType*>(node);
   }
 
-  BstIterator(const BstIterator& other) : current_(other.current_), traversal_(&other.traversal_) {}
+  BstIterator(const BstIterator& other) : current_(other.current_), traversal_(other.traversal_) {}
 
   BstIterator& operator=(const BstIterator& other) {
     if (this == &other) {

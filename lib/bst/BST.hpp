@@ -57,6 +57,19 @@ class BST {
     }
   }
 
+  template<typename InputIt,
+      std::enable_if_t<
+          std::is_same<InputIt, T*>::value || std::is_same<InputIt, const T*>::value
+              || (is_iterator<InputIt>::value && has_value_type<InputIt>::value),
+          bool> = true>
+  BST(InputIt first, InputIt last) : tree_(), pre_order_(tree_), in_order_(tree_), post_order_(tree_) {
+    end_ = tree_.GetEnd();
+
+    for (; first != last; ++first) {
+      insert(*first);
+    }
+  }
+
   BST& operator=(const BST& other) {
     if (this == &other) {
       return *this;
@@ -109,7 +122,8 @@ class BST {
   template<typename Traversal = DefaultTraversal>
   std::pair<iterator, bool> insert(const T& key) {
     auto result = tree_.Insert(key, &key);
-    return {iterator(result.first, GetTraversalLink<Traversal>()), result.second};
+    iterator it = iterator(result.first, GetTraversalLink<Traversal>());
+    return {it, result.second};
   }
 
   template<typename Traversal = DefaultTraversal>
@@ -125,9 +139,9 @@ class BST {
   }
 
   template<typename InputIt,
-      std::enable_if<
+      std::enable_if_t<
           std::is_same<InputIt, T*>::value || std::is_same<InputIt, const T*>::value
-              || (is_iterator<InputIt>::value && std::is_same<typename InputIt::value_type, T>::value),
+              || (is_iterator<InputIt>::value && has_value_type<InputIt>::value),
           bool> = true>
   void insert(InputIt first, InputIt last) {
     for (; first != last; ++first) {
@@ -136,8 +150,8 @@ class BST {
   }
 
   template<typename Container,
-      std::enable_if<
-          is_iterable<Container>::value && std::is_same<typename Container::value_type, T>::value,
+      std::enable_if_t<
+          is_iterable<Container>::value && has_value_type<Container>::value,
           bool> = true>
   void insert(const Container& other) {
     auto it = other.cbegin();
