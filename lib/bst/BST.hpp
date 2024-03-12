@@ -182,14 +182,7 @@ class BST {
 
   template<typename Traversal = DefaultTraversal>
   iterator insert(iterator pos, const T& key) {
-    --pos;
-
-    if (pos.current_ == tree_.GetEnd()) {
-      ++pos;
-    }
-
-    auto result = tree_.InsertFromNode(pos.current_, key, &key);
-    return iterator(result.first, GetTraversalLink<Traversal>());
+   return insert(key);
   }
 
   template<typename InputIt,
