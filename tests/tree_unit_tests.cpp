@@ -433,18 +433,16 @@ TEST_F(TreeUnitTestSuite, InsertTreeUnstrictTest4) {
   for (int32_t& value : values) {
     bst.Insert(value, &value);
   }
-
-  size_t unique = bst.GetSize();
   values.insert(values.end(), values_tmp.begin(), values_tmp.end());
   std::shuffle(values.begin(), values.end(), rng);
 
   for (int32_t& value : values) {
     std::pair<IntTree::NodeType*, bool> new_node = bst.Insert(value, &value);
-    ASSERT_EQ(new_node.first, bst.FindFirst(value));
-    ASSERT_EQ(new_node.second, false);
+    ASSERT_NE(new_node.first, bst.FindFirst(value));
+    ASSERT_EQ(new_node.second, true);
   }
 
-  ASSERT_EQ(bst.GetSize(), unique);
+  ASSERT_EQ(bst.GetSize(), 3 * size);
 }
 
 TEST_F(TreeUnitTestSuite, InsertTreeUnstrictTest5) {
@@ -459,7 +457,6 @@ TEST_F(TreeUnitTestSuite, InsertTreeUnstrictTest5) {
     bst.Insert(value, &value);
   }
 
-  size_t unique = bst.GetSize();
   values.insert(values.end(), values_tmp.begin(), values_tmp.end());
   std::shuffle(values.begin(), values.end(), rng);
 
@@ -467,7 +464,7 @@ TEST_F(TreeUnitTestSuite, InsertTreeUnstrictTest5) {
     bst.Insert(value, &value);
   }
 
-  ASSERT_EQ(bst.GetSize(), unique);
+  ASSERT_EQ(bst.GetSize(), 3 * size);
 }
 
 TEST_F(TreeUnitTestSuite, InsertTreeUnstrictTest6) {
@@ -649,6 +646,7 @@ TEST_F(TreeUnitTestSuite, FindNextUnstrictTreeTest2) {
     if (vector_upper == values.end()) {
       ASSERT_EQ(bst_next, bst.GetEnd());
     } else {
+      std::cout << (bst_next->key == *vector_upper ? "" : std::to_string(i) + "\n");
       ASSERT_EQ(bst_next->key, *vector_upper);
     }
   }

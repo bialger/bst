@@ -16,7 +16,11 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   using value_type = U;
 
   explicit BinarySearchTree(bool allow_duplicates = false)
-      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(allow_duplicates), size_{} {};
+      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(allow_duplicates), size_{} {
+    if (Less()(T{}, T{})) {
+      allow_duplicates_ = true;
+    }
+  };
 
   BinarySearchTree(const BinarySearchTree& other)
       : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(other.allow_duplicates_), size_{} {
@@ -215,13 +219,13 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       return new_node;
     }
 
-    if (Equals()(key, node->key) && !allow_duplicates_) {
+    if ((Less()(key, node->key)) || (allow_duplicates_ && Equals()(key, node->key))) {
+      node->left = Insert(node->left, result, key, value);
+      node->left->parent = node;
+    } else if (Equals()(key, node->key) && !allow_duplicates_) {
       node->value = value;
       result.first = node;
       result.second = false;
-    } else if ((Less()(key, node->key)) || (allow_duplicates_ && Equals()(key, node->key))) {
-      node->left = Insert(node->left, result, key, value);
-      node->left->parent = node;
     } else  if (Less()(node->key, key)) {
       node->right = Insert(node->right, result, key, value);
       node->right->parent = node;
@@ -252,7 +256,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     NodeType* next = nullptr;
 
     while (node != nullptr) {
-      if (Equals()(key, node->key) && !allow_duplicates_) {
+      if (Equals()(key, node->key)) {
         node = node->right;
       } else if (Less()(key, node->key) || (allow_duplicates_ && Equals()(key, node->key))) {
         if (next == nullptr || Less()(node->key, next->key)) {
