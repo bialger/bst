@@ -5,7 +5,6 @@
 #include "lib/tree/InOrder.hpp"
 #include "lib/tree/PreOrder.hpp"
 #include "lib/tree/PostOrder.hpp"
-#include <set>
 
 namespace bialger {
 
@@ -40,9 +39,6 @@ class BST;
 
 template<typename T, typename Compare, typename Allocator, bool is_reversed = false>
 class BstIterator {
- private:
-  using NodeType = TreeNode<T, const T*>;
-
  public:
   friend class BST<T, Compare, Allocator>;
 
@@ -53,6 +49,12 @@ class BstIterator {
   using const_reference = const T&;
   using pointer = T*;
   using const_pointer = const T*;
+
+ private:
+  using TreeInterface = BST<T, Compare, Allocator>::TreeInterface;
+  using NodeType = TreeInterface::NodeType;
+
+ public:
 
   BstIterator() = delete;
 
@@ -108,6 +110,18 @@ class BstIterator {
   [[nodiscard]] BstIterator operator--(int) {
     BstIterator tmp = *this;
     --*this;
+    return tmp;
+  }
+
+  [[nodiscard]] BstIterator next() {
+    BstIterator tmp = *this;
+    ++tmp;
+    return tmp;
+  }
+
+  [[nodiscard]] BstIterator prev() {
+    BstIterator tmp = *this;
+    --tmp;
     return tmp;
   }
 

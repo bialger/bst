@@ -11,6 +11,7 @@ namespace bialger {
 template<typename T, typename U, typename Less, typename Equals, typename Allocator>
 class BinarySearchTree : public ITemplateTree<T, U> {
  public:
+  using TreeInterface = ITemplateTree<T, U>;
   using NodeType = TreeNode<T, U>;
   using key_type = T;
   using value_type = U;

@@ -14,6 +14,15 @@ namespace bialger {
 
 template<typename T, typename Compare = std::less<>, typename Allocator = std::allocator<T>>
 class BST {
+ private:
+  using TreeType = BinarySearchTree<T,
+                                    const T*,
+                                    Compare,
+                                    std::equal_to<>,
+                                    Allocator>;
+  using NodeType = TreeType::NodeType;
+  using DefaultTraversal = InOrder;
+
  public:
   using reference = T&;
   using const_reference = const T&;
@@ -28,17 +37,8 @@ class BST {
   using key_compare = Compare;
   using value_compare = key_compare;
   using key_allocator = Allocator;
+  using TreeInterface = TreeType::TreeInterface;
 
- private:
-  using NodeType = iterator::NodeType;
-  using TreeType = BinarySearchTree<typename NodeType::key_type,
-                                    typename NodeType::value_type,
-                                    Compare,
-                                    std::equal_to<>,
-                                    Allocator>;
-  using DefaultTraversal = InOrder;
-
- public:
   BST() : tree_(), pre_order_(tree_), in_order_(tree_), post_order_(tree_) {
     end_ = tree_.GetEnd();
   }
@@ -77,6 +77,10 @@ class BST {
 
     tree_ = other.tree_;
     end_ = tree_.GetEnd();
+  }
+
+  void clear() {
+    tree_.Clear();
   }
 
   template<typename Traversal = DefaultTraversal>
@@ -171,6 +175,103 @@ class BST {
     }
   }
 
+  iterator erase(iterator pos) {
+    auto next = pos.next();
+    tree_.Delete();
+    return next;
+  }
+
+  iterator erase(const_iterator first, const_iterator last) {
+    for (; first != last; ++first) {
+      Delete(first.current_);
+    }
+
+    return last;
+  }
+
+  size_type erase(const T& key) {
+    size_type counter = 0;
+
+    for (auto it = find(key); it != end(); it = find(key)) {
+      erase(it);
+      ++counter;
+    }
+
+    return counter;
+  }
+
+  template<typename Traversal = DefaultTraversal>
+  iterator find(const T& key) {
+    return iterator(tree_.FindFirst(key), GetTraversalLink<Traversal>());
+  }
+
+  template<typename Traversal = DefaultTraversal>
+  const_iterator find(const T& key) const {
+    return iterator(tree_.FindFirst(key), GetTraversalLink<Traversal>());
+  }
+
+  size_type count(const T& key) const {
+    return (find(key) == cend()) ? 0 : 1;
+  }
+
+  bool contains(const T& key) const {
+    return find(key) != cend();
+  }
+
+  iterator lower_bound(const T& key) {
+    NodeType* first = tree_.FindFirst(key);
+    const ITraversal& traversal = in_order_;
+
+    if (first == end_) {
+      return iterator(tree_.FindNext(key), traversal);
+    }
+
+    return iterator(first, traversal);
+  }
+
+  const_iterator lower_bound(const T& key) const {
+    NodeType* first = tree_.FindFirst(key);
+    const ITraversal& traversal = in_order_;
+
+    if (first == end_) {
+      return iterator(tree_.FindNext(key), traversal);
+    }
+
+    return iterator(first, traversal);
+  }
+
+  iterator upper_bound(const T& key) {
+    return iterator(tree_.FindNext(key), in_order_);
+  }
+
+  const_iterator upper_bound(const T& key) const {
+    return const_iterator(tree_.FindNext(key), in_order_);
+  }
+
+  std::pair<iterator, iterator> equal_range(const T& key) {
+    NodeType* first = tree_.FindFirst(key);
+    NodeType* next = tree_.FindNext(key);
+    const ITraversal& traversal = in_order_;
+
+    if (first == end_) {
+      return {iterator(next, traversal), iterator(next, traversal)};
+    }
+
+    return {iterator(first, traversal), iterator(next, traversal)};
+  }
+
+  std::pair<const_iterator, const_iterator> equal_range(const T& key) const {
+    NodeType* first = tree_.FindFirst(key);
+    NodeType* next = tree_.FindNext(key);
+    const ITraversal& traversal = in_order_;
+
+    if (first == end_) {
+      return {const_iterator(next, traversal), const_iterator(next, traversal)};
+    }
+
+    return {const_iterator(first, traversal), const_iterator(next, traversal)};
+  }
+
   bool operator==(const BST& other) const {
     if (tree_.GetSize() != other.tree_.GetSize()) {
       return false;
@@ -189,26 +290,30 @@ class BST {
 
   auto operator<=>(const BST& other) const {
     if (tree_.GetSize() < other.tree_.GetSize()) {
-      return std::weak_ordering::less;
+      return std::strong_ordering::less;
     } else if (tree_.GetSize() > other.tree_.GetSize()) {
-      return std::weak_ordering::greater;
+      return std::strong_ordering::greater;
     }
 
     for (const_iterator this_it = cbegin(), other_it = other.cbegin();
          this_it != cend() && other_it != cend();
          ++this_it, ++other_it) {
-      if (Compare()(*this_it, *other_it)) {
-        return std::weak_ordering::less;
-      } else if (Compare()(*other_it, *this_it)) {
-        return std::weak_ordering::greater;
+      if (*this_it < *other_it) {
+        return std::strong_ordering::less;
+      } else if (*this_it > *other_it) {
+        return std::strong_ordering::greater;
       }
     }
 
-    return std::weak_ordering::equivalent;
+    return std::strong_ordering::equivalent;
   }
 
   [[nodiscard]] size_type size() const {
     return tree_.GetSize();
+  }
+
+  [[nodiscard]] bool empty() const {
+    return tree_.GetSize() == 0;
   }
 
   static difference_type max_size() {
@@ -248,6 +353,8 @@ template<typename T, typename Compare = std::less<>, typename Allocator = std::a
 void swap(BST<T, Compare, Allocator>& first, BST<T, Compare, Allocator>& second) {
   first.swap(second);
 }
+
+using CharSet = BST<char>;
 
 } // bialger
 
