@@ -205,6 +205,10 @@ class BST {
     std::swap(tree_, other.tree_);
   }
 
+  Allocator get_allocator() const {
+    return Allocator();
+  }
+
  private:
   TreeType tree_;
   ITreeNode* end_;
