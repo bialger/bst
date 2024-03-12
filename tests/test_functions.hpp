@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cstdint>
 
 std::vector<std::string> SplitString(const std::string& str);
 

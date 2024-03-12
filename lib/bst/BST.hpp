@@ -47,6 +47,16 @@ class BST {
     end_ = tree_.GetEnd();
   }
 
+  BST(const std::initializer_list<T>& list) : tree_(), pre_order_(tree_), in_order_(tree_), post_order_(tree_) {
+    end_ = tree_.GetEnd();
+    auto it = list.cbegin();
+    auto end = list.cend();
+
+    for (; it != end; ++it) {
+      insert(*it);
+    }
+  }
+
   BST& operator=(const BST& other) {
     if (this == &other) {
       return *this;
@@ -94,6 +104,57 @@ class BST {
   template<typename Traversal = DefaultTraversal>
   const_reverse_iterator crend() const {
     return rend<Traversal>();
+  }
+
+  template<typename Traversal = DefaultTraversal>
+  std::pair<iterator, bool> insert(const T& key) {
+    auto result = tree_.Insert(key, &key);
+    return {iterator(result.first, GetTraversalLink<Traversal>()), result.second};
+  }
+
+  template<typename Traversal = DefaultTraversal>
+  iterator insert(iterator pos, const T& key) {
+    --pos;
+
+    if (pos.current_ == tree_.GetEnd()) {
+      ++pos;
+    }
+
+    auto result = tree_.InsertFromNode(pos.current_, key, &key);
+    return iterator(result.first, GetTraversalLink<Traversal>());
+  }
+
+  template<typename InputIt,
+      std::enable_if<
+          std::is_same<InputIt, T*>::value || std::is_same<InputIt, const T*>::value
+              || (is_iterator<InputIt>::value && std::is_same<typename InputIt::value_type, T>::value),
+          bool> = true>
+  void insert(InputIt first, InputIt last) {
+    for (; first != last; ++first) {
+      insert(*first);
+    }
+  }
+
+  template<typename Container,
+      std::enable_if<
+          is_iterable<Container>::value && std::is_same<typename Container::value_type, T>::value,
+          bool> = true>
+  void insert(const Container& other) {
+    auto it = other.cbegin();
+    auto end = other.cend();
+
+    for (; it != end; ++it) {
+      insert(*it);
+    }
+  }
+
+  void insert(const std::initializer_list<T>& list) {
+    auto it = list.cbegin();
+    auto end = list.cend();
+
+    for (; it != end; ++it) {
+      insert(*it);
+    }
   }
 
   bool operator==(const BST& other) const {

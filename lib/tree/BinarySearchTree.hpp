@@ -64,6 +64,17 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     return result;
   }
 
+  [[nodiscard]] NodeType* InsertFromNode(NodeType* pos, const T& key, const U& value) override {
+    std::pair<NodeType*, bool> result = {end_, false};
+    pos = Insert(pos, result, key, value);
+
+    if (pos == root_) {
+      root_ = pos;
+    }
+
+    return result.first;
+  }
+
   void Delete(NodeType* node) override {
     if (node == nullptr || node == end_) {
       return;
