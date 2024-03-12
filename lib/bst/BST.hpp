@@ -34,8 +34,6 @@ class BST {
   using const_reverse_iterator = BstIterator<T, Compare, Allocator, true>;
   using key_type = T;
   using value_type = key_type;
-  using key_compare = Compare;
-  using value_compare = key_compare;
   using key_allocator = Allocator;
   using TreeInterface = TreeType::TreeInterface;
 
@@ -289,12 +287,6 @@ class BST {
   }
 
   auto operator<=>(const BST& other) const {
-    if (tree_.GetSize() < other.tree_.GetSize()) {
-      return std::strong_ordering::less;
-    } else if (tree_.GetSize() > other.tree_.GetSize()) {
-      return std::strong_ordering::greater;
-    }
-
     for (const_iterator this_it = cbegin(), other_it = other.cbegin();
          this_it != cend() && other_it != cend();
          ++this_it, ++other_it) {
@@ -303,6 +295,14 @@ class BST {
       } else if (*this_it > *other_it) {
         return std::strong_ordering::greater;
       }
+    }
+
+    if (tree_.GetSize() < other.tree_.GetSize()) {
+      return std::strong_ordering::less;
+    }
+
+    if (tree_.GetSize() > other.tree_.GetSize()) {
+      return std::strong_ordering::greater;
     }
 
     return std::strong_ordering::equivalent;
@@ -326,6 +326,14 @@ class BST {
 
   Allocator get_allocator() const {
     return Allocator();
+  }
+
+  Compare key_compare() {
+    return Compare();
+  }
+
+  Compare value_compare() {
+    return Compare();
   }
 
  private:
@@ -352,6 +360,22 @@ class BST {
 template<typename T, typename Compare = std::less<>, typename Allocator = std::allocator<T>>
 void swap(BST<T, Compare, Allocator>& first, BST<T, Compare, Allocator>& second) {
   first.swap(second);
+}
+
+template<class Key, class Compare, class Alloc, class Pred>
+typename std::set<Key, Compare, Alloc>::size_type erase_if(std::set<Key, Compare, Alloc>& c, Pred pred) {
+  auto old_size = c.size();
+
+  for (auto first = c.begin(), last = c.end(); first != last;) {
+    if (pred(*first)) {
+      first = c.erase(first);
+    }
+    else {
+      ++first;
+    }
+  }
+
+  return old_size - c.size();
 }
 
 using CharSet = BST<char>;
