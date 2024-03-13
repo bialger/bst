@@ -76,15 +76,22 @@ class BST {
                                               allocator_(alloc),
                                               key_compare_(comp),
                                               value_compare_(comp) {
-    auto it = list.cbegin();
-    auto end = list.cend();
+    auto it = list.begin();
+    auto end = list.end();
 
     for (; it != end; ++it) {
       insert(*it);
     }
   }
 
-  BST(std::initializer_list<value_type> init, const Allocator& alloc) : BST(init, Compare(), alloc) {}
+  BST(std::initializer_list<value_type> list, const Allocator& alloc) : BST(list, Compare(), alloc) {
+    auto it = list.begin();
+    auto end = list.end();
+
+    for (; it != end; ++it) {
+      insert(*it);
+    }
+  }
 
   template<typename InputIt,
       std::enable_if_t<
@@ -110,12 +117,15 @@ class BST {
           std::is_same<InputIt, T*>::value || std::is_same<InputIt, const T*>::value
               || (is_iterator<InputIt>::value && has_value_type<InputIt>::value),
           bool> = true>
-  BST(InputIt first, InputIt last,
-      const Allocator& alloc = Allocator()) : BST(first, last, Compare(), alloc) {}
+  BST(InputIt first, InputIt last, const Allocator& alloc) : BST(first, last, Compare(), alloc) {
+    for (; first != last; ++first) {
+      insert(*first);
+    }
+  }
 
   BST& operator=(std::initializer_list<T>& list) {
-    auto it = list.cbegin();
-    auto end = list.cend();
+    auto it = list.begin();
+    auto end = list.end();
 
     for (; it != end; ++it) {
       insert(*it);
