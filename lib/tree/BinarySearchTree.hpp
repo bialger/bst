@@ -2,6 +2,7 @@
 #define LIB_TREE_BINARYSEARCHTREE_HPP_
 
 #include <memory>
+#include <cstdint>
 
 #include "ITemplateTree.hpp"
 #include "TreeNode.hpp"
