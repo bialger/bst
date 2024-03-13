@@ -24,18 +24,24 @@ class BST {
   using DefaultTraversal = InOrder;
 
  public:
+  using key_type = T;
+  using value_type = key_type;
   using reference = T&;
   using const_reference = const T&;
+  using pointer = T*;
+  using const_pointer = const T*;
   using size_type = size_t;
   using difference_type = ptrdiff_t;
   using iterator = BstIterator<T, Compare, Allocator>;
   using const_iterator = BstIterator<T, Compare, Allocator>;
   using reverse_iterator = BstIterator<T, Compare, Allocator, true>;
   using const_reverse_iterator = BstIterator<T, Compare, Allocator, true>;
-  using key_type = T;
-  using value_type = key_type;
+  using allocator_type = Allocator;
   using key_allocator = Allocator;
+  using key_compare = Compare;
+  using value_compare = Compare;
   using TreeInterface = TreeType::TreeInterface;
+  using Equals = std::equal_to<>;
 
   BST() : tree_(),
           pre_order_(tree_),
@@ -106,6 +112,15 @@ class BST {
           bool> = true>
   BST(InputIt first, InputIt last,
       const Allocator& alloc = Allocator()) : BST(first, last, Compare(), alloc) {}
+
+  BST& operator=(std::initializer_list<T>& list) {
+    auto it = list.cbegin();
+    auto end = list.cend();
+
+    for (; it != end; ++it) {
+      insert(*it);
+    }
+  }
 
   BST& operator=(const BST& other) {
     if (this == &other) {
@@ -251,11 +266,45 @@ class BST {
     return iterator(tree_.FindFirst(key), GetTraversalLink<Traversal>());
   }
 
+  template<typename K, typename Traversal = DefaultTraversal,
+      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value
+                           && comparator_transparent<Compare>::value
+                           && are_comparable<Compare, T, K>::value
+                           && are_comparable<Equals, T, K>::value, bool> = true>
+  iterator find(const K& key) {
+    return iterator(tree_.FindFirst(key), GetTraversalLink<Traversal>());
+  }
+
+  template<typename K, typename Traversal = DefaultTraversal,
+      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value
+                           && comparator_transparent<Compare>::value
+                           && are_comparable<Compare, T, K>::value
+                           && are_comparable<Equals, T, K>::value, bool> = true>
+  const_iterator find(const K& key) const {
+    return iterator(tree_.FindFirst(key), GetTraversalLink<Traversal>());
+  }
+
   size_type count(const T& key) const {
     return (find(key) == cend()) ? 0 : 1;
   }
 
+  template<typename K,
+      std::enable_if_t<comparator_transparent<Compare>::value
+                           && are_comparable<Compare, T, K>::value
+                           && are_comparable<Equals, T, K>::value, bool> = true>
+  size_type count(const K& key) const {
+    return (find(key) == cend()) ? 0 : 1;
+  }
+
   bool contains(const T& key) const {
+    return find(key) != cend();
+  }
+
+  template<typename K,
+      std::enable_if_t<comparator_transparent<Compare>::value
+                           && are_comparable<Compare, T, K>::value
+                           && are_comparable<Equals, T, K>::value, bool> = true>
+  bool contains(const K& key) const {
     return find(key) != cend();
   }
 
@@ -281,11 +330,57 @@ class BST {
     return iterator(first, traversal);
   }
 
+  template<typename K,
+      std::enable_if_t<comparator_transparent<Compare>::value
+                           && are_comparable<Compare, T, K>::value
+                           && are_comparable<Equals, T, K>::value, bool> = true>
+  iterator lower_bound(const K& key) {
+    NodeType* first = tree_.FindFirst(key);
+    const ITraversal& traversal = in_order_;
+
+    if (first == tree_.GetEnd()) {
+      return iterator(tree_.FindNext(key), traversal);
+    }
+
+    return iterator(first, traversal);
+  }
+
+  template<typename K,
+      std::enable_if_t<comparator_transparent<Compare>::value
+                           && are_comparable<Compare, T, K>::value
+                           && are_comparable<Equals, T, K>::value, bool> = true>
+  const_iterator lower_bound(const K& key) const {
+    NodeType* first = tree_.FindFirst(key);
+    const ITraversal& traversal = in_order_;
+
+    if (first == tree_.GetEnd()) {
+      return iterator(tree_.FindNext(key), traversal);
+    }
+
+    return iterator(first, traversal);
+  }
+
   iterator upper_bound(const T& key) {
     return iterator(tree_.FindNext(key), in_order_);
   }
 
   const_iterator upper_bound(const T& key) const {
+    return const_iterator(tree_.FindNext(key), in_order_);
+  }
+
+  template<typename K,
+      std::enable_if_t<comparator_transparent<Compare>::value
+                           && are_comparable<Compare, T, K>::value
+                           && are_comparable<Equals, T, K>::value, bool> = true>
+  iterator upper_bound(const K& key) {
+    return iterator(tree_.FindNext(key), in_order_);
+  }
+
+  template<typename K,
+      std::enable_if_t<comparator_transparent<Compare>::value
+                           && are_comparable<Compare, T, K>::value
+                           && are_comparable<Equals, T, K>::value, bool> = true>
+  const_iterator upper_bound(const K& key) const {
     return const_iterator(tree_.FindNext(key), in_order_);
   }
 
@@ -302,6 +397,38 @@ class BST {
   }
 
   std::pair<const_iterator, const_iterator> equal_range(const T& key) const {
+    NodeType* first = tree_.FindFirst(key);
+    NodeType* next = tree_.FindNext(key);
+    const ITraversal& traversal = in_order_;
+
+    if (first == tree_.GetEnd()) {
+      return {const_iterator(next, traversal), const_iterator(next, traversal)};
+    }
+
+    return {const_iterator(first, traversal), const_iterator(next, traversal)};
+  }
+
+  template<typename K,
+      std::enable_if_t<comparator_transparent<Compare>::value
+                           && are_comparable<Compare, T, K>::value
+                           && are_comparable<Equals, T, K>::value, bool> = true>
+  std::pair<iterator, iterator> equal_range(const K& key) {
+    NodeType* first = tree_.FindFirst(key);
+    NodeType* next = tree_.FindNext(key);
+    const ITraversal& traversal = in_order_;
+
+    if (first == tree_.GetEnd()) {
+      return {iterator(next, traversal), iterator(next, traversal)};
+    }
+
+    return {iterator(first, traversal), iterator(next, traversal)};
+  }
+
+  template<typename K,
+      std::enable_if_t<comparator_transparent<Compare>::value
+                           && are_comparable<Compare, T, K>::value
+                           && are_comparable<Equals, T, K>::value, bool> = true>
+  std::pair<const_iterator, const_iterator> equal_range(const K& key) const {
     NodeType* first = tree_.FindFirst(key);
     NodeType* next = tree_.FindNext(key);
     const ITraversal& traversal = in_order_;
@@ -371,11 +498,11 @@ class BST {
     return allocator_;
   }
 
-  Compare key_compare() const {
+  Compare key_comp() const {
     return key_compare_;
   }
 
-  Compare value_compare() const {
+  Compare value_comp() const {
     return value_compare_;
   }
 
