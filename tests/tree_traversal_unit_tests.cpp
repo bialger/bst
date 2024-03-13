@@ -47,7 +47,7 @@ TEST(TreeTraversalUnitTestSuite, InOrderTraverseTreeTest0) {
   ASSERT_EQ(real_traverse, class_traverse);
 }
 
-TEST(TreeTraversalUnitTestSuite, InOrderMutableTraverseTreeTest1) {
+TEST(TreeTraversalUnitTestSuite, InOrderTraverseTreeTest1) {
   std::vector<int32_t> real_traverse;
   std::vector<int32_t> class_traverse;
   IntTree bst{};
@@ -74,7 +74,7 @@ TEST(TreeTraversalUnitTestSuite, InOrderMutableTraverseTreeTest1) {
   ASSERT_EQ(real_traverse, class_traverse);
 }
 
-TEST(TreeTraversalUnitTestSuite, InOrderMutableReversedTraverseTreeTest1) {
+TEST(TreeTraversalUnitTestSuite, InOrderReversedTraverseTreeTest1) {
   std::vector<int32_t> real_traverse;
   std::vector<int32_t> class_traverse;
   IntTree bst{};
@@ -103,7 +103,7 @@ TEST(TreeTraversalUnitTestSuite, InOrderMutableReversedTraverseTreeTest1) {
   ASSERT_EQ(real_traverse, class_traverse);
 }
 
-TEST(TreeTraversalUnitTestSuite, PreOrderMutableTraverseTreeTest1) {
+TEST(TreeTraversalUnitTestSuite, PreOrderTraverseTreeTest1) {
   std::vector<int32_t> real_traverse;
   std::vector<int32_t> class_traverse;
   IntTree bst{};
@@ -130,7 +130,7 @@ TEST(TreeTraversalUnitTestSuite, PreOrderMutableTraverseTreeTest1) {
   ASSERT_EQ(real_traverse, class_traverse);
 }
 
-TEST(TreeTraversalUnitTestSuite, PreOrderMutableReversedTraverseTreeTest1) {
+TEST(TreeTraversalUnitTestSuite, PreOrderReversedTraverseTreeTest1) {
   std::vector<int32_t> real_traverse;
   std::vector<int32_t> class_traverse;
   IntTree bst{};
@@ -159,7 +159,7 @@ TEST(TreeTraversalUnitTestSuite, PreOrderMutableReversedTraverseTreeTest1) {
   ASSERT_EQ(real_traverse, class_traverse);
 }
 
-TEST(TreeTraversalUnitTestSuite, PostOrderMutableTraverseTreeTest1) {
+TEST(TreeTraversalUnitTestSuite, PostOrderTraverseTreeTest1) {
   std::vector<int32_t> real_traverse;
   std::vector<int32_t> class_traverse;
   IntTree bst{};
@@ -186,7 +186,7 @@ TEST(TreeTraversalUnitTestSuite, PostOrderMutableTraverseTreeTest1) {
   ASSERT_EQ(real_traverse, class_traverse);
 }
 
-TEST(TreeTraversalUnitTestSuite, PostOrderMutableReversedTraverseTreeTest1) {
+TEST(TreeTraversalUnitTestSuite, PostOrderReversedTraverseTreeTest1) {
   std::vector<int32_t> real_traverse;
   std::vector<int32_t> class_traverse;
   IntTree bst{};
