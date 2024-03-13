@@ -48,40 +48,32 @@ TEST_F(BstUnitTestSuite, IsIterableTest3) {
 }
 
 TEST_F(BstUnitTestSuite, EmptyTest) {
-  BST<int32_t> bst;
-  ASSERT_EQ(bst, bst);
+  BST<int32_t> empty_bst;
+  ASSERT_EQ(empty_bst, empty_bst);
+  ASSERT_EQ(empty_bst.size(), 0);
+  ASSERT_TRUE(empty_bst.empty());
+  ASSERT_FALSE(empty_bst.contains(0));
 }
 
 TEST_F(BstUnitTestSuite, InsertTest1) {
-  BST<int32_t> bst;
-  std::vector<int32_t> values = {1, 2, 3, 4, 5};
+  BST<int32_t> sample_bst;
+  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
   std::vector<int32_t> data_inorder;
-  bst.insert(1);
-  bst.insert(2);
-  bst.insert(3);
-  bst.insert(4);
-  bst.insert(5);
 
-  ASSERT_EQ(bst.size(), 5);
+  for (int32_t& value : sample_values) {
+    sample_bst.insert(value);
+  }
 
-  for (const int32_t& val : bst) {
+  ASSERT_EQ(sample_bst.size(), 5);
+
+  for (const int32_t& val : sample_bst) {
     data_inorder.push_back(val);
   }
 
-  ASSERT_EQ(values, data_inorder);
+  ASSERT_EQ(sample_values, data_inorder);
 }
 
 TEST_F(BstUnitTestSuite, InOrderTraverseTreeTest1) {
-  std::ostringstream real_traversal;
-  std::ostringstream iterator_traversal;
-  BST<int32_t> bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-
-  for (int32_t& value : values) {
-    bst.insert(value);
-  }
-
   PrintToStream<int32_t>(bst, real_traversal);
 
   for (auto it = bst.begin(); it != bst.end(); ++it) {
@@ -92,17 +84,7 @@ TEST_F(BstUnitTestSuite, InOrderTraverseTreeTest1) {
 }
 
 TEST_F(BstUnitTestSuite, InOrderReversedTraverseTreeTest1) {
-  std::ostringstream real_traversal;
-  std::ostringstream iterator_traversal;
   std::string reversed_real_traversal;
-  BST<int32_t> bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-
-  for (int32_t& value : values) {
-    bst.insert(value);
-  }
-
   PrintToStream<int32_t>(bst, real_traversal);
   std::vector<std::string> reversed_vector = SplitString(real_traversal.str());
   std::reverse(reversed_vector.begin(), reversed_vector.end());
@@ -119,16 +101,6 @@ TEST_F(BstUnitTestSuite, InOrderReversedTraverseTreeTest1) {
 }
 
 TEST_F(BstUnitTestSuite, InOrderTraverseTreeBothWaysTest1) {
-  std::ostringstream reversed_traversal;
-  std::ostringstream iterator_traversal;
-  BST<int32_t> bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-
-  for (int32_t& value : values) {
-    bst.insert(value);
-  }
-
   for (auto it = bst.rbegin(); it != bst.rend(); ++it) {
     reversed_traversal << *it << ' ';
   }
@@ -141,16 +113,6 @@ TEST_F(BstUnitTestSuite, InOrderTraverseTreeBothWaysTest1) {
 }
 
 TEST_F(BstUnitTestSuite, InOrderFirstAndLastTraverseTreeTest1) {
-  std::ostringstream real_traversal;
-  std::ostringstream iterator_traversal;
-  BST<int32_t> bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-
-  for (int32_t& value : values) {
-    bst.insert(value);
-  }
-
   auto it = bst.end();
   auto reverse_it = bst.rend();
 
@@ -159,16 +121,6 @@ TEST_F(BstUnitTestSuite, InOrderFirstAndLastTraverseTreeTest1) {
 }
 
 TEST_F(BstUnitTestSuite, PreOrderTraverseTreeTest1) {
-  std::ostringstream real_traversal;
-  std::ostringstream iterator_traversal;
-  BST<int32_t> bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-
-  for (int32_t& value : values) {
-    bst.insert(value);
-  }
-
   PrintToStream<int32_t, PreOrder>(bst, real_traversal);
 
   for (auto it = bst.begin<PreOrder>(); it != bst.end<PreOrder>(); ++it) {
@@ -179,17 +131,7 @@ TEST_F(BstUnitTestSuite, PreOrderTraverseTreeTest1) {
 }
 
 TEST_F(BstUnitTestSuite, PreOrderReversedTraverseTreeTest1) {
-  std::ostringstream real_traversal;
-  std::ostringstream iterator_traversal;
   std::string reversed_real_traversal;
-  BST<int32_t> bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-
-  for (int32_t& value : values) {
-    bst.insert(value);
-  }
-
   PrintToStream<int32_t, PreOrder>(bst, real_traversal);
   std::vector<std::string> reversed_vector = SplitString(real_traversal.str());
   std::reverse(reversed_vector.begin(), reversed_vector.end());
@@ -206,12 +148,6 @@ TEST_F(BstUnitTestSuite, PreOrderReversedTraverseTreeTest1) {
 }
 
 TEST_F(BstUnitTestSuite, PreOrderFirstAndLastTraverseTreeTest1) {
-  std::ostringstream real_traversal;
-  std::ostringstream iterator_traversal;
-  BST<int32_t> bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-
   for (int32_t& value : values) {
     bst.insert(value);
   }
@@ -224,16 +160,6 @@ TEST_F(BstUnitTestSuite, PreOrderFirstAndLastTraverseTreeTest1) {
 }
 
 TEST_F(BstUnitTestSuite, PreOrderTraverseTreeBothWaysTest1) {
-  std::ostringstream reversed_traversal;
-  std::ostringstream iterator_traversal;
-  BST<int32_t> bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-
-  for (int32_t& value : values) {
-    bst.insert(value);
-  }
-
   for (auto it = bst.rbegin<PreOrder>(); it != bst.rend<PreOrder>(); ++it) {
     reversed_traversal << *it << ' ';
   }
@@ -246,16 +172,6 @@ TEST_F(BstUnitTestSuite, PreOrderTraverseTreeBothWaysTest1) {
 }
 
 TEST_F(BstUnitTestSuite, PostOrderTraverseTreeTest1) {
-  std::ostringstream real_traversal;
-  std::ostringstream iterator_traversal;
-  BST<int32_t> bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-
-  for (int32_t& value : values) {
-    bst.insert(value);
-  }
-
   PrintToStream<int32_t, PostOrder>(bst, real_traversal);
 
   for (auto it = bst.begin<PostOrder>(); it != bst.end<PostOrder>(); ++it) {
@@ -266,17 +182,7 @@ TEST_F(BstUnitTestSuite, PostOrderTraverseTreeTest1) {
 }
 
 TEST_F(BstUnitTestSuite, PostOrderReversedTraverseTreeTest1) {
-  std::ostringstream real_traversal;
-  std::ostringstream iterator_traversal;
   std::string reversed_real_traversal;
-  BST<int32_t> bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-
-  for (int32_t& value : values) {
-    bst.insert(value);
-  }
-
   PrintToStream<int32_t, PostOrder>(bst, real_traversal);
   std::vector<std::string> reversed_vector = SplitString(real_traversal.str());
   std::reverse(reversed_vector.begin(), reversed_vector.end());
@@ -293,16 +199,6 @@ TEST_F(BstUnitTestSuite, PostOrderReversedTraverseTreeTest1) {
 }
 
 TEST_F(BstUnitTestSuite, PostOrderFirstAndLastTraverseTreeTest1) {
-  std::ostringstream real_traversal;
-  std::ostringstream iterator_traversal;
-  BST<int32_t> bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-
-  for (int32_t& value : values) {
-    bst.insert(value);
-  }
-
   auto it = bst.end<PostOrder>();
   auto reverse_it = bst.rend<PostOrder>();
 
@@ -311,16 +207,6 @@ TEST_F(BstUnitTestSuite, PostOrderFirstAndLastTraverseTreeTest1) {
 }
 
 TEST_F(BstUnitTestSuite, PostOrderTraverseTreeBothWaysTest1) {
-  std::ostringstream reversed_traversal;
-  std::ostringstream iterator_traversal;
-  BST<int32_t> bst{};
-  size_t size = 10000;
-  std::vector<int32_t> values = GetRandomNumbers(size);
-
-  for (int32_t& value : values) {
-    bst.insert(value);
-  }
-
   for (auto it = bst.rbegin<PostOrder>(); it != bst.rend<PostOrder>(); ++it) {
     reversed_traversal << *it << ' ';
   }

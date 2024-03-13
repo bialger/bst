@@ -1,12 +1,14 @@
-#include <fstream>
-
+#include "test_functions.hpp"
 #include "BstUnitTestSuite.hpp"
 
 void BstUnitTestSuite::SetUp() {
-  std::filesystem::create_directories(kTemporaryDirectoryName);
-  std::ofstream{kTemporaryFileName.c_str()};
+  values = GetRandomNumbers(size);
+
+  for (int32_t& value : values) {
+    bst.insert(value);
+  }
 }
 
 void BstUnitTestSuite::TearDown() {
-  std::filesystem::remove_all(kTemporaryDirectoryName);
+  Test::TearDown();
 }

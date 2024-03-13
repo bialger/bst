@@ -1,5 +1,5 @@
-#ifndef FORECASTUNITTESTSUITE_HPP_
-#define FORECASTUNITTESTSUITE_HPP_
+#ifndef TREEUNITTESTSUITE_HPP_
+#define TREEUNITTESTSUITE_HPP_
 
 #include <filesystem>
 #include <string>
@@ -19,4 +19,4 @@ struct TreeUnitTestSuite : public testing::Test { // special test structure
   void TearDown() override; // method that is called at the end of every test
 };
 
-#endif //FORECASTUNITTESTSUITE_HPP_
+#endif //TREEUNITTESTSUITE_HPP_

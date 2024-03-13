@@ -23,6 +23,8 @@ add_executable(
         TreeUnitTestSuite.cpp
         TreeUnitTestSuite.hpp
         tree_traversal_unit_tests.cpp
+        TreeTraversalUnitTestSuite.cpp
+        TreeTraversalUnitTestSuite.hpp
 )
 
 target_link_libraries(${PROJECT_NAME}_tests PUBLIC
