@@ -3,11 +3,32 @@
 
 #include <memory>
 #include <cstdint>
+#include <type_traits>
 
 #include "ITemplateTree.hpp"
 #include "TreeNode.hpp"
 
 namespace bialger {
+
+template<typename X, typename Enabled = void>
+class comparator_transparent final : public ::std::false_type {};
+
+template<typename X>
+class comparator_transparent<X, ::std::void_t<typename X::is_transparent>> final
+    : public ::std::true_type {
+};
+
+template<typename Compare, typename T, typename K>
+class are_comparable {
+  template<typename C, typename D>
+  static std::true_type test(decltype(Compare()(std::declval<C>(), std::declval<D>()))*);
+
+  template<typename C, typename D>
+  static std::false_type test(...);
+
+ public:
+  enum { value = decltype(test<T, K>(0))::value };
+};
 
 template<typename T, typename U, typename Less, typename Equals, typename Allocator>
 class BinarySearchTree : public ITemplateTree<T, U> {
@@ -208,7 +229,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     } else if ((Less()(key, node->key)) || (allow_duplicates_ && Equals()(key, node->key))) {
       node->left = Insert(node->left, result, key, value);
       node->left->parent = node;
-    } else  if (Less()(node->key, key)) {
+    } else if (Less()(node->key, key)) {
       node->right = Insert(node->right, result, key, value);
       node->right->parent = node;
     }
