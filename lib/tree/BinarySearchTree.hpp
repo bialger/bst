@@ -151,19 +151,25 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   }
 
   template<typename K,
-      std::enable_if_t<comparator_transparent<Less>::value && are_comparable<Less, T, K>::value, bool> = true>
+      std::enable_if_t<comparator_transparent<Less>::value
+                           && are_comparable<Less, T, K>::value
+                           && are_comparable<Equals, T, K>::value, bool> = true>
   [[nodiscard]] NodeType* FindFirst(const K& key) const {
     return FindFirst(root_, key);
   }
 
   template<typename K,
-      std::enable_if_t<comparator_transparent<Less>::value && are_comparable<Less, T, K>::value, bool> = true>
+      std::enable_if_t<comparator_transparent<Less>::value
+                           && are_comparable<Less, T, K>::value
+                           && are_comparable<Equals, T, K>::value, bool> = true>
   [[nodiscard]] NodeType* FindNext(const K& key) const {
     return FindNextByKey(root_, key);
   }
 
   template<typename K,
-      std::enable_if_t<comparator_transparent<Less>::value && are_comparable<Less, T, K>::value, bool> = true>
+      std::enable_if_t<comparator_transparent<Less>::value
+                           && are_comparable<Less, T, K>::value
+                           && are_comparable<Equals, T, K>::value, bool> = true>
   [[nodiscard]] bool Contains(const K& key) const {
     return FindFirst(key) != nullptr;
   }
@@ -274,7 +280,9 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   }
 
   template<typename K,
-      std::enable_if_t<comparator_transparent<Less>::value && are_comparable<Less, T, K>::value, bool> = true>
+      std::enable_if_t<comparator_transparent<Less>::value
+                           && are_comparable<Less, T, K>::value
+                           && are_comparable<Equals, T, K>::value, bool> = true>
   NodeType* FindFirst(NodeType* node, const K& key) const {
     if (node == nullptr) {
       return nullptr;
@@ -314,7 +322,9 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   }
 
   template<typename K,
-      std::enable_if_t<comparator_transparent<Less>::value && are_comparable<Less, T, K>::value, bool> = true>
+      std::enable_if_t<comparator_transparent<Less>::value
+                           && are_comparable<Less, T, K>::value
+                           && are_comparable<Equals, T, K>::value, bool> = true>
   NodeType* FindNextByKey(NodeType* node, const K& key) const {
     NodeType* next = nullptr;
 
