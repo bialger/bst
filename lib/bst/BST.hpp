@@ -410,7 +410,7 @@ void swap(BST<T, Compare, Allocator>& first, BST<T, Compare, Allocator>& second)
 }
 
 template<class Key, class Compare, class Alloc, class Pred>
-typename std::set<Key, Compare, Alloc>::size_type erase_if(std::set<Key, Compare, Alloc>& c, Pred pred) {
+typename BST<Key, Compare, Alloc>::size_type erase_if(BST<Key, Compare, Alloc>& c, Pred pred) {
   auto old_size = c.size();
 
   for (auto first = c.begin(), last = c.end(); first != last;) {

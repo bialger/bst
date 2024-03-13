@@ -15,16 +15,20 @@ enable_testing()
 add_executable(
         ${PROJECT_NAME}_tests
         bst_unit_tests.cpp
+        bst_traversal_unit_tests.cpp
         tree_unit_tests.cpp
+        tree_traversal_unit_tests.cpp
+        static_assertion_tests.cpp
         test_functions.cpp
         test_functions.hpp
         BstUnitTestSuite.cpp
         BstUnitTestSuite.hpp
         TreeUnitTestSuite.cpp
         TreeUnitTestSuite.hpp
-        tree_traversal_unit_tests.cpp
         TreeTraversalUnitTestSuite.cpp
         TreeTraversalUnitTestSuite.hpp
+        BstTraversalUnitTestSuite.cpp
+        BstTraversalUnitTestSuite.hpp
 )
 
 target_link_libraries(${PROJECT_NAME}_tests PUBLIC
