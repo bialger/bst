@@ -43,9 +43,7 @@ class BST {
           post_order_(tree_),
           allocator_(),
           key_compare_(),
-          value_compare_() {
-    end_ = tree_.GetEnd();
-  }
+          value_compare_() {}
 
   BST(const BST& other) : tree_(other.tree_),
                           pre_order_(tree_),
@@ -53,9 +51,7 @@ class BST {
                           post_order_(tree_),
                           allocator_(other.allocator_),
                           key_compare_(other.key_compare_),
-                          value_compare_(other.value_compare_) {
-    end_ = tree_.GetEnd();
-  }
+                          value_compare_(other.value_compare_) {}
 
   explicit BST(const Compare& comp, const Allocator& alloc = Allocator()) : tree_(),
                                                                             pre_order_(tree_),
@@ -63,9 +59,7 @@ class BST {
                                                                             post_order_(tree_),
                                                                             allocator_(alloc),
                                                                             key_compare_(comp),
-                                                                            value_compare_(comp) {
-    end_ = tree_.GetEnd();
-  }
+                                                                            value_compare_(comp) {}
 
   BST(const std::initializer_list<T>& list,
       const Compare& comp = Compare(),
@@ -76,7 +70,6 @@ class BST {
                                               allocator_(alloc),
                                               key_compare_(comp),
                                               value_compare_(comp) {
-    end_ = tree_.GetEnd();
     auto it = list.cbegin();
     auto end = list.cend();
 
@@ -85,9 +78,7 @@ class BST {
     }
   }
 
-  BST(std::initializer_list<value_type> init, const Allocator& alloc) : BST(init, Compare(), alloc) {
-    end_ = tree_.GetEnd();
-  }
+  BST(std::initializer_list<value_type> init, const Allocator& alloc) : BST(init, Compare(), alloc) {}
 
   template<typename InputIt,
       std::enable_if_t<
@@ -103,8 +94,6 @@ class BST {
                                               allocator_(alloc),
                                               key_compare_(comp),
                                               value_compare_(comp) {
-    end_ = tree_.GetEnd();
-
     for (; first != last; ++first) {
       insert(*first);
     }
@@ -116,9 +105,7 @@ class BST {
               || (is_iterator<InputIt>::value && has_value_type<InputIt>::value),
           bool> = true>
   BST(InputIt first, InputIt last,
-      const Allocator& alloc = Allocator()) : BST(first, last, Compare(), alloc) {
-    end_ = tree_.GetEnd();
-  }
+      const Allocator& alloc = Allocator()) : BST(first, last, Compare(), alloc) {}
 
   BST& operator=(const BST& other) {
     if (this == &other) {
@@ -126,7 +113,6 @@ class BST {
     }
 
     tree_ = other.tree_;
-    end_ = tree_.GetEnd();
   }
 
   void clear() {
@@ -142,7 +128,7 @@ class BST {
   template<typename Traversal = DefaultTraversal,
       std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   iterator end() const {
-    return iterator(end_, GetTraversalLink<Traversal>());
+    return iterator(tree_.GetEnd(), GetTraversalLink<Traversal>());
   }
 
   template<typename Traversal = DefaultTraversal,
@@ -166,7 +152,7 @@ class BST {
   template<typename Traversal = DefaultTraversal,
       std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   reverse_iterator rend() const {
-    return reverse_iterator(end_, GetTraversalLink<Traversal>());
+    return reverse_iterator(tree_.GetEnd(), GetTraversalLink<Traversal>());
   }
 
   template<typename Traversal = DefaultTraversal,
@@ -277,7 +263,7 @@ class BST {
     NodeType* first = tree_.FindFirst(key);
     const ITraversal& traversal = in_order_;
 
-    if (first == end_) {
+    if (first == tree_.GetEnd()) {
       return iterator(tree_.FindNext(key), traversal);
     }
 
@@ -288,7 +274,7 @@ class BST {
     NodeType* first = tree_.FindFirst(key);
     const ITraversal& traversal = in_order_;
 
-    if (first == end_) {
+    if (first == tree_.GetEnd()) {
       return iterator(tree_.FindNext(key), traversal);
     }
 
@@ -308,7 +294,7 @@ class BST {
     NodeType* next = tree_.FindNext(key);
     const ITraversal& traversal = in_order_;
 
-    if (first == end_) {
+    if (first == tree_.GetEnd()) {
       return {iterator(next, traversal), iterator(next, traversal)};
     }
 
@@ -320,7 +306,7 @@ class BST {
     NodeType* next = tree_.FindNext(key);
     const ITraversal& traversal = in_order_;
 
-    if (first == end_) {
+    if (first == tree_.GetEnd()) {
       return {const_iterator(next, traversal), const_iterator(next, traversal)};
     }
 
@@ -385,17 +371,16 @@ class BST {
     return allocator_;
   }
 
-  Compare key_compare() {
+  Compare key_compare() const {
     return key_compare_;
   }
 
-  Compare value_compare() {
+  Compare value_compare() const {
     return value_compare_;
   }
 
  private:
   TreeType tree_;
-  ITreeNode* end_;
   PreOrder pre_order_;
   InOrder in_order_;
   PostOrder post_order_;
