@@ -357,16 +357,17 @@ TEST_F(TreeUnitTestSuite, InsertTreeUnstrictTest4) {
   for (int32_t& value : values) {
     ubst.Insert(value, &value);
   }
+
   values.insert(values.end(), values_random.begin(), values_random.end());
   std::shuffle(values.begin(), values.end(), rng);
 
   for (int32_t& value : values) {
     std::pair<IntTree::NodeType*, bool> new_node = ubst.Insert(value, &value);
-    ASSERT_NE(new_node.first, ubst.FindFirst(value));
-    ASSERT_EQ(new_node.second, true);
+    ASSERT_EQ(new_node.first, ubst.FindFirst(value));
+    ASSERT_EQ(new_node.second, false);
   }
 
-  ASSERT_EQ(ubst.GetSize(), 3 * size);
+  ASSERT_EQ(ubst.GetSize(), size);
 }
 
 TEST_F(TreeUnitTestSuite, InsertTreeUnstrictTest5) {
@@ -383,7 +384,7 @@ TEST_F(TreeUnitTestSuite, InsertTreeUnstrictTest5) {
     ubst.Insert(value, &value);
   }
 
-  ASSERT_EQ(ubst.GetSize(), 3 * size);
+  ASSERT_EQ(ubst.GetSize(), size);
 }
 
 TEST_F(TreeUnitTestSuite, InsertTreeUnstrictTest6) {

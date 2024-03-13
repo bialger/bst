@@ -18,11 +18,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   using value_type = U;
 
   explicit BinarySearchTree(bool allow_duplicates = false)
-      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(allow_duplicates), size_{} {
-    if (Less()(T{}, T{})) {
-      allow_duplicates_ = true;
-    }
-  };
+      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(allow_duplicates), size_{} {};
 
   BinarySearchTree(const BinarySearchTree& other)
       : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(other.allow_duplicates_), size_{} {
@@ -31,14 +27,12 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     });
   }
 
-  BinarySearchTree<T, U, Less, Equals, Allocator>& operator=(const BinarySearchTree<T,
-                                                                                    U,
-                                                                                    Less,
-                                                                                    Equals,
-                                                                                    Allocator>& other) {
+  BinarySearchTree& operator=(const BinarySearchTree& other) {
     if (this == &other) {
       return *this;
     }
+
+    allow_duplicates_ = other.allow_duplicates_;
 
     Clear();
     other.PreOrder([&](const NodeType* current) {
@@ -65,17 +59,6 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     std::pair<NodeType*, bool> result = {end_, false};
     root_ = Insert(root_, result, key, value);
     return result;
-  }
-
-  [[nodiscard]] NodeType* InsertFromNode(NodeType* pos, const T& key, const U& value) override {
-    std::pair<NodeType*, bool> result = {end_, false};
-    pos = Insert(pos, result, key, value);
-
-    if (pos == root_) {
-      root_ = pos;
-    }
-
-    return result.first;
   }
 
   void Delete(NodeType* node) override {
@@ -218,13 +201,13 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       return new_node;
     }
 
-    if ((Less()(key, node->key)) || (allow_duplicates_ && Equals()(key, node->key))) {
-      node->left = Insert(node->left, result, key, value);
-      node->left->parent = node;
-    } else if (Equals()(key, node->key) && !allow_duplicates_) {
+    if (Equals()(key, node->key) && !allow_duplicates_) {
       node->value = value;
       result.first = node;
       result.second = false;
+    } else if ((Less()(key, node->key)) || (allow_duplicates_ && Equals()(key, node->key))) {
+      node->left = Insert(node->left, result, key, value);
+      node->left->parent = node;
     } else  if (Less()(node->key, key)) {
       node->right = Insert(node->right, result, key, value);
       node->right->parent = node;
