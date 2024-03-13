@@ -178,7 +178,7 @@ class BST {
   template<typename Traversal = DefaultTraversal,
       std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   iterator insert(iterator pos, const T& key) {
-   return insert(key);
+    return insert(key);
   }
 
   template<typename InputIt,
@@ -379,6 +379,10 @@ class BST {
     return value_compare_;
   }
 
+  template<typename Traversal, typename Type, typename Comp, typename Alloc,
+      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool>>
+  friend std::ostream& operator<<(const BST<Type, Comp, Alloc>& bst, std::ostream& os);
+
  private:
   TreeType tree_;
   PreOrder pre_order_;
@@ -418,6 +422,25 @@ typename std::set<Key, Compare, Alloc>::size_type erase_if(std::set<Key, Compare
   }
 
   return old_size - c.size();
+}
+
+template<typename Type, typename Traversal = InOrder, typename Comp = std::less<>, typename Alloc = std::allocator<Type>,
+    std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
+std::ostream& operator<<(const BST<Type, Comp, Alloc>& bst, std::ostream& os) {
+  std::function<void(const typename BST<Type, Comp, Alloc>::NodeType*)>
+      print_node = [&](const typename BST<Type, Comp, Alloc>::NodeType* current) -> void {
+    os << current->key << ' ';
+  };
+
+  if constexpr (std::is_same<Traversal, PreOrder>::value) {
+    bst.tree_.PreOrder(print_node);
+  } else if (std::is_same<Traversal, InOrder>::value) {
+    bst.tree_.InOrder(print_node);
+  } else {
+    bst.tree_.PostOrder(print_node);
+  }
+
+  return os;
 }
 
 using CharSet = BST<char>;

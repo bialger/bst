@@ -33,8 +33,8 @@ TEST(TreeTraversalUnitTestSuite, InOrderTraverseTreeTest0) {
     bst.Insert(value, &value);
   }
 
-  bst.InOrder([&](bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<StringTree::NodeType*>(node)->key);
+  bst.InOrder([&](StringTree::NodeType* node) -> void {
+    real_traverse.push_back(node->key);
   });
 
   ITreeNode* begin = traversal.GetFirst();
@@ -60,8 +60,8 @@ TEST(TreeTraversalUnitTestSuite, InOrderMutableTraverseTreeTest1) {
     bst.Insert(value, &value);
   }
 
-  bst.InOrder([&](bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<IntTree::NodeType*>(node)->key);
+  bst.InOrder([&](IntTree::NodeType* node) -> void {
+    real_traverse.push_back(node->key);
   });
 
   ITreeNode* begin = traversal.GetFirst();
@@ -87,8 +87,8 @@ TEST(TreeTraversalUnitTestSuite, InOrderMutableReversedTraverseTreeTest1) {
     bst.Insert(value, &value);
   }
 
-  bst.InOrder([&](bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<IntTree::NodeType*>(node)->key);
+  bst.InOrder([&](IntTree::NodeType* node) -> void {
+    real_traverse.push_back(node->key);
   });
 
   ITreeNode* rbegin = traversal.GetLast();
@@ -116,8 +116,8 @@ TEST(TreeTraversalUnitTestSuite, PreOrderMutableTraverseTreeTest1) {
     bst.Insert(value, &value);
   }
 
-  bst.PreOrder([&](bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<IntTree::NodeType*>(node)->key);
+  bst.PreOrder([&](IntTree::NodeType* node) -> void {
+    real_traverse.push_back(node->key);
   });
 
   ITreeNode* begin = traversal.GetFirst();
@@ -143,8 +143,8 @@ TEST(TreeTraversalUnitTestSuite, PreOrderMutableReversedTraverseTreeTest1) {
     bst.Insert(value, &value);
   }
 
-  bst.PreOrder([&](bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<IntTree::NodeType*>(node)->key);
+  bst.PreOrder([&](IntTree::NodeType* node) -> void {
+    real_traverse.push_back(node->key);
   });
 
   ITreeNode* rbegin = traversal.GetLast();
@@ -172,8 +172,8 @@ TEST(TreeTraversalUnitTestSuite, PostOrderMutableTraverseTreeTest1) {
     bst.Insert(value, &value);
   }
 
-  bst.PostOrder([&](bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<IntTree::NodeType*>(node)->key);
+  bst.PostOrder([&](IntTree::NodeType* node) -> void {
+    real_traverse.push_back(node->key);
   });
 
   ITreeNode* begin = traversal.GetFirst();
@@ -199,8 +199,8 @@ TEST(TreeTraversalUnitTestSuite, PostOrderMutableReversedTraverseTreeTest1) {
     bst.Insert(value, &value);
   }
 
-  bst.PostOrder([&](bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<IntTree::NodeType*>(node)->key);
+  bst.PostOrder([&](IntTree::NodeType* node) -> void {
+    real_traverse.push_back(node->key);
   });
 
   ITreeNode* rbegin = traversal.GetLast();
@@ -229,8 +229,8 @@ TEST(TreeTraversalUnitTestSuite, InOrderFullTraverseTreeTest) {
     bst.Insert(value, &value);
   }
 
-  bst.InOrder([&](bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<IntTree::NodeType*>(node)->key);
+  bst.InOrder([&](IntTree::NodeType* node) -> void {
+    real_traverse.push_back(node->key);
   });
 
   ITreeNode* begin = traversal.GetFirst();
@@ -244,8 +244,8 @@ TEST(TreeTraversalUnitTestSuite, InOrderFullTraverseTreeTest) {
   real_traverse.clear();
   class_traverse.clear();
 
-  bst.InOrder([&](bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<IntTree::NodeType*>(node)->key);
+  bst.InOrder([&](IntTree::NodeType* node) -> void {
+    real_traverse.push_back(node->key);
   });
 
   ITreeNode* rbegin = traversal.GetLast();
@@ -274,8 +274,8 @@ TEST(TreeTraversalUnitTestSuite, PreOrderFullTraverseTreeTest) {
     bst.Insert(value, &value);
   }
 
-  bst.PreOrder([&](bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<IntTree::NodeType*>(node)->key);
+  bst.PreOrder([&](IntTree::NodeType* node) -> void {
+    real_traverse.push_back(node->key);
   });
 
   ITreeNode* begin = traversal.GetFirst();
@@ -289,8 +289,8 @@ TEST(TreeTraversalUnitTestSuite, PreOrderFullTraverseTreeTest) {
   real_traverse.clear();
   class_traverse.clear();
 
-  bst.PreOrder([&](bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<IntTree::NodeType*>(node)->key);
+  bst.PreOrder([&](IntTree::NodeType* node) -> void {
+    real_traverse.push_back(node->key);
   });
 
   ITreeNode* rbegin = traversal.GetLast();
@@ -319,8 +319,8 @@ TEST(TreeTraversalUnitTestSuite, PostOrderFullTraverseTreeTest) {
     bst.Insert(value, &value);
   }
 
-  bst.PostOrder([&](bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<IntTree::NodeType*>(node)->key);
+  bst.PostOrder([&](IntTree::NodeType* node) -> void {
+    real_traverse.push_back(node->key);
   });
 
   ITreeNode* begin = traversal.GetFirst();
@@ -334,8 +334,8 @@ TEST(TreeTraversalUnitTestSuite, PostOrderFullTraverseTreeTest) {
   real_traverse.clear();
   class_traverse.clear();
 
-  bst.PostOrder([&](bialger::ITreeNode* node) -> void {
-    real_traverse.push_back(dynamic_cast<IntTree::NodeType*>(node)->key);
+  bst.PostOrder([&](IntTree::NodeType* node) -> void {
+    real_traverse.push_back(node->key);
   });
 
   ITreeNode* rbegin = traversal.GetLast();

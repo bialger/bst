@@ -26,8 +26,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   BinarySearchTree(const BinarySearchTree& other)
       : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(other.allow_duplicates_), size_{} {
     other.PreOrder([&](const NodeType* current) {
-      const auto* current_ = static_cast<const NodeType*>(current);
-      this->Insert(current_->key, current_->value);
+      this->Insert(current->key, current->value);
     });
   }
 
@@ -42,8 +41,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
 
     Clear();
     other.PreOrder([&](const NodeType* current) {
-      const auto* current_ = static_cast<const NodeType*>(current);
-      this->Insert(current_->key, current_->value);
+      this->Insert(current->key, current->value);
     });
 
     return *this;
@@ -55,8 +53,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
 
   void Clear() override {
     PostOrder([&](NodeType* current) {
-      auto* current_ = static_cast<NodeType*>(current);
-      DeleteNode(current_);
+      DeleteNode(current);
     });
 
     end_ = nullptr;
