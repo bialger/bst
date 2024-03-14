@@ -59,7 +59,7 @@ class BST {
                           key_compare_(other.key_compare_),
                           value_compare_(other.value_compare_) {}
 
-  explicit BST(const Compare& comp, const Allocator& alloc = Allocator()) : tree_(),
+  explicit BST(const Compare& comp, const Allocator& alloc = Allocator()) : tree_(false, comp),
                                                                             pre_order_(tree_),
                                                                             in_order_(tree_),
                                                                             post_order_(tree_),
@@ -69,7 +69,7 @@ class BST {
 
   BST(const std::initializer_list<T>& list,
       const Compare& comp = Compare(),
-      const Allocator& alloc = Allocator()) : tree_(),
+      const Allocator& alloc = Allocator()) : tree_(false, comp),
                                               pre_order_(tree_),
                                               in_order_(tree_),
                                               post_order_(tree_),
@@ -100,7 +100,7 @@ class BST {
           bool> = true>
   BST(InputIt first, InputIt last,
       const Compare& comp = Compare(),
-      const Allocator& alloc = Allocator()) : tree_(),
+      const Allocator& alloc = Allocator()) : tree_(false, comp),
                                               pre_order_(tree_),
                                               in_order_(tree_),
                                               post_order_(tree_),
@@ -130,6 +130,8 @@ class BST {
     for (; it != end; ++it) {
       insert(*it);
     }
+
+    return *this;
   }
 
   BST& operator=(const BST& other) {
@@ -138,6 +140,10 @@ class BST {
     }
 
     tree_ = other.tree_;
+    allocator_ = other.allocator_;
+    key_compare_ = other.key_compare_;
+    value_compare_ = other.value_compare_;
+    return *this;
   }
 
   void clear() {
@@ -509,11 +515,11 @@ class BST {
   }
 
   Compare key_comp() const {
-    return key_compare_;
+    return tree_.GetComparator();
   }
 
   Compare value_comp() const {
-    return value_compare_;
+    return tree_.GetComparator();
   }
 
   template<typename Type, typename Traversal, typename Comp, typename Alloc,

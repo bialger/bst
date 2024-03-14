@@ -39,7 +39,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   using value_type = U;
 
   explicit BinarySearchTree(bool allow_duplicates = false, const Less& less = Less())
-      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(allow_duplicates), less_(&less), size_{} {};
+      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(allow_duplicates), less_(less), size_{} {};
 
   BinarySearchTree(const BinarySearchTree& other)
       : end_(nullptr),
@@ -221,6 +221,10 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     return size_;
   }
 
+  [[nodiscard]] Less GetComparator() const {
+    return less_;
+  }
+
  protected:
   using NodeAllocatorType = typename std::allocator_traits<Allocator>::template rebind_alloc<NodeType>;
   using NodeAllocatorTraits = std::allocator_traits<NodeAllocatorType>;
@@ -230,7 +234,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   NodeType* end_;
   NodeType* root_;
   NodeAllocatorType allocator_;
-  const Less* less_;
+  Less less_;
 
   NodeType* CreateNode(const T& key, const U& value) {
     NodeType* new_node = NodeAllocatorTraits::allocate(allocator_, 1);
@@ -258,10 +262,10 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       node->value = value;
       result.first = node;
       result.second = false;
-    } else if (((*less_)(key, node->key)) || (allow_duplicates_ && Equals()(key, node->key))) {
+    } else if ((less_(key, node->key)) || (allow_duplicates_ && Equals()(key, node->key))) {
       node->left = Insert(node->left, result, key, value);
       node->left->parent = node;
-    } else if ((*less_)(node->key, key)) {
+    } else if (less_(node->key, key)) {
       node->right = Insert(node->right, result, key, value);
       node->right->parent = node;
     }
@@ -278,9 +282,9 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       return node;
     }
 
-    if ((*less_)(key, node->key)) {
+    if (less_(key, node->key)) {
       return FindFirst(node->left, key);
-    } else if ((*less_)(node->key, key)) {
+    } else if (less_(node->key, key)) {
       return FindFirst(node->right, key);
     }
 
@@ -300,9 +304,9 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       return node;
     }
 
-    if ((*less_)(key, node->key)) {
+    if (less_(key, node->key)) {
       return FindFirst(node->left, key);
-    } else if ((*less_)(node->key, key)) {
+    } else if (less_(node->key, key)) {
       return FindFirst(node->right, key);
     }
 
@@ -315,8 +319,8 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     while (node != nullptr) {
       if (Equals()(key, node->key)) {
         node = node->right;
-      } else if ((*less_)(key, node->key) || (allow_duplicates_ && Equals()(key, node->key))) {
-        if (next == nullptr || (*less_)(node->key, next->key)) {
+      } else if (less_(key, node->key) || (allow_duplicates_ && Equals()(key, node->key))) {
+        if (next == nullptr || less_(node->key, next->key)) {
           next = node;
         }
 
@@ -339,8 +343,8 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     while (node != nullptr) {
       if (Equals()(key, node->key)) {
         node = node->right;
-      } else if ((*less_)(key, node->key) || (allow_duplicates_ && Equals()(key, node->key))) {
-        if (next == nullptr || (*less_)(node->key, next->key)) {
+      } else if (less_(key, node->key) || (allow_duplicates_ && Equals()(key, node->key))) {
+        if (next == nullptr || less_(node->key, next->key)) {
           next = node;
         }
 
