@@ -1,6 +1,8 @@
 #include <vector>
 #include <set>
 
+#include "lib/bst/bst_sfinae.hpp"
+#include "lib/tree/tree_sfinae.hpp"
 #include "lib/bst/BST.hpp"
 #include <gtest/gtest.h>
 

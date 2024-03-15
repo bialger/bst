@@ -9,11 +9,15 @@
 #include "lib/tree/PostOrder.hpp"
 
 #include "BstIterator.hpp"
+#include "bst_sfinae.hpp"
 
 namespace bialger {
 
 template<typename T, typename Compare = std::less<>, typename Allocator = std::allocator<T>>
 class BST {
+  static_assert(std::is_same<typename std::remove_cv<T>::type, T>::value,
+                "std::set must have a non-const, non-volatile value_type");
+  
  private:
   using TreeType = BinarySearchTree<T,
                                     const T*,
@@ -59,7 +63,7 @@ class BST {
                           key_compare_(other.key_compare_),
                           value_compare_(other.value_compare_) {}
 
-  explicit BST(const Compare& comp, const Allocator& alloc = Allocator()) : tree_(false, comp),
+  explicit BST(const Compare& comp, const Allocator& alloc = Allocator()) : tree_(false, comp, alloc),
                                                                             pre_order_(tree_),
                                                                             in_order_(tree_),
                                                                             post_order_(tree_),
@@ -69,7 +73,7 @@ class BST {
 
   BST(const std::initializer_list<T>& list,
       const Compare& comp = Compare(),
-      const Allocator& alloc = Allocator()) : tree_(false, comp),
+      const Allocator& alloc = Allocator()) : tree_(false, comp, alloc),
                                               pre_order_(tree_),
                                               in_order_(tree_),
                                               post_order_(tree_),
@@ -95,12 +99,12 @@ class BST {
 
   template<typename InputIt,
       std::enable_if_t<
-          std::is_same<InputIt, T*>::value || std::is_same<InputIt, const T*>::value
+          std::is_same<InputIt, typename std::remove_cv<T*>::type>::value
               || (is_iterator<InputIt>::value && has_value_type<InputIt>::value),
           bool> = true>
   BST(InputIt first, InputIt last,
       const Compare& comp = Compare(),
-      const Allocator& alloc = Allocator()) : tree_(false, comp),
+      const Allocator& alloc = Allocator()) : tree_(false, comp, alloc),
                                               pre_order_(tree_),
                                               in_order_(tree_),
                                               post_order_(tree_),
@@ -114,7 +118,7 @@ class BST {
 
   template<typename InputIt,
       std::enable_if_t<
-          std::is_same<InputIt, T*>::value || std::is_same<InputIt, const T*>::value
+          std::is_same<InputIt, typename std::remove_cv<T*>::type>::value
               || (is_iterator<InputIt>::value && has_value_type<InputIt>::value),
           bool> = true>
   BST(InputIt first, InputIt last, const Allocator& alloc) : BST(first, last, Compare(), alloc) {
@@ -214,7 +218,7 @@ class BST {
 
   template<typename InputIt,
       std::enable_if_t<
-          std::is_same<InputIt, T*>::value || std::is_same<InputIt, const T*>::value
+          std::is_same<InputIt, typename std::remove_cv<T*>::type>::value
               || (is_iterator<InputIt>::value && has_value_type<InputIt>::value),
           bool> = true>
   void insert(InputIt first, InputIt last) {
