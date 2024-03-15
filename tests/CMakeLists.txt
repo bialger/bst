@@ -18,7 +18,7 @@ add_executable(
         bst_traversal_unit_tests.cpp
         tree_unit_tests.cpp
         tree_traversal_unit_tests.cpp
-        static_assertion_tests.cpp
+        sfinae_structures_tests.cpp
         test_functions.cpp
         test_functions.hpp
         BstUnitTestSuite.cpp
@@ -29,6 +29,7 @@ add_executable(
         TreeTraversalUnitTestSuite.hpp
         BstTraversalUnitTestSuite.cpp
         BstTraversalUnitTestSuite.hpp
+        custom_classes.hpp
 )
 
 target_link_libraries(${PROJECT_NAME}_tests PUBLIC

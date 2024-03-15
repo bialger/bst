@@ -1,11 +1,11 @@
 #include <sstream>
 
-#include "test_functions.hpp"
-#include "BstUnitTestSuite.hpp"
-
 #include <vector>
 #include <set>
 #include <gtest/gtest.h>
+
+#include "test_functions.hpp"
+#include "BstUnitTestSuite.hpp"
 
 using namespace bialger;
 

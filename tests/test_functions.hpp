@@ -10,4 +10,6 @@ std::vector<std::string> SplitString(const std::string& str);
 
 std::vector<int32_t> GetRandomNumbers(size_t n);
 
+uint32_t GetRandomNumber();
+
 #endif //TESTFUNCTIONS_HPP_

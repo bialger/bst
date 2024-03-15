@@ -24,3 +24,12 @@ std::vector<int32_t> GetRandomNumbers(size_t n) {
 
   return result;
 }
+
+uint32_t GetRandomNumber() {
+  std::random_device dev;
+  std::mt19937 rng(dev());
+  std::uniform_int_distribution<std::mt19937::result_type>
+      dist(0, std::numeric_limits<uint32_t>::max());
+
+  return dist(rng);
+}

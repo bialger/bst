@@ -8,6 +8,7 @@
 
 #include <gtest/gtest.h>
 #include "lib/bst/BST.hpp"
+#include "custom_classes.hpp"
 
 struct BstUnitTestSuite : public testing::Test { // special test structure
   void SetUp() override; // method that is called at the beginning of every test
@@ -24,6 +25,9 @@ struct BstUnitTestSuite : public testing::Test { // special test structure
   std::vector<int32_t> values_unique;
   std::vector<int32_t> data_inorder;
   bialger::BST<int32_t> bst;
+  bialger::BST<int32_t, bialger::LessContainer<void>> custom_comparator_bst;
+  bialger::BST<int32_t, std::less<>, bialger::CountingAllocator<int32_t>> custom_allocator_bst;
+  bialger::BST<int32_t, bialger::LessContainer<void>, bialger::CountingAllocator<int32_t>> custom_bst;
 };
 
 #endif //BSTUNITTESTSUITE_HPP_
