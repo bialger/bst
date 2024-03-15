@@ -7,28 +7,9 @@
 
 #include "ITemplateTree.hpp"
 #include "TreeNode.hpp"
+#include "tree_sfinae.hpp"
 
 namespace bialger {
-
-template<typename X, typename Enabled = void>
-class comparator_transparent final : public ::std::false_type {};
-
-template<typename X>
-class comparator_transparent<X, ::std::void_t<typename X::is_transparent>> final
-    : public ::std::true_type {
-};
-
-template<typename Compare, typename T, typename K>
-class are_comparable {
-  template<typename C, typename D>
-  static std::true_type test(decltype(Compare()(std::declval<C>(), std::declval<D>()))*);
-
-  template<typename C, typename D>
-  static std::false_type test(...);
-
- public:
-  enum { value = decltype(test<T, K>(0))::value };
-};
 
 template<typename T, typename U, typename Less, typename Equals, typename Allocator>
 class BinarySearchTree : public ITemplateTree<T, U> {
@@ -38,13 +19,15 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   using key_type = T;
   using value_type = U;
 
-  explicit BinarySearchTree(bool allow_duplicates = false, const Less& less = Less())
-      : end_(nullptr), root_(nullptr), allocator_(), allow_duplicates_(allow_duplicates), less_(less), size_{} {};
+  explicit BinarySearchTree(bool allow_duplicates = false,
+                            const Less& less = Less(),
+                            const Allocator& alloc = Allocator())
+      : end_(nullptr), root_(nullptr), node_allocator_(alloc), allow_duplicates_(allow_duplicates), less_(less), size_{} {};
 
   BinarySearchTree(const BinarySearchTree& other)
       : end_(nullptr),
         root_(nullptr),
-        allocator_(),
+        node_allocator_(other.node_allocator_),
         allow_duplicates_(other.allow_duplicates_),
         less_(other.less_),
         size_{} {
@@ -60,7 +43,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
 
     allow_duplicates_ = other.allow_duplicates_;
     less_ = other.less_;
-    allocator_ = other.allocator_;
+    node_allocator_ = other.node_allocator_;
 
     Clear();
     other.PreOrder([&](const NodeType* current) {
@@ -233,19 +216,19 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   size_t size_;
   NodeType* end_;
   NodeType* root_;
-  NodeAllocatorType allocator_;
+  NodeAllocatorType node_allocator_;
   Less less_;
 
   NodeType* CreateNode(const T& key, const U& value) {
-    NodeType* new_node = NodeAllocatorTraits::allocate(allocator_, 1);
-    NodeAllocatorTraits::construct(allocator_, new_node, key, value);
+    NodeType* new_node = NodeAllocatorTraits::allocate(node_allocator_, 1);
+    NodeAllocatorTraits::construct(node_allocator_, new_node, key, value);
     ++size_;
 
     return new_node;
   }
 
   void DeleteNode(NodeType* node) {
-    NodeAllocatorTraits::deallocate(allocator_, node, 1);
+    NodeAllocatorTraits::deallocate(node_allocator_, node, 1);
     --size_;
   }
 
