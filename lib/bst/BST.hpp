@@ -548,9 +548,9 @@ class BST {
   PreOrder pre_order_;
   InOrder in_order_;
   PostOrder post_order_;
-  Allocator allocator_;
-  Compare key_compare_;
-  Compare value_compare_;
+  allocator_type allocator_;
+  key_compare key_compare_;
+  value_compare value_compare_;
 
   template<typename Traversal, std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   [[nodiscard]] const ITraversal& GetTraversalLink() const {
@@ -603,7 +603,7 @@ std::ostream& PrintToStream(const BST<Type, Comp, Alloc>& bst, std::ostream& os)
   return os;
 }
 
-using CharSet = BST<char>;
+using CharSet [[maybe_unused]] = BST<char>;
 
 } // bialger
 

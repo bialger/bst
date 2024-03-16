@@ -13,6 +13,7 @@ TEST_F(BstUnitTestSuite, EmptyTest) {
   empty_bst.insert({});
   empty_bst.insert(values.end(), values.end());
   empty_bst.insert(custom_bst);
+  ASSERT_EQ(empty_bst.max_size(), std::numeric_limits<BST<int32_t>::difference_type>::max());
   ASSERT_EQ(empty_bst, bst);
   ASSERT_EQ(empty_bst.size(), 0);
   ASSERT_TRUE(empty_bst.empty());
@@ -458,7 +459,6 @@ TEST_F(BstUnitTestSuite, InsertTest8) {
 }
 
 TEST_F(BstUnitTestSuite, ClearTest) {
-  std::vector<int32_t> data_inorder;
   bst.insert(values);
 
   bst.clear();
@@ -467,7 +467,6 @@ TEST_F(BstUnitTestSuite, ClearTest) {
 }
 
 TEST_F(BstUnitTestSuite, EraseTest1) {
-  std::vector<int32_t> data_inorder;
   bst.insert(values);
 
   for (auto it = bst.begin(); it != bst.end();) {
@@ -479,7 +478,6 @@ TEST_F(BstUnitTestSuite, EraseTest1) {
 }
 
 TEST_F(BstUnitTestSuite, EraseTest2) {
-  std::vector<int32_t> data_inorder;
   bst.insert(values_unique);
   size_t erase_count = 0;
 
@@ -496,7 +494,6 @@ TEST_F(BstUnitTestSuite, EraseTest2) {
 }
 
 TEST_F(BstUnitTestSuite, EraseTest3) {
-  std::vector<int32_t> data_inorder;
   bst.insert(values_unique);
   const size_t erase_size = 250 + (dist(rng) % (size / 4));
   const size_t erase_start = (dist(rng) % (size / 2));
@@ -518,7 +515,6 @@ TEST_F(BstUnitTestSuite, EraseTest3) {
 }
 
 TEST_F(BstUnitTestSuite, EraseTest4) {
-  std::vector<int32_t> data_inorder;
   bst.insert(values_unique);
   size_t erase_count = 0;
 
@@ -537,7 +533,6 @@ TEST_F(BstUnitTestSuite, EraseTest4) {
 }
 
 TEST_F(BstUnitTestSuite, FindTest1) {
-  std::vector<int32_t> data_inorder;
   bst.insert(values);
 
   for (int32_t value : values) {
@@ -548,7 +543,6 @@ TEST_F(BstUnitTestSuite, FindTest1) {
 }
 
 TEST_F(BstUnitTestSuite, FindTest2) {
-  std::vector<int32_t> data_inorder;
   bst.insert(values_unique);
 
   for (int32_t value : values_unique) {
@@ -590,6 +584,38 @@ TEST_F(BstUnitTestSuite, InsertAndFindTest1) {
   ASSERT_EQ(values_unique, data_inorder);
 }
 
+TEST_F(BstUnitTestSuite, ContainsTest1) {
+  bst.insert(values);
+
+  for (int32_t value : values) {
+    ASSERT_TRUE(bst.contains(value));
+  }
+}
+
+TEST_F(BstUnitTestSuite, ContainsTest2) {
+  bst.insert(values_unique);
+
+  for (int32_t value : values_unique) {
+    ASSERT_FALSE(bst.contains(value + 1000000));
+  }
+}
+
+TEST_F(BstUnitTestSuite, CountTest1) {
+  bst.insert(values);
+
+  for (int32_t value : values) {
+    ASSERT_EQ(bst.count(value), 1);
+  }
+}
+
+TEST_F(BstUnitTestSuite, CountTest2) {
+  bst.insert(values_unique);
+
+  for (int32_t value : values_unique) {
+    ASSERT_EQ(bst.contains(value + 1000000), 0);
+  }
+}
+
 TEST_F(BstUnitTestSuite, InsertAndFindTest2) {
   std::vector<int32_t> data_inorder;
 
@@ -620,7 +646,6 @@ TEST_F(BstUnitTestSuite, InsertAndFindTest2) {
 }
 
 TEST_F(BstUnitTestSuite, LowerBoundTest1) {
-  std::vector<int32_t> data_inorder;
   bst.insert(values_unique);
   std::sort(values_unique.begin(), values_unique.end());
 
@@ -637,7 +662,6 @@ TEST_F(BstUnitTestSuite, LowerBoundTest1) {
 }
 
 TEST_F(BstUnitTestSuite, UpperBoundTest1) {
-  std::vector<int32_t> data_inorder;
   bst.insert(values_unique);
   std::sort(values_unique.begin(), values_unique.end());
 
