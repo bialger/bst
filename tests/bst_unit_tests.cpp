@@ -11,7 +11,10 @@ using namespace bialger;
 
 TEST_F(BstUnitTestSuite, EmptyTest) {
   BST<int32_t> empty_bst;
-  ASSERT_EQ(empty_bst, empty_bst);
+  empty_bst.insert({});
+  empty_bst.insert(values.end(), values.end());
+  empty_bst.insert(custom_bst);
+  ASSERT_EQ(empty_bst, bst);
   ASSERT_EQ(empty_bst.size(), 0);
   ASSERT_TRUE(empty_bst.empty());
   ASSERT_FALSE(empty_bst.contains(0));
@@ -22,6 +25,12 @@ TEST_F(BstUnitTestSuite, NonEmptyTest) {
   ASSERT_EQ(bst, bst);
   ASSERT_EQ(bst.size(), 1);
   ASSERT_FALSE(bst.empty());
+}
+
+TEST_F(BstUnitTestSuite, BadComparatorTest) {
+  BST<int32_t, std::less_equal<>> bad_bst;
+  ASSERT_THROW(bad_bst.insert(0), std::invalid_argument);
+  ASSERT_THROW(bad_bst.insert(bad_bst.end(), 0), std::invalid_argument);
 }
 
 TEST_F(BstUnitTestSuite, ConstructTest1) {
@@ -285,7 +294,10 @@ TEST_F(BstUnitTestSuite, InsertTest1) {
 TEST_F(BstUnitTestSuite, InsertTest2) {
   std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
   std::vector<int32_t> data_inorder;
-  bst.insert({3, 5, 4, 5, 2, 5, 1});
+
+  for (int32_t& value : sample_values) {
+    bst.insert(bst.end(), value);
+  }
 
   ASSERT_EQ(bst.size(), sample_values.size());
 
@@ -297,6 +309,20 @@ TEST_F(BstUnitTestSuite, InsertTest2) {
 }
 
 TEST_F(BstUnitTestSuite, InsertTest3) {
+  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
+  std::vector<int32_t> data_inorder;
+  bst.insert({3, 5, 4, 5, 2, 5, 1});
+
+  ASSERT_EQ(bst.size(), sample_values.size());
+
+  for (const int32_t& val : bst) {
+    data_inorder.push_back(val);
+  }
+
+  ASSERT_EQ(sample_values, data_inorder);
+}
+
+TEST_F(BstUnitTestSuite, InsertTest4) {
   std::vector<int32_t> data_inorder;
 
   for (int32_t& value : values_unique) {
@@ -314,7 +340,7 @@ TEST_F(BstUnitTestSuite, InsertTest3) {
   ASSERT_EQ(values_unique, data_inorder);
 }
 
-TEST_F(BstUnitTestSuite, InsertTest4) {
+TEST_F(BstUnitTestSuite, InsertTest5) {
   std::vector<int32_t> data_inorder;
   bst.insert(values_unique.begin(), values_unique.end());
 
@@ -329,15 +355,13 @@ TEST_F(BstUnitTestSuite, InsertTest4) {
   ASSERT_EQ(values_unique, data_inorder);
 }
 
-TEST_F(BstUnitTestSuite, InsertTest5) {
+TEST_F(BstUnitTestSuite, InsertTest6) {
   std::vector<int32_t> data_inorder;
-  bst.insert(values_unique.begin(), values_unique.end());
-  BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>> bst2;
-  bst2.insert(bst);
+  bst.insert(values_unique);
 
-  ASSERT_EQ(bst2.size(), values_unique.size());
+  ASSERT_EQ(bst.size(), values_unique.size());
 
-  for (const int32_t& val : bst2) {
+  for (const int32_t& val : bst) {
     data_inorder.push_back(val);
   }
 
@@ -346,7 +370,27 @@ TEST_F(BstUnitTestSuite, InsertTest5) {
   ASSERT_EQ(values_unique, data_inorder);
 }
 
-TEST_F(BstUnitTestSuite, InsertTest6) {
+TEST_F(BstUnitTestSuite, InsertTest7) {
+  std::vector<int32_t> data_inorder;
+  std::vector<int32_t> data_inorder2;
+  custom_bst.insert(values);
+  BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>> bst2;
+  bst2.insert(custom_bst);
+
+  ASSERT_EQ(bst2.size(), custom_bst.size());
+
+  for (const int32_t& val : custom_bst) {
+    data_inorder.push_back(val);
+  }
+
+  for (const int32_t& val : bst2) {
+    data_inorder2.push_back(val);
+  }
+
+  ASSERT_EQ(data_inorder, data_inorder2);
+}
+
+TEST_F(BstUnitTestSuite, InsertTest8) {
   std::vector<int32_t> data_inorder;
   bst.insert(values_unique);
 
@@ -462,4 +506,36 @@ TEST_F(BstUnitTestSuite, FindTest2) {
     ASSERT_TRUE(bst.find<PreOrder>(value + 1000000) == bst.end<PreOrder>());
     ASSERT_TRUE(bst.find<PostOrder>(value + 1000000) == bst.end<PostOrder>());
   }
+}
+
+TEST_F(BstUnitTestSuite, InsertAndFindTest1) {
+  std::vector<int32_t> data_inorder;
+
+  for (int32_t& value : values_unique) {
+    auto res = bst.insert(value);
+    ASSERT_TRUE(res.first == bst.find(value));
+    ASSERT_TRUE(res.second);
+  }
+
+  for (int32_t& value : values_unique) {
+    auto res = bst.insert<PreOrder>(value);
+    ASSERT_TRUE(res.first == bst.find<PreOrder>(value));
+    ASSERT_FALSE(res.second);
+  }
+
+  for (int32_t& value : values_unique) {
+    auto res = bst.insert<PostOrder>(value);
+    ASSERT_TRUE(res.first == bst.find<PostOrder>(value));
+    ASSERT_FALSE(res.second);
+  }
+
+  ASSERT_EQ(bst.size(), values_unique.size());
+
+  for (const int32_t& val : bst) {
+    data_inorder.push_back(val);
+  }
+
+  std::sort(values_unique.begin(), values_unique.end());
+
+  ASSERT_EQ(values_unique, data_inorder);
 }

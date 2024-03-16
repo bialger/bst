@@ -203,6 +203,10 @@ class BST {
   template<typename Traversal = DefaultTraversal,
       std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   std::pair<iterator, bool> insert(const T& key) {
+    if (tree_.GetComparator()(key, key)) {
+      throw std::invalid_argument("Incorrect template parameter Compare: is not strict");
+    }
+
     auto result = tree_.Insert(key, &key);
     iterator it = iterator(result.first, GetTraversalLink<Traversal>());
     return {it, result.second};
@@ -211,7 +215,7 @@ class BST {
   template<typename Traversal = DefaultTraversal,
       std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   iterator insert(iterator pos, const T& key) {
-    return insert(key);
+    return insert(key).first;
   }
 
   template<typename InputIt,
@@ -220,6 +224,14 @@ class BST {
               || (is_iterator<InputIt>::value && has_value_type<InputIt>::value),
           bool> = true>
   void insert(InputIt first, InputIt last) {
+    if (first == last) {
+      return;
+    }
+
+    if (tree_.GetComparator()(*first, *first)) {
+      throw std::invalid_argument("Incorrect template parameter Compare: is not strict");
+    }
+
     for (; first != last; ++first) {
       insert(*first);
     }
@@ -233,6 +245,14 @@ class BST {
     auto it = other.cbegin();
     auto end = other.cend();
 
+    if (it == end) {
+      return;
+    }
+
+    if (tree_.GetComparator()(*it, *it)) {
+      throw std::invalid_argument("Incorrect template parameter Compare: is not strict");
+    }
+
     for (; it != end; ++it) {
       insert(*it);
     }
@@ -241,6 +261,14 @@ class BST {
   void insert(const std::initializer_list<T>& list) {
     auto it = list.begin();
     auto end = list.end();
+
+    if (it == end) {
+      return;
+    }
+
+    if (tree_.GetComparator()(*it, *it)) {
+      throw std::invalid_argument("Incorrect template parameter Compare: is not strict");
+    }
 
     for (; it != end; ++it) {
       insert(*it);

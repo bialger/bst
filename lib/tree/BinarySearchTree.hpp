@@ -235,6 +235,10 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     return less_;
   }
 
+  [[nodiscard]] Equals GetEquivalent() const {
+    return equals_;
+  }
+
   [[nodiscard]] Allocator GetAllocator() const {
     return Allocator(node_allocator_);
   }
