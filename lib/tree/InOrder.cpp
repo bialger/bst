@@ -10,6 +10,10 @@ bialger::ITreeNode* bialger::InOrder::GetLast() const {
   return GetMax(tree_.GetRoot());
 }
 
+bialger::ITreeNode* bialger::InOrder::GetEnd() const {
+  return tree_.GetEnd();
+}
+
 bialger::ITreeNode* bialger::InOrder::GetPredecessor(bialger::ITreeNode* current) const {
   if (current == GetFirst()) {
     return tree_.GetEnd();

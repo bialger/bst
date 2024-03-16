@@ -34,15 +34,16 @@ class BstIterator {
 
   BstIterator() = delete;
 
-  explicit BstIterator(const ITraversal& traversal) : traversal_(&traversal) {
+  explicit BstIterator(const ITraversal& traversal) : traversal_(&traversal), end_(traversal.GetEnd()) {
     current_ = dynamic_cast<NodeType*>(is_reversed ? traversal_->GetLast() : traversal_->GetFirst());
   }
 
-  BstIterator(ITreeNode* node, const ITraversal& traversal) : traversal_(&traversal) {
+  BstIterator(ITreeNode* node, const ITraversal& traversal) : traversal_(&traversal), end_(traversal.GetEnd()) {
     current_ = dynamic_cast<NodeType*>(node);
   }
 
-  BstIterator(const BstIterator& other) : current_(other.current_), traversal_(other.traversal_) {}
+  BstIterator(const BstIterator& other)
+      : current_(other.current_), traversal_(other.traversal_), end_(other.traversal_->GetEnd()) {}
 
   BstIterator& operator=(const BstIterator& other) {
     if (this == &other) {
@@ -58,20 +59,37 @@ class BstIterator {
   }
 
   const_reference operator*() const {
+    if (current_ == end_) {
+      throw std::out_of_range("Bad dereference attempt: *BST::end()");
+    }
+
     return current_->key;
   }
 
-  const_reference operator->() const {
-    return current_->key;
+  const_pointer operator->() const {
+    if (current_ == end_) {
+      throw std::out_of_range("Bad dereference attempt: BST::end()->");
+    }
+
+    return &current_->key;
   }
 
   BstIterator& operator++() {
+    if (current_ == end_) {
+      throw std::out_of_range("Bad incrementation attempt: ++BST::end()");
+    }
+
     ITreeNode* next = is_reversed ? traversal_->GetPredecessor(current_) : traversal_->GetSuccessor(current_);
     current_ = dynamic_cast<NodeType*>(next);
+
     return *this;
   }
 
   [[nodiscard]] BstIterator operator++(int) {
+    if (current_ == end_) {
+      throw std::out_of_range("Bad incrementation attempt: ++BST::end()");
+    }
+
     BstIterator tmp = *this;
     ++*this;
     return tmp;
@@ -111,6 +129,7 @@ class BstIterator {
 
  private:
   NodeType* current_;
+  ITreeNode* end_;
   const ITraversal* traversal_;
 };
 

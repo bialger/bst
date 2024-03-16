@@ -15,6 +15,7 @@ class InOrder : public ITraversal {
 
   [[nodiscard]] ITreeNode* GetFirst() const override;
   [[nodiscard]] ITreeNode* GetLast() const override;
+  [[nodiscard]] ITreeNode* GetEnd() const override;
   [[nodiscard]] ITreeNode* GetPredecessor(ITreeNode* current) const override;
   [[nodiscard]] ITreeNode* GetSuccessor(ITreeNode* current) const override;
 

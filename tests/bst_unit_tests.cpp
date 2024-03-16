@@ -27,10 +27,62 @@ TEST_F(BstUnitTestSuite, NonEmptyTest) {
   ASSERT_FALSE(bst.empty());
 }
 
+TEST_F(BstUnitTestSuite, BeginTest) {
+  BST<std::string> string_bst;
+  std::string element = "str";
+  string_bst.insert(element);
+  ASSERT_TRUE(string_bst.begin() == string_bst.begin<InOrder>());
+  ASSERT_EQ(*string_bst.begin(), element);
+  ASSERT_EQ(*string_bst.begin<PreOrder>(), element);
+  ASSERT_EQ(*string_bst.begin<PostOrder>(), element);
+  ASSERT_EQ(*string_bst.cbegin(), element);
+  ASSERT_EQ(*string_bst.cbegin<PreOrder>(), element);
+  ASSERT_EQ(*string_bst.cbegin<PostOrder>(), element);
+  ASSERT_EQ(*string_bst.rbegin(), element);
+  ASSERT_EQ(*string_bst.rbegin<PreOrder>(), element);
+  ASSERT_EQ(*string_bst.rbegin<PostOrder>(), element);
+  ASSERT_EQ(*string_bst.crbegin(), element);
+  ASSERT_EQ(*string_bst.crbegin<PreOrder>(), element);
+  ASSERT_EQ(*string_bst.crbegin<PostOrder>(), element);
+}
+
+TEST_F(BstUnitTestSuite, IteratorTest) {
+  BST<std::string> string_bst;
+  std::string element = "str";
+  string_bst.insert(element);
+
+  auto current = string_bst.begin();
+  auto next = string_bst.end();
+  ASSERT_TRUE(next == current.next());
+  ASSERT_TRUE(next.prev() == current);
+  ASSERT_TRUE(next.prev() == current++);
+  ASSERT_TRUE(next == current);
+  ASSERT_EQ(*--current, element);
+  ASSERT_EQ(current->size(), element.size());
+  ASSERT_EQ(current++->size(), element.size());
+}
+
+TEST_F(BstUnitTestSuite, IteratorTest2) {
+  BST<std::string> string_bst;
+  std::string element = "str";
+  string_bst.insert(element);
+
+  auto current = string_bst.begin();
+  auto next = string_bst.end();
+  ASSERT_TRUE(*current-- == element);
+  ASSERT_THROW(current++, std::out_of_range);
+  ASSERT_THROW(++current, std::out_of_range);
+  ASSERT_TRUE(--current == string_bst.begin());
+  ASSERT_TRUE(--current == next);
+}
+
 TEST_F(BstUnitTestSuite, BadComparatorTest) {
   BST<int32_t, std::less_equal<>> bad_bst;
   ASSERT_THROW(bad_bst.insert(0), std::invalid_argument);
   ASSERT_THROW(bad_bst.insert(bad_bst.end(), 0), std::invalid_argument);
+  ASSERT_THROW(bad_bst.insert({1}), std::invalid_argument);
+  ASSERT_THROW(bad_bst.insert(values_unique.begin(), values_unique.end()), std::invalid_argument);
+  ASSERT_THROW(bad_bst.insert(values_unique), std::invalid_argument);
 }
 
 TEST_F(BstUnitTestSuite, ConstructTest1) {

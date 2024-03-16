@@ -24,6 +24,10 @@ bialger::ITreeNode* bialger::PreOrder::GetLast() const {
   return node;
 }
 
+bialger::ITreeNode* bialger::PreOrder::GetEnd() const {
+  return tree_.GetEnd();
+}
+
 bialger::ITreeNode* bialger::PreOrder::GetPredecessor(bialger::ITreeNode* current) const {
   if (current == GetFirst()) {
     return tree_.GetEnd();
