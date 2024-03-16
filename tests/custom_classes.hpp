@@ -70,20 +70,20 @@ struct CountingAllocator {
 
   static_assert(sizeof(T) != 0, "cannot allocate incomplete types");
 
-  CountingAllocator() : id_(), allocations_count_(), deallocations_count_() {}
+  CountingAllocator() : id_(GetRandomNumber()), allocations_count_(), deallocations_count_() {}
 
   explicit CountingAllocator(const size_type& id) : id_(id), allocations_count_(), deallocations_count_() {}
 
   template<typename U>
   CountingAllocator(const CountingAllocator<U>& other)
       : id_(other.GetId()),
-        allocations_count_(),
-        deallocations_count_() {}
+        allocations_count_(other.GetAllocationsCount()),
+        deallocations_count_(other.GetDeallocationsCount()) {}
 
   CountingAllocator(const CountingAllocator& other)
       : id_(other.GetId()),
-        allocations_count_(),
-        deallocations_count_() {}
+        allocations_count_(other.GetAllocationsCount()),
+        deallocations_count_(other.GetDeallocationsCount()) {}
 
   template<typename U>
   CountingAllocator& operator=(const CountingAllocator<U>& other) {
@@ -102,6 +102,8 @@ struct CountingAllocator {
     }
 
     id_ = other.id_;
+    allocations_count_ = other.allocations_count_;
+    deallocations_count_ = other.deallocations_count_;
 
     return *this;
   }

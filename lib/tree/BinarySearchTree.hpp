@@ -208,6 +208,10 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     return less_;
   }
 
+  [[nodiscard]] Allocator GetAllocator() const {
+    return Allocator(node_allocator_);
+  }
+
  protected:
   using NodeAllocatorType = typename std::allocator_traits<Allocator>::template rebind_alloc<NodeType>;
   using NodeAllocatorTraits = std::allocator_traits<NodeAllocatorType>;

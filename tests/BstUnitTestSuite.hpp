@@ -28,6 +28,10 @@ struct BstUnitTestSuite : public testing::Test { // special test structure
   bialger::BST<int32_t, bialger::LessContainer<void>> custom_comparator_bst;
   bialger::BST<int32_t, std::less<>, bialger::CountingAllocator<int32_t>> custom_allocator_bst;
   bialger::BST<int32_t, bialger::LessContainer<void>, bialger::CountingAllocator<int32_t>> custom_bst;
+  std::less<> default_comparator{};
+  std::allocator<int32_t> default_allocator{};
+  bialger::LessContainer<void> custom_comparator{};
+  bialger::CountingAllocator<int32_t> custom_allocator{};
 };
 
 #endif //BSTUNITTESTSUITE_HPP_

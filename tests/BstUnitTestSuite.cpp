@@ -8,6 +8,8 @@ void BstUnitTestSuite::SetUp() {
   for (int32_t i = 0; i < distance * size; i += static_cast<int32_t>(distance)) {
     values_unique[i / distance] = i + std::abs(static_cast<int32_t>(values[i / distance] % distance));
   }
+
+  std::shuffle(values_unique.begin(), values_unique.end(), rng);
 }
 
 void BstUnitTestSuite::TearDown() {

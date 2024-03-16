@@ -17,7 +17,7 @@ template<typename T, typename Compare = std::less<>, typename Allocator = std::a
 class BST {
   static_assert(std::is_same<typename std::remove_cv<T>::type, T>::value,
                 "std::set must have a non-const, non-volatile value_type");
-  
+
  private:
   using TreeType = BinarySearchTree<T,
                                     const T*,
@@ -70,6 +70,8 @@ class BST {
                                                                             allocator_(alloc),
                                                                             key_compare_(comp),
                                                                             value_compare_(comp) {}
+
+  explicit BST(const Allocator& alloc) : BST(Compare(), alloc) {}
 
   BST(const std::initializer_list<T>& list,
       const Compare& comp = Compare(),
@@ -241,8 +243,8 @@ class BST {
   }
 
   void insert(const std::initializer_list<T>& list) {
-    auto it = list.cbegin();
-    auto end = list.cend();
+    auto it = list.begin();
+    auto end = list.end();
 
     for (; it != end; ++it) {
       insert(*it);
@@ -250,14 +252,14 @@ class BST {
   }
 
   iterator erase(iterator pos) {
-    auto next = pos.next();
-    tree_.Delete();
+    iterator next = pos.next();
+    tree_.Delete(pos.current_);
     return next;
   }
 
   iterator erase(const_iterator first, const_iterator last) {
-    for (; first != last; ++first) {
-      Delete(first.current_);
+    while (first != last) {
+      first = erase(first);
     }
 
     return last;
@@ -515,7 +517,7 @@ class BST {
   }
 
   Allocator get_allocator() const {
-    return allocator_;
+    return tree_.GetAllocator();
   }
 
   Compare key_comp() const {
