@@ -557,6 +557,22 @@ TEST_F(BstUnitTestSuite, EraseTest4) {
   ASSERT_EQ(bst.size(), size - erase_count);
 }
 
+TEST_F(BstUnitTestSuite, EraseIfTest) {
+  bst.insert(values_unique);
+  size_t erase_count = 0;
+
+  erase_if(bst, [&](int32_t val) -> bool {
+    if (dist(rng) % 2 == 0) {
+      ++erase_count;
+      return true;
+    }
+
+    return false;
+  });
+
+  ASSERT_EQ(bst.size(), size - erase_count);
+}
+
 TEST_F(BstUnitTestSuite, FindTest1) {
   bst.insert(values);
 
