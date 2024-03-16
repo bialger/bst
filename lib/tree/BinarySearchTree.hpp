@@ -11,6 +11,32 @@
 
 namespace bialger {
 
+template<typename T, typename Compare>
+struct Equivalent {
+  bool operator()(const T& lhs, const T& rhs) const {
+    return !comparator_(lhs, rhs) && !comparator_(rhs, lhs);
+  }
+
+ protected:
+  Compare comparator_{};
+};
+
+template<typename Compare>
+struct Equivalent<void, Compare> {
+  template<typename U, typename V, std::enable_if_t<are_comparable<Compare, U, V>::value, bool> = true>
+  bool operator()(const U& lhs, const V& rhs) const {
+    return !comparator_(lhs, rhs) && !comparator_(rhs, lhs);
+  }
+
+  template<typename U>
+  bool operator()(const U& lhs, const U& rhs) const {
+    return !comparator_(lhs, rhs) && !comparator_(rhs, lhs);
+  }
+
+ protected:
+  Compare comparator_{};
+};
+
 template<typename T, typename U, typename Less, typename Equals, typename Allocator>
 class BinarySearchTree : public ITemplateTree<T, U> {
  public:
