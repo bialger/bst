@@ -32,6 +32,9 @@ TEST_F(BstUnitTestSuite, BeginTest) {
   std::string element = "str";
   string_bst.insert(element);
   ASSERT_TRUE(string_bst.begin() == string_bst.begin<InOrder>());
+  ASSERT_TRUE(string_bst.cbegin() == string_bst.cbegin<InOrder>());
+  ASSERT_TRUE(string_bst.rbegin() == string_bst.rbegin<InOrder>());
+  ASSERT_TRUE(string_bst.crbegin() == string_bst.crbegin<InOrder>());
   ASSERT_EQ(*string_bst.begin(), element);
   ASSERT_EQ(*string_bst.begin<PreOrder>(), element);
   ASSERT_EQ(*string_bst.begin<PostOrder>(), element);
@@ -46,7 +49,29 @@ TEST_F(BstUnitTestSuite, BeginTest) {
   ASSERT_EQ(*string_bst.crbegin<PostOrder>(), element);
 }
 
-TEST_F(BstUnitTestSuite, IteratorTest) {
+TEST_F(BstUnitTestSuite, EndTest) {
+  BST<std::string> string_bst;
+  std::string element = "str";
+  string_bst.insert(element);
+  ASSERT_TRUE(string_bst.end() == string_bst.end<InOrder>());
+  ASSERT_TRUE(string_bst.cend() == string_bst.cend<InOrder>());
+  ASSERT_TRUE(string_bst.rend() == string_bst.rend<InOrder>());
+  ASSERT_TRUE(string_bst.crend() == string_bst.crend<InOrder>());
+  ASSERT_THROW(*string_bst.end(), std::out_of_range);
+  ASSERT_THROW(*string_bst.end<PreOrder>(), std::out_of_range);
+  ASSERT_THROW(*string_bst.end<PostOrder>(), std::out_of_range);
+  ASSERT_THROW(*string_bst.cend(), std::out_of_range);
+  ASSERT_THROW(*string_bst.cend<PreOrder>(), std::out_of_range);
+  ASSERT_THROW(*string_bst.cend<PostOrder>(), std::out_of_range);
+  ASSERT_THROW(*string_bst.rend(), std::out_of_range);
+  ASSERT_THROW(*string_bst.rend<PreOrder>(), std::out_of_range);
+  ASSERT_THROW(*string_bst.rend<PostOrder>(), std::out_of_range);
+  ASSERT_THROW(*string_bst.crend(), std::out_of_range);
+  ASSERT_THROW(*string_bst.crend<PreOrder>(), std::out_of_range);
+  ASSERT_THROW(*string_bst.crend<PostOrder>(), std::out_of_range);
+}
+
+TEST_F(BstUnitTestSuite, IteratorTest1) {
   BST<std::string> string_bst;
   std::string element = "str";
   string_bst.insert(element);
