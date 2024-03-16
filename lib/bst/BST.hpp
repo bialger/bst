@@ -13,16 +13,43 @@
 
 namespace bialger {
 
+template<typename T, typename Compare>
+struct Equivalent {
+  bool operator()(const T& lhs, const T& rhs) const {
+    return !comparator_(lhs, rhs) && !comparator_(rhs, lhs);
+  }
+
+ protected:
+  Compare comparator_{};
+};
+
+template<typename Compare>
+struct Equivalent<void, Compare> {
+  template<typename U, typename V, std::enable_if_t<are_comparable<Compare, U, V>::value, bool> = true>
+  bool operator()(const U& lhs, const V& rhs) const {
+    return !comparator_(lhs, rhs) && !comparator_(rhs, lhs);
+  }
+
+  template<typename U>
+  bool operator()(const U& lhs, const U& rhs) const {
+    return !comparator_(lhs, rhs) && !comparator_(rhs, lhs);
+  }
+
+ protected:
+  Compare comparator_{};
+};
+
 template<typename T, typename Compare = std::less<>, typename Allocator = std::allocator<T>>
 class BST {
   static_assert(std::is_same<typename std::remove_cv<T>::type, T>::value,
                 "std::set must have a non-const, non-volatile value_type");
 
  private:
+  using Equals = Equivalent<void, Compare>;
   using TreeType = BinarySearchTree<T,
                                     const T*,
                                     Compare,
-                                    std::equal_to<>,
+                                    Equals,
                                     Allocator>;
   using NodeType = TreeType::NodeType;
   using DefaultTraversal = InOrder;
@@ -45,7 +72,6 @@ class BST {
   using key_compare = Compare;
   using value_compare = Compare;
   using TreeInterface = TreeType::TreeInterface;
-  using Equals = std::equal_to<>;
 
   BST() : tree_(),
           pre_order_(tree_),

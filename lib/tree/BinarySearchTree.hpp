@@ -222,6 +222,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   NodeType* root_;
   NodeAllocatorType node_allocator_;
   Less less_;
+  Equals equals_;
 
   NodeType* CreateNode(const T& key, const U& value) {
     NodeType* new_node = NodeAllocatorTraits::allocate(node_allocator_, 1);
@@ -245,11 +246,11 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       return new_node;
     }
 
-    if (Equals()(key, node->key) && !allow_duplicates_) {
+    if (equals_(key, node->key) && !allow_duplicates_) {
       node->value = value;
       result.first = node;
       result.second = false;
-    } else if ((less_(key, node->key)) || (allow_duplicates_ && Equals()(key, node->key))) {
+    } else if ((less_(key, node->key)) || (allow_duplicates_ && equals_(key, node->key))) {
       node->left = Insert(node->left, result, key, value);
       node->left->parent = node;
     } else if (less_(node->key, key)) {
@@ -265,7 +266,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       return nullptr;
     }
 
-    if (Equals()(key, node->key)) {
+    if (equals_(key, node->key)) {
       return node;
     }
 
@@ -287,7 +288,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
       return nullptr;
     }
 
-    if (Equals()(key, node->key)) {
+    if (equals_(key, node->key)) {
       return node;
     }
 
@@ -304,9 +305,9 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     NodeType* next = nullptr;
 
     while (node != nullptr) {
-      if (Equals()(key, node->key)) {
+      if (equals_(key, node->key)) {
         node = node->right;
-      } else if (less_(key, node->key) || (allow_duplicates_ && Equals()(key, node->key))) {
+      } else if (less_(key, node->key) || (allow_duplicates_ && equals_(key, node->key))) {
         if (next == nullptr || less_(node->key, next->key)) {
           next = node;
         }
@@ -328,9 +329,9 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     NodeType* next = nullptr;
 
     while (node != nullptr) {
-      if (Equals()(key, node->key)) {
+      if (equals_(key, node->key)) {
         node = node->right;
-      } else if (less_(key, node->key) || (allow_duplicates_ && Equals()(key, node->key))) {
+      } else if (less_(key, node->key) || (allow_duplicates_ && equals_(key, node->key))) {
         if (next == nullptr || less_(node->key, next->key)) {
           next = node;
         }
