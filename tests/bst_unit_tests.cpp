@@ -690,7 +690,7 @@ TEST_F(BstUnitTestSuite, LowerBoundTest1) {
   bst.insert(values_unique);
   std::sort(values_unique.begin(), values_unique.end());
 
-  for (int32_t value = 0; value < distance * size; ++value) {
+  for (int32_t value = 0; value <= distance * size; ++value) {
     auto vector_lower = std::lower_bound(values_unique.begin(), values_unique.end(), value);
     auto bst_lower = bst.lower_bound(value);
 
@@ -706,7 +706,7 @@ TEST_F(BstUnitTestSuite, UpperBoundTest1) {
   bst.insert(values_unique);
   std::sort(values_unique.begin(), values_unique.end());
 
-  for (int32_t value = 0; value < distance * size; ++value) {
+  for (int32_t value = 0; value <= distance * size; ++value) {
     auto vector_upper = std::upper_bound(values_unique.begin(), values_unique.end(), value);
     auto bst_upper = bst.upper_bound(value);
 
@@ -714,6 +714,40 @@ TEST_F(BstUnitTestSuite, UpperBoundTest1) {
       ASSERT_EQ(*vector_upper, *bst_upper);
     } else {
       ASSERT_TRUE(bst_upper == bst.end());
+    }
+  }
+}
+
+TEST_F(BstUnitTestSuite, EqualRangeTest1) {
+  bst.insert(values_unique);
+  std::sort(values_unique.begin(), values_unique.end());
+
+  for (int32_t value = 0; value <= distance * size; ++value) {
+    auto vector_lower = std::lower_bound(values_unique.begin(), values_unique.end(), value);
+    auto vector_upper = std::upper_bound(values_unique.begin(), values_unique.end(), value);
+    auto bst_lower = bst.lower_bound(value);
+    auto bst_upper = bst.upper_bound(value);
+    auto range = bst.equal_range(value);
+
+    for (auto it = bst_lower; it != bst_upper && it != bst.end(); ++it) {
+      ASSERT_EQ(*it, value);
+    }
+
+    ASSERT_TRUE(bst_lower == range.first);
+    ASSERT_TRUE(bst_upper == range.second);
+
+    if (vector_lower != values_unique.end()) {
+      ASSERT_EQ(*vector_lower, *range.first);
+    } else {
+      ASSERT_TRUE(range.first == bst.end());
+      ASSERT_TRUE(range.second == bst.end());
+    }
+
+    if (vector_upper != values_unique.end()) {
+      ASSERT_EQ(*vector_upper, *range.second);
+    } else {
+      ASSERT_TRUE(range.first == bst.end() || range.first == --bst.end());
+      ASSERT_TRUE(range.second == bst.end());
     }
   }
 }
