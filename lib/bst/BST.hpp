@@ -215,7 +215,7 @@ class BST {
   template<typename Traversal = DefaultTraversal,
       std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
   iterator insert(iterator pos, const T& key) {
-    return insert(key).first;
+    return insert<Traversal>(key).first;
   }
 
   template<typename InputIt,
@@ -242,20 +242,7 @@ class BST {
           is_iterable<Container>::value && has_value_type<Container>::value,
           bool> = true>
   void insert(const Container& other) {
-    auto it = other.cbegin();
-    auto end = other.cend();
-
-    if (it == end) {
-      return;
-    }
-
-    if (tree_.GetComparator()(*it, *it)) {
-      throw std::invalid_argument("Incorrect template parameter Compare: is not strict");
-    }
-
-    for (; it != end; ++it) {
-      insert(*it);
-    }
+    insert(other.cbegin(), other.cend());
   }
 
   void insert(const std::initializer_list<T>& list) {
@@ -540,19 +527,19 @@ class BST {
     std::swap(tree_, other.tree_);
   }
 
-  Allocator get_allocator() const {
+  key_allocator get_allocator() const {
     return tree_.GetAllocator();
   }
 
-  Compare key_comp() const {
+  key_compare key_comp() const {
     return tree_.GetComparator();
   }
 
-  Compare value_comp() const {
+  value_compare value_comp() const {
     return tree_.GetComparator();
   }
 
-  template<typename Type, typename Traversal, typename Comp, typename Alloc,
+  template<typename Traversal, typename Type, typename Comp, typename Alloc,
       std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool>>
   friend std::ostream& PrintToStream(const BST<Type, Comp, Alloc>& bst, std::ostream& os);
 
@@ -597,7 +584,7 @@ typename BST<Key, Compare, Alloc>::size_type erase_if(BST<Key, Compare, Alloc>& 
   return old_size - c.size();
 }
 
-template<typename Type, typename Traversal = InOrder, typename Comp = std::less<>, typename Alloc = std::allocator<Type>,
+template<typename Traversal = InOrder, typename Type, typename Comp = std::less<>, typename Alloc = std::allocator<Type>,
     std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
 std::ostream& PrintToStream(const BST<Type, Comp, Alloc>& bst, std::ostream& os) {
   std::function<void(const typename BST<Type, Comp, Alloc>::NodeType*)>

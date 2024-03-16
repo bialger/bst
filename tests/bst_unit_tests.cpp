@@ -4,7 +4,6 @@
 #include <set>
 #include <gtest/gtest.h>
 
-#include "test_functions.hpp"
 #include "BstUnitTestSuite.hpp"
 
 using namespace bialger;
@@ -159,6 +158,7 @@ TEST_F(BstUnitTestSuite, EqualComparatorAllocatorTest2) {
 
   ASSERT_EQ(bst2.size(), sample_values.size());
   ASSERT_EQ(custom_comparator, bst2.key_comp());
+  ASSERT_EQ(custom_comparator, bst2.value_comp());
   ASSERT_EQ(custom_allocator, bst2.get_allocator());
 
   for (const int32_t& val : bst2) {
@@ -539,7 +539,6 @@ TEST_F(BstUnitTestSuite, EraseTest4) {
 TEST_F(BstUnitTestSuite, FindTest1) {
   std::vector<int32_t> data_inorder;
   bst.insert(values);
-  size_t erase_count = 0;
 
   for (int32_t value : values) {
     ASSERT_EQ(*bst.find(value), value);
@@ -551,7 +550,6 @@ TEST_F(BstUnitTestSuite, FindTest1) {
 TEST_F(BstUnitTestSuite, FindTest2) {
   std::vector<int32_t> data_inorder;
   bst.insert(values_unique);
-  size_t erase_count = 0;
 
   for (int32_t value : values_unique) {
     ASSERT_TRUE(bst.find(value + 1000000) == bst.end());
@@ -590,4 +588,67 @@ TEST_F(BstUnitTestSuite, InsertAndFindTest1) {
   std::sort(values_unique.begin(), values_unique.end());
 
   ASSERT_EQ(values_unique, data_inorder);
+}
+
+TEST_F(BstUnitTestSuite, InsertAndFindTest2) {
+  std::vector<int32_t> data_inorder;
+
+  for (int32_t& value : values_unique) {
+    auto res = bst.insert(bst.end(),value);
+    ASSERT_TRUE(res == bst.find(value));
+  }
+
+  for (int32_t& value : values_unique) {
+    auto res = bst.insert<PreOrder>(bst.end<PreOrder>(), value);
+    ASSERT_TRUE(res == bst.find<PreOrder>(value));
+  }
+
+  for (int32_t& value : values_unique) {
+    auto res = bst.insert<PostOrder>(bst.end<PostOrder>(), value);
+    ASSERT_TRUE(res == bst.find<PostOrder>(value));
+  }
+
+  ASSERT_EQ(bst.size(), values_unique.size());
+
+  for (const int32_t& val : bst) {
+    data_inorder.push_back(val);
+  }
+
+  std::sort(values_unique.begin(), values_unique.end());
+
+  ASSERT_EQ(values_unique, data_inorder);
+}
+
+TEST_F(BstUnitTestSuite, LowerBoundTest1) {
+  std::vector<int32_t> data_inorder;
+  bst.insert(values_unique);
+  std::sort(values_unique.begin(), values_unique.end());
+
+  for (int32_t value = 0; value < distance * size; ++value) {
+    auto vector_lower = std::lower_bound(values_unique.begin(), values_unique.end(), value);
+    auto bst_lower = bst.lower_bound(value);
+
+    if (vector_lower != values_unique.end()) {
+      ASSERT_EQ(*vector_lower, *bst_lower);
+    } else {
+      ASSERT_TRUE(bst_lower == bst.end());
+    }
+  }
+}
+
+TEST_F(BstUnitTestSuite, UpperBoundTest1) {
+  std::vector<int32_t> data_inorder;
+  bst.insert(values_unique);
+  std::sort(values_unique.begin(), values_unique.end());
+
+  for (int32_t value = 0; value < distance * size; ++value) {
+    auto vector_upper = std::upper_bound(values_unique.begin(), values_unique.end(), value);
+    auto bst_upper = bst.upper_bound(value);
+
+    if (vector_upper != values_unique.end()) {
+      ASSERT_EQ(*vector_upper, *bst_upper);
+    } else {
+      ASSERT_TRUE(bst_upper == bst.end());
+    }
+  }
 }

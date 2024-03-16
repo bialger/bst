@@ -4,7 +4,7 @@
 using namespace bialger;
 
 TEST_F(BstTraversalUnitTestSuite, InOrderTraverseTreeTest1) {
-  PrintToStream<int32_t>(bst, real_traversal);
+  PrintToStream(bst, real_traversal);
 
   for (auto it = bst.begin(); it != bst.end(); ++it) {
     iterator_traversal << *it << ' ';
@@ -13,7 +13,7 @@ TEST_F(BstTraversalUnitTestSuite, InOrderTraverseTreeTest1) {
 
 TEST_F(BstTraversalUnitTestSuite, InOrderReversedTraverseTreeTest1) {
   std::string reversed_real_traversal;
-  PrintToStream<int32_t>(bst, real_traversal);
+  PrintToStream(bst, real_traversal);
   std::vector<std::string> reversed_vector = SplitString(real_traversal.str());
   std::reverse(reversed_vector.begin(), reversed_vector.end());
   real_traversal.str("");
@@ -48,7 +48,7 @@ TEST_F(BstTraversalUnitTestSuite, InOrderFirstAndLastTraverseTreeTest1) {
 }
 
 TEST_F(BstTraversalUnitTestSuite, PreOrderTraverseTreeTest1) {
-  PrintToStream<int32_t, PreOrder>(bst, real_traversal);
+  PrintToStream<PreOrder>(bst, real_traversal);
 
   for (auto it = bst.begin<PreOrder>(); it != bst.end<PreOrder>(); ++it) {
     iterator_traversal << *it << ' ';
@@ -57,7 +57,7 @@ TEST_F(BstTraversalUnitTestSuite, PreOrderTraverseTreeTest1) {
 
 TEST_F(BstTraversalUnitTestSuite, PreOrderReversedTraverseTreeTest1) {
   std::string reversed_real_traversal;
-  PrintToStream<int32_t, PreOrder>(bst, real_traversal);
+  PrintToStream<PreOrder>(bst, real_traversal);
   std::vector<std::string> reversed_vector = SplitString(real_traversal.str());
   std::reverse(reversed_vector.begin(), reversed_vector.end());
   real_traversal.str("");
@@ -96,7 +96,7 @@ TEST_F(BstTraversalUnitTestSuite, PreOrderTraverseTreeBothWaysTest1) {
 }
 
 TEST_F(BstTraversalUnitTestSuite, PostOrderTraverseTreeTest1) {
-  PrintToStream<int32_t, PostOrder>(bst, real_traversal);
+  PrintToStream<PostOrder>(bst, real_traversal);
 
   for (auto it = bst.begin<PostOrder>(); it != bst.end<PostOrder>(); ++it) {
     iterator_traversal << *it << ' ';
@@ -105,7 +105,7 @@ TEST_F(BstTraversalUnitTestSuite, PostOrderTraverseTreeTest1) {
 
 TEST_F(BstTraversalUnitTestSuite, PostOrderReversedTraverseTreeTest1) {
   std::string reversed_real_traversal;
-  PrintToStream<int32_t, PostOrder>(bst, real_traversal);
+  PrintToStream<PostOrder>(bst, real_traversal);
   std::vector<std::string> reversed_vector = SplitString(real_traversal.str());
   std::reverse(reversed_vector.begin(), reversed_vector.end());
   real_traversal.str("");
