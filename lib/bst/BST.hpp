@@ -19,12 +19,8 @@ class BST {
                 "std::set must have a non-const, non-volatile value_type");
 
  private:
-  using Equals = Equivalent<void, Compare>;
-  using TreeType = BinarySearchTree<T,
-                                    const T*,
-                                    Compare,
-                                    Equals,
-                                    Allocator>;
+  using TreeType = BinarySearchTree<T, const T*, Compare, Allocator>;
+  using Equals = TreeType::Equals;
   using NodeType = TreeType::NodeType;
   using DefaultTraversal = InOrder;
 

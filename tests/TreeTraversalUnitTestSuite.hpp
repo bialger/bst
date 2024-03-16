@@ -10,17 +10,8 @@
 #include "lib/tree/PreOrder.hpp"
 #include "lib/tree/PostOrder.hpp"
 
-using IntTree = bialger::BinarySearchTree<int32_t,
-                                          int32_t*,
-                                          std::less<>,
-                                          bialger::Equivalent<void, std::less<>>,
-                                          std::allocator<int32_t>>;
-
-using StringTree = bialger::BinarySearchTree<std::string,
-                                             std::string*,
-                                             std::less<>,
-                                             bialger::Equivalent<void, std::less<>>,
-                                             std::allocator<std::string>>;
+using IntTree = bialger::BinarySearchTree<int32_t, const int32_t*, std::less<>, std::allocator<int32_t>>;
+using StringTree = bialger::BinarySearchTree<std::string, const std::string*, std::less<>, std::allocator<std::string>>;
 
 struct TreeTraversalUnitTestSuite : public testing::Test { // special test structure
   void SetUp() override; // method that is called at the beginning of every test

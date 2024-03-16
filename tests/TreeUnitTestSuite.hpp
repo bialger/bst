@@ -14,22 +14,16 @@
 
 using namespace bialger;
 
-using IntTree = BinarySearchTree<int32_t, int32_t*, std::less<>, Equivalent<void, std::less<>>, std::allocator<int32_t>>;
+using IntTree = BinarySearchTree<int32_t, const int32_t*, std::less<>, std::allocator<int32_t>>;
 using StringTree = BinarySearchTree<std::string,
-                                    std::string*,
+                                    const std::string*,
                                     std::less<std::string>,
-                                    Equivalent<void, std::less<std::string>>,
                                     std::allocator<std::string>>;
 
-using UnstrictIntTree = BinarySearchTree<int32_t,
-                                         int32_t*,
-                                         std::less_equal<>,
-                                         Equivalent<void, std::less_equal<>>,
-                                         std::allocator<int32_t>>;
+using UnstrictIntTree = BinarySearchTree<int32_t, const int32_t*, std::less_equal<>, std::allocator<int32_t>>;
 using UnstrictStringTree = BinarySearchTree<std::string,
-                                            std::string*,
+                                            const std::string*,
                                             std::less_equal<std::string>,
-                                            Equivalent<void, std::less_equal<std::string>>,
                                             std::allocator<std::string>>;
 
 struct TreeUnitTestSuite : public testing::Test { // special test structure

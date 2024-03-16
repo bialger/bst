@@ -37,9 +37,10 @@ struct Equivalent<void, Compare> {
   Compare comparator_{};
 };
 
-template<typename T, typename U, typename Less, typename Equals, typename Allocator>
+template<typename T, typename U, typename Less, typename Allocator>
 class BinarySearchTree : public ITemplateTree<T, U> {
  public:
+  using Equals = Equivalent<void, Less>;
   using TreeInterface = ITemplateTree<T, U>;
   using NodeType = TreeNode<T, U>;
   using key_type = T;
