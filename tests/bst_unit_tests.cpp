@@ -439,3 +439,27 @@ TEST_F(BstUnitTestSuite, EraseTest4) {
 
   ASSERT_EQ(bst.size(), size - erase_count);
 }
+
+TEST_F(BstUnitTestSuite, FindTest1) {
+  std::vector<int32_t> data_inorder;
+  bst.insert(values);
+  size_t erase_count = 0;
+
+  for (int32_t value : values) {
+    ASSERT_EQ(*bst.find(value), value);
+    ASSERT_EQ(*bst.find<PreOrder>(value), value);
+    ASSERT_EQ(*bst.find<PostOrder>(value), value);
+  }
+}
+
+TEST_F(BstUnitTestSuite, FindTest2) {
+  std::vector<int32_t> data_inorder;
+  bst.insert(values_unique);
+  size_t erase_count = 0;
+
+  for (int32_t value : values_unique) {
+    ASSERT_TRUE(bst.find(value + 1000000) == bst.end());
+    ASSERT_TRUE(bst.find<PreOrder>(value + 1000000) == bst.end<PreOrder>());
+    ASSERT_TRUE(bst.find<PostOrder>(value + 1000000) == bst.end<PostOrder>());
+  }
+}
