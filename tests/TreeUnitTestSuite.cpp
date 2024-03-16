@@ -3,24 +3,6 @@
 
 using namespace bialger;
 
-using IntTree = BinarySearchTree<int32_t, int32_t*, std::less<>, std::equal_to<>, std::allocator<int32_t>>;
-using StringTree = BinarySearchTree<std::string,
-                                    std::string*,
-                                    std::less<std::string>,
-                                    std::equal_to<>,
-                                    std::allocator<std::string>>;
-
-using UnstrictIntTree = BinarySearchTree<int32_t,
-                                         int32_t*,
-                                         std::less_equal<>,
-                                         std::equal_to<>,
-                                         std::allocator<int32_t>>;
-using UnstrictStringTree = BinarySearchTree<std::string,
-                                            std::string*,
-                                            std::less_equal<std::string>,
-                                            std::equal_to<>,
-                                            std::allocator<std::string>>;
-
 void TreeUnitTestSuite::SetUp() {
   values_random = GetRandomNumbers(size);
   values_unique = std::vector<int32_t>(size);

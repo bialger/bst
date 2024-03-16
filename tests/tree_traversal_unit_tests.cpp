@@ -15,13 +15,6 @@
 
 using namespace bialger;
 
-using IntTree = BinarySearchTree<int32_t, int32_t*, std::less<>, std::equal_to<>, std::allocator<int32_t>>;
-using StringTree = BinarySearchTree<std::string,
-                                    std::string*,
-                                    std::less<>,
-                                    std::equal_to<>,
-                                    std::allocator<std::string>>;
-
 TEST_F(TreeTraversalUnitTestSuite, InOrderTraverseTreeTest0) {
   std::vector<std::string> real_traverse_str;
   std::vector<std::string> class_traverse_str;
