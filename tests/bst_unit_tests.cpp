@@ -268,12 +268,14 @@ TEST_F(BstUnitTestSuite, CopyTest1) {
   std::vector<int32_t> data_inorder;
 
   for (int32_t& value : sample_values) {
-    bst.insert(value);
+    custom_bst.insert(value);
   }
 
-  BST<int32_t> bst2 = bst;
+  BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>> bst2 = custom_bst;
 
   ASSERT_EQ(bst2.size(), sample_values.size());
+  ASSERT_EQ(custom_bst.get_allocator(), bst2.get_allocator());
+  ASSERT_EQ(custom_bst.key_comp(), bst2.key_comp());
 
   for (const int32_t& val : bst2) {
     data_inorder.push_back(val);
@@ -285,17 +287,77 @@ TEST_F(BstUnitTestSuite, CopyTest1) {
 TEST_F(BstUnitTestSuite, CopyTest2) {
   std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
   std::vector<int32_t> data_inorder;
-  BST<int32_t> bst2;
+  BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>> bst2;
 
   for (int32_t& value : sample_values) {
     bst2.insert(value);
   }
 
-  bst = bst2;
+  custom_bst = bst2;
 
-  ASSERT_EQ(bst.size(), sample_values.size());
+  ASSERT_EQ(custom_bst.size(), sample_values.size());
+  ASSERT_EQ(custom_bst.get_allocator(), bst2.get_allocator());
+  ASSERT_EQ(custom_bst.key_comp(), bst2.key_comp());
 
-  for (const int32_t& val : bst) {
+  for (const int32_t& val : custom_bst) {
+    data_inorder.push_back(val);
+  }
+
+  ASSERT_EQ(sample_values, data_inorder);
+}
+
+TEST_F(BstUnitTestSuite, SwapTest1) {
+  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
+  std::vector<int32_t> data_inorder;
+  BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>> bst2;
+  auto old_comp = custom_bst.key_comp();
+  auto old_alloc = custom_bst.get_allocator();
+  auto new_comp = bst2.key_comp();
+  auto new_alloc = bst2.get_allocator();
+
+  for (int32_t& value : sample_values) {
+    custom_bst.insert(value);
+  }
+
+  bst2.swap(custom_bst);
+
+  ASSERT_EQ(custom_bst.size(), 0);
+  ASSERT_EQ(bst2.size(), sample_values.size());
+  ASSERT_EQ(custom_bst.get_allocator(), new_alloc);
+  ASSERT_EQ(custom_bst.key_comp(), new_comp);
+  ASSERT_EQ(old_alloc, bst2.get_allocator());
+  ASSERT_EQ(old_comp, bst2.key_comp());
+
+  for (const int32_t& val : bst2) {
+    data_inorder.push_back(val);
+  }
+
+  ASSERT_EQ(sample_values, data_inorder);
+}
+
+TEST_F(BstUnitTestSuite, SwapTest2) {
+  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
+  std::vector<int32_t> data_inorder;
+  BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>> bst2;
+  auto old_comp = custom_bst.key_comp();
+  auto old_alloc = custom_bst.get_allocator();
+  auto new_comp = bst2.key_comp();
+  auto new_alloc = bst2.get_allocator();
+
+  for (int32_t& value : sample_values) {
+    custom_bst.insert(value);
+  }
+
+  swap(bst2, custom_bst);
+
+  ASSERT_EQ(custom_bst.size(), 0);
+  ASSERT_EQ(bst2.size(), sample_values.size());
+  ASSERT_EQ(custom_bst.get_allocator(), new_alloc);
+  ASSERT_EQ(custom_bst.key_comp(), new_comp);
+  ASSERT_EQ(old_alloc, bst2.get_allocator());
+  ASSERT_EQ(old_comp, bst2.key_comp());
+
+  for (const int32_t& val : bst2) {
     data_inorder.push_back(val);
   }
 
