@@ -23,6 +23,7 @@ struct BstUnitTestSuite : public testing::Test { // special test structure
   std::uniform_int_distribution<std::mt19937::result_type> dist{0, std::numeric_limits<uint32_t>::max()};
   std::vector<int32_t> values;
   std::vector<int32_t> values_unique;
+  std::vector<int32_t> sample_values;
   std::vector<int32_t> data_inorder;
   bialger::BST<int32_t> bst;
   bialger::BST<int32_t, bialger::LessContainer<void>> custom_comparator_bst;

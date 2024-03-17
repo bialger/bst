@@ -118,6 +118,7 @@ class BST {
   }
 
   BST& operator=(std::initializer_list<T>& list) {
+    clear();
     auto it = list.begin();
     auto end = list.end();
 

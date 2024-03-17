@@ -111,8 +111,6 @@ TEST_F(BstUnitTestSuite, BadComparatorTest) {
 }
 
 TEST_F(BstUnitTestSuite, ConstructTest1) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
   BST<int32_t> bst2(default_comparator, default_allocator);
 
   for (int32_t& value : sample_values) {
@@ -130,8 +128,6 @@ TEST_F(BstUnitTestSuite, ConstructTest1) {
 }
 
 TEST_F(BstUnitTestSuite, ConstructTest2) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
   BST<int32_t> bst2 = {1, 2, 3, 4, 5};
 
   ASSERT_EQ(bst2.size(), sample_values.size());
@@ -144,8 +140,6 @@ TEST_F(BstUnitTestSuite, ConstructTest2) {
 }
 
 TEST_F(BstUnitTestSuite, ConstructTest3) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
   BST<int32_t> bst2(sample_values.begin(), sample_values.end());
 
   ASSERT_EQ(bst2.size(), sample_values.size());
@@ -158,8 +152,6 @@ TEST_F(BstUnitTestSuite, ConstructTest3) {
 }
 
 TEST_F(BstUnitTestSuite, EqualComparatorAllocatorTest1) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
   BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>> bst2(custom_allocator);
 
   for (int32_t& value : sample_values) {
@@ -177,8 +169,6 @@ TEST_F(BstUnitTestSuite, EqualComparatorAllocatorTest1) {
 }
 
 TEST_F(BstUnitTestSuite, EqualComparatorAllocatorTest2) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
   BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>>
       bst2({1, 2, 3, 4, 5}, custom_comparator, custom_allocator);
 
@@ -195,8 +185,6 @@ TEST_F(BstUnitTestSuite, EqualComparatorAllocatorTest2) {
 }
 
 TEST_F(BstUnitTestSuite, EqualComparatorAllocatorTest3) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
   BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>> bst2({1, 2, 3, 4, 5}, custom_allocator);
 
   ASSERT_EQ(bst2.size(), sample_values.size());
@@ -210,8 +198,6 @@ TEST_F(BstUnitTestSuite, EqualComparatorAllocatorTest3) {
 }
 
 TEST_F(BstUnitTestSuite, EqualComparatorAllocatorTest4) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
   BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>>
       bst2({1, 2, 3, 4, 5}, custom_comparator, custom_allocator);
 
@@ -227,8 +213,6 @@ TEST_F(BstUnitTestSuite, EqualComparatorAllocatorTest4) {
 }
 
 TEST_F(BstUnitTestSuite, EqualComparatorAllocatorTest5) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
   BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>>
       bst2(sample_values.begin(), sample_values.end(), custom_allocator);
 
@@ -243,8 +227,6 @@ TEST_F(BstUnitTestSuite, EqualComparatorAllocatorTest5) {
 }
 
 TEST_F(BstUnitTestSuite, EqualComparatorAllocatorTest6) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
   BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>>
       bst2(sample_values.begin(), sample_values.end(), custom_comparator, custom_allocator);
 
@@ -264,9 +246,6 @@ TEST_F(BstUnitTestSuite, EqualComparatorAllocatorTest6) {
 }
 
 TEST_F(BstUnitTestSuite, CopyTest1) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
-
   for (int32_t& value : sample_values) {
     custom_bst.insert(value);
   }
@@ -285,9 +264,8 @@ TEST_F(BstUnitTestSuite, CopyTest1) {
 }
 
 TEST_F(BstUnitTestSuite, CopyTest2) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
   BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>> bst2;
+  custom_bst.insert(-1);
 
   for (int32_t& value : sample_values) {
     bst2.insert(value);
@@ -306,9 +284,45 @@ TEST_F(BstUnitTestSuite, CopyTest2) {
   ASSERT_EQ(sample_values, data_inorder);
 }
 
+TEST_F(BstUnitTestSuite, CopyTest3) {
+  std::vector<int32_t> data_preorder;
+  std::vector<int32_t> data_preorder2;
+  BST<int32_t> bst2;
+  bst.insert(100000000);
+
+  for (int32_t& value : values_unique) {
+    bst2.insert(value);
+  }
+
+  bst = bst2;
+
+  ASSERT_EQ(bst.size(), values_unique.size());
+
+  for (auto it = bst.begin<PreOrder>(); it != bst.end<PreOrder>(); ++it) {
+    data_preorder.push_back(*it);
+  }
+
+  for (auto it = bst2.begin<PreOrder>(); it != bst2.end<PreOrder>(); ++it) {
+    data_preorder2.push_back(*it);
+  }
+
+  ASSERT_EQ(data_preorder, data_preorder2);
+}
+
+TEST_F(BstUnitTestSuite, CopyTest4) {
+  bst.insert(values_unique);
+  bst = {1, 2, 3, 4, 5};
+
+  ASSERT_EQ(bst.size(), sample_values.size());
+
+  for (const int32_t& val : bst) {
+    data_inorder.push_back(val);
+  }
+
+  ASSERT_EQ(sample_values, data_inorder);
+}
+
 TEST_F(BstUnitTestSuite, SwapTest1) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
   BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>> bst2;
   auto old_comp = custom_bst.key_comp();
   auto old_alloc = custom_bst.get_allocator();
@@ -336,8 +350,6 @@ TEST_F(BstUnitTestSuite, SwapTest1) {
 }
 
 TEST_F(BstUnitTestSuite, SwapTest2) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
   BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>> bst2;
   auto old_comp = custom_bst.key_comp();
   auto old_alloc = custom_bst.get_allocator();
@@ -364,23 +376,7 @@ TEST_F(BstUnitTestSuite, SwapTest2) {
   ASSERT_EQ(sample_values, data_inorder);
 }
 
-TEST_F(BstUnitTestSuite, CopyTest3) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
-  bst = {1, 2, 3, 4, 5};
-
-  ASSERT_EQ(bst.size(), sample_values.size());
-
-  for (const int32_t& val : bst) {
-    data_inorder.push_back(val);
-  }
-
-  ASSERT_EQ(sample_values, data_inorder);
-}
-
 TEST_F(BstUnitTestSuite, EqualCopyComparatorAllocatorTest1) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
   custom_bst.insert(sample_values.begin(), sample_values.end());
 
   BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>> bst2 = custom_bst;
@@ -396,8 +392,6 @@ TEST_F(BstUnitTestSuite, EqualCopyComparatorAllocatorTest1) {
 }
 
 TEST_F(BstUnitTestSuite, EqualCopyComparatorAllocatorTest2) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
   custom_bst.insert(sample_values.begin(), sample_values.end());
 
   BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>> bst2;
@@ -415,8 +409,6 @@ TEST_F(BstUnitTestSuite, EqualCopyComparatorAllocatorTest2) {
 }
 
 TEST_F(BstUnitTestSuite, InsertTest1) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
 
   for (int32_t& value : sample_values) {
     bst.insert(value);
@@ -432,8 +424,6 @@ TEST_F(BstUnitTestSuite, InsertTest1) {
 }
 
 TEST_F(BstUnitTestSuite, InsertTest2) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
 
   for (int32_t& value : sample_values) {
     bst.insert(bst.end(), value);
@@ -449,8 +439,6 @@ TEST_F(BstUnitTestSuite, InsertTest2) {
 }
 
 TEST_F(BstUnitTestSuite, InsertTest3) {
-  std::vector<int32_t> sample_values = {1, 2, 3, 4, 5};
-  std::vector<int32_t> data_inorder;
   bst.insert({3, 5, 4, 5, 2, 5, 1});
 
   ASSERT_EQ(bst.size(), sample_values.size());
@@ -463,8 +451,6 @@ TEST_F(BstUnitTestSuite, InsertTest3) {
 }
 
 TEST_F(BstUnitTestSuite, InsertTest4) {
-  std::vector<int32_t> data_inorder;
-
   for (int32_t& value : values_unique) {
     bst.insert(value);
   }
@@ -481,7 +467,7 @@ TEST_F(BstUnitTestSuite, InsertTest4) {
 }
 
 TEST_F(BstUnitTestSuite, InsertTest5) {
-  std::vector<int32_t> data_inorder;
+
   bst.insert(values_unique.begin(), values_unique.end());
 
   ASSERT_EQ(bst.size(), values_unique.size());
@@ -496,7 +482,7 @@ TEST_F(BstUnitTestSuite, InsertTest5) {
 }
 
 TEST_F(BstUnitTestSuite, InsertTest6) {
-  std::vector<int32_t> data_inorder;
+
   bst.insert(values_unique);
 
   ASSERT_EQ(bst.size(), values_unique.size());
@@ -511,7 +497,7 @@ TEST_F(BstUnitTestSuite, InsertTest6) {
 }
 
 TEST_F(BstUnitTestSuite, InsertTest7) {
-  std::vector<int32_t> data_inorder;
+
   std::vector<int32_t> data_inorder2;
   custom_bst.insert(values);
   BST<int32_t, LessContainer<void>, CountingAllocator<int32_t>> bst2;
@@ -531,7 +517,7 @@ TEST_F(BstUnitTestSuite, InsertTest7) {
 }
 
 TEST_F(BstUnitTestSuite, InsertTest8) {
-  std::vector<int32_t> data_inorder;
+
   bst.insert(values_unique);
 
   ASSERT_EQ(bst.size(), values_unique.size());
@@ -656,7 +642,6 @@ TEST_F(BstUnitTestSuite, FindTest2) {
 }
 
 TEST_F(BstUnitTestSuite, InsertAndFindTest1) {
-  std::vector<int32_t> data_inorder;
 
   for (int32_t& value : values_unique) {
     auto res = bst.insert(value);
@@ -688,10 +673,9 @@ TEST_F(BstUnitTestSuite, InsertAndFindTest1) {
 }
 
 TEST_F(BstUnitTestSuite, InsertAndFindTest2) {
-  std::vector<int32_t> data_inorder;
 
   for (int32_t& value : values_unique) {
-    auto res = bst.insert(bst.end(),value);
+    auto res = bst.insert(bst.end(), value);
     ASSERT_TRUE(res == bst.find(value));
   }
 
