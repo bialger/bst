@@ -625,6 +625,35 @@ TEST_F(BstUnitTestSuite, InsertAndFindTest1) {
   ASSERT_EQ(values_unique, data_inorder);
 }
 
+TEST_F(BstUnitTestSuite, InsertAndFindTest2) {
+  std::vector<int32_t> data_inorder;
+
+  for (int32_t& value : values_unique) {
+    auto res = bst.insert(bst.end(),value);
+    ASSERT_TRUE(res == bst.find(value));
+  }
+
+  for (int32_t& value : values_unique) {
+    auto res = bst.insert<PreOrder>(bst.end<PreOrder>(), value);
+    ASSERT_TRUE(res == bst.find<PreOrder>(value));
+  }
+
+  for (int32_t& value : values_unique) {
+    auto res = bst.insert<PostOrder>(bst.end<PostOrder>(), value);
+    ASSERT_TRUE(res == bst.find<PostOrder>(value));
+  }
+
+  ASSERT_EQ(bst.size(), values_unique.size());
+
+  for (const int32_t& val : bst) {
+    data_inorder.push_back(val);
+  }
+
+  std::sort(values_unique.begin(), values_unique.end());
+
+  ASSERT_EQ(values_unique, data_inorder);
+}
+
 TEST_F(BstUnitTestSuite, ContainsTest1) {
   bst.insert(values);
 
@@ -655,35 +684,6 @@ TEST_F(BstUnitTestSuite, CountTest2) {
   for (int32_t value : values_unique) {
     ASSERT_EQ(bst.contains(value + 1000000), 0);
   }
-}
-
-TEST_F(BstUnitTestSuite, InsertAndFindTest2) {
-  std::vector<int32_t> data_inorder;
-
-  for (int32_t& value : values_unique) {
-    auto res = bst.insert(bst.end(),value);
-    ASSERT_TRUE(res == bst.find(value));
-  }
-
-  for (int32_t& value : values_unique) {
-    auto res = bst.insert<PreOrder>(bst.end<PreOrder>(), value);
-    ASSERT_TRUE(res == bst.find<PreOrder>(value));
-  }
-
-  for (int32_t& value : values_unique) {
-    auto res = bst.insert<PostOrder>(bst.end<PostOrder>(), value);
-    ASSERT_TRUE(res == bst.find<PostOrder>(value));
-  }
-
-  ASSERT_EQ(bst.size(), values_unique.size());
-
-  for (const int32_t& val : bst) {
-    data_inorder.push_back(val);
-  }
-
-  std::sort(values_unique.begin(), values_unique.end());
-
-  ASSERT_EQ(values_unique, data_inorder);
 }
 
 TEST_F(BstUnitTestSuite, LowerBoundTest1) {
@@ -748,6 +748,81 @@ TEST_F(BstUnitTestSuite, EqualRangeTest1) {
     } else {
       ASSERT_TRUE(range.first == bst.end() || range.first == --bst.end());
       ASSERT_TRUE(range.second == bst.end());
+    }
+  }
+}
+
+TEST_F(BstUnitTestSuite, TransparentTest1) {
+  custom_bst.insert(values_unique);
+
+  for (int32_t value : values_unique) {
+    std::vector<bool> vec(static_cast<size_t>(value));
+    ASSERT_EQ(*custom_bst.find(vec), value);
+    ASSERT_EQ(*custom_bst.find<PreOrder>(vec), value);
+    ASSERT_EQ(*custom_bst.find<PostOrder>(vec), value);
+  }
+
+  for (int32_t value : values_unique) {
+    std::vector<bool> vec(static_cast<size_t>(value + distance * size));
+    ASSERT_TRUE(custom_bst.find(vec) == custom_bst.end());
+    ASSERT_TRUE(custom_bst.find<PreOrder>(vec) == custom_bst.end<PreOrder>());
+    ASSERT_TRUE(custom_bst.find<PostOrder>(vec) == custom_bst.end<PostOrder>());
+  }
+}
+
+TEST_F(BstUnitTestSuite, TransparentTest2) {
+  custom_bst.insert(values_unique);
+
+  for (int32_t value : values_unique) {
+    std::vector<bool> vec(static_cast<size_t>(value));
+    std::vector<bool> bad_vec(static_cast<size_t>(value + distance * size));
+    ASSERT_TRUE(custom_bst.contains(vec));
+    ASSERT_FALSE(custom_bst.contains(bad_vec));
+  }
+}
+
+TEST_F(BstUnitTestSuite, TransparentTest3) {
+  custom_bst.insert(values_unique);
+
+  for (int32_t value : values_unique) {
+    std::vector<bool> vec(static_cast<size_t>(value));
+    std::vector<bool> bad_vec(static_cast<size_t>(value + distance * size));
+    ASSERT_EQ(custom_bst.count(vec), 1);
+    ASSERT_EQ(custom_bst.contains(bad_vec), 0);
+  }
+}
+
+TEST_F(BstUnitTestSuite, TransparentTest4) {
+  custom_bst.insert(values_unique);
+  std::sort(values_unique.begin(), values_unique.end());
+
+  for (int32_t value = 0; value <= distance * size; ++value) {
+    std::vector<bool> vec(static_cast<size_t>(value));
+    auto vector_lower = std::lower_bound(values_unique.begin(), values_unique.end(), value);
+    auto vector_upper = std::upper_bound(values_unique.begin(), values_unique.end(), value);
+    auto bst_lower = custom_bst.lower_bound(vec);
+    auto bst_upper = custom_bst.upper_bound(vec);
+    auto range = custom_bst.equal_range(vec);
+
+    for (auto it = bst_lower; it != bst_upper && it != custom_bst.end(); ++it) {
+      ASSERT_EQ(*it, value);
+    }
+
+    ASSERT_TRUE(bst_lower == range.first);
+    ASSERT_TRUE(bst_upper == range.second);
+
+    if (vector_lower != values_unique.end()) {
+      ASSERT_EQ(*vector_lower, *range.first);
+    } else {
+      ASSERT_TRUE(range.first == custom_bst.end());
+      ASSERT_TRUE(range.second == custom_bst.end());
+    }
+
+    if (vector_upper != values_unique.end()) {
+      ASSERT_EQ(*vector_upper, *range.second);
+    } else {
+      ASSERT_TRUE(range.first == custom_bst.end() || range.first == --custom_bst.end());
+      ASSERT_TRUE(range.second == custom_bst.end());
     }
   }
 }

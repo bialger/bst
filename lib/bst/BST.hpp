@@ -272,12 +272,12 @@ class BST {
     return iterator(tree_.FindFirst(key), GetTraversalLink<Traversal>());
   }
 
-  template<ComparableType<T, Compare> K, Traversable Traversal = DefaultTraversal>
+  template<Traversable Traversal = DefaultTraversal, ComparableType<T, Compare> K>
   iterator find(const K& key) {
     return iterator(tree_.FindFirst(key), GetTraversalLink<Traversal>());
   }
 
-  template<ComparableType<T, Compare> K, Traversable Traversal = DefaultTraversal>
+  template<Traversable Traversal = DefaultTraversal, ComparableType<T, Compare> K>
   const_iterator find(const K& key) const {
     return iterator(tree_.FindFirst(key), GetTraversalLink<Traversal>());
   }
