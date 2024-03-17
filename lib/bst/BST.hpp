@@ -9,7 +9,7 @@
 #include "lib/tree/PostOrder.hpp"
 
 #include "BstIterator.hpp"
-#include "bst_sfinae.hpp"
+#include "BstConcepts.hpp"
 
 namespace bialger {
 
@@ -480,6 +480,10 @@ class BST {
     return tree_.GetComparator();
   }
 
+  Equals key_eq() const {
+    return tree_.GetEquivalent();
+  }
+
   template<Traversable Traversal, Allocable Type, Comparator<Type> Comp, AllocatorType Alloc>
   friend std::ostream& PrintToStream(const BST<Type, Comp, Alloc>& bst, std::ostream& os);
 
@@ -543,8 +547,8 @@ std::ostream& PrintToStream(const BST<Type, Comp, Alloc>& bst, std::ostream& os)
 }
 
 static_assert(Iterable<BST<int32_t>, int32_t>, "BST is not iterable.");
-static_assert(InputIterator<BstIterator<int, std::less<int>, std::allocator<int>, false>, int>, "Not iterator");
-static_assert(InputIterator<BstIterator<int, std::less<int>, std::allocator<int>, true>, int>, "Not reversed iterator");
+static_assert(InputIterator<BstIterator<int, std::less<>, std::allocator<int>, false>, int>, "Not iterator");
+static_assert(InputIterator<BstIterator<int, std::less<>, std::allocator<int>, true>, int>, "Not reversed iterator");
 
 using CharSet [[maybe_unused]] = BST<char>;
 

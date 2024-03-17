@@ -1,23 +1,13 @@
 #include <vector>
 #include <set>
 
-#include "lib/bst/bst_sfinae.hpp"
-#include "lib/tree/tree_sfinae.hpp"
 #include "lib/bst/BST.hpp"
 #include <gtest/gtest.h>
 #include "custom_classes.hpp"
 
 using namespace bialger;
 
-bool operator<(const std::pair<int32_t, int32_t>& lhs, const int32_t& rhs) {
-  return lhs.first < rhs;
-}
-
-bool operator<(const int32_t& lhs, const std::pair<int32_t, int32_t>& rhs) {
-  return lhs < rhs.first;
-}
-
-TEST(SFINAETestSuite, IsIteratorTest1) {
+TEST(ConceptsTestSuite, IsIteratorTest1) {
   bool vector_it_int = InputIterator<std::vector<int32_t>::iterator, int32_t>;
   bool vector_cit_int = InputIterator<std::vector<int32_t>::const_iterator, int32_t>;
   bool set_it_int = InputIterator<std::set<int32_t>::iterator, int32_t>;
@@ -32,7 +22,7 @@ TEST(SFINAETestSuite, IsIteratorTest1) {
   ASSERT_TRUE(string_cptr);
 }
 
-TEST(SFINAETestSuite, IsIteratorTest2) {
+TEST(ConceptsTestSuite, IsIteratorTest2) {
   bool vector_it_int = Iterable<std::vector<int32_t>::iterator, int32_t>;
   bool int_int = Iterable<int32_t, int32_t>;
   bool set_it_int = Iterable<std::set<int32_t>::iterator, int32_t>;
@@ -43,7 +33,7 @@ TEST(SFINAETestSuite, IsIteratorTest2) {
   ASSERT_FALSE(string_it_int);
 }
 
-TEST(SFINAETestSuite, IsIteratorTest3) {
+TEST(ConceptsTestSuite, IsIteratorTest3) {
   bool bst_it = InputIterator<BST<int32_t>::iterator, int32_t>;
   bool bst_cit = InputIterator<BST<int32_t>::const_iterator, int32_t>;
   bool bst_rit = InputIterator<BST<int32_t>::reverse_iterator, int32_t>;
@@ -54,7 +44,7 @@ TEST(SFINAETestSuite, IsIteratorTest3) {
   ASSERT_TRUE(bst_crit);
 }
 
-TEST(SFINAETestSuite, IsIterableTest1) {
+TEST(ConceptsTestSuite, IsIterableTest1) {
   bool vector_int = Iterable<std::vector<int32_t>, int32_t>;
   bool set_string = Iterable<std::set<std::string>, std::string>;
   bool string_char = Iterable<std::string, char>;
@@ -63,7 +53,7 @@ TEST(SFINAETestSuite, IsIterableTest1) {
   ASSERT_TRUE(string_char);
 }
 
-TEST(SFINAETestSuite, IsIterableTest2) {
+TEST(ConceptsTestSuite, IsIterableTest2) {
   bool vector_it = Iterable<std::vector<int32_t>::iterator, int32_t>;
   bool int_int = Iterable<int32_t, int32_t>;
   bool set_it = Iterable<std::set<int32_t>::iterator, int32_t>;
@@ -72,14 +62,14 @@ TEST(SFINAETestSuite, IsIterableTest2) {
   ASSERT_FALSE(set_it);
 }
 
-TEST(SFINAETestSuite, IsIterableTest3) {
+TEST(ConceptsTestSuite, IsIterableTest3) {
   bool bst_int = Iterable<BST<int32_t>, int32_t>;
   bool bst_string = Iterable<BST<std::string>, std::string>;
   ASSERT_TRUE(bst_int);
   ASSERT_TRUE(bst_string);
 }
 
-TEST(SFINAETestSuite, IsComparatorTest1) {
+TEST(ConceptsTestSuite, IsComparatorTest1) {
   bool less_int = Comparator<std::less<>, int32_t>;
   bool equal_string = Comparator<std::equal_to<std::string>, std::string>;
   bool less_eq_set = Comparator<std::less_equal<>, std::set<int32_t>>;
@@ -88,7 +78,7 @@ TEST(SFINAETestSuite, IsComparatorTest1) {
   ASSERT_TRUE(less_eq_set);
 }
 
-TEST(SFINAETestSuite, IsComparatorTest2) {
+TEST(ConceptsTestSuite, IsComparatorTest2) {
   bool less_int_string = Comparator<std::less<int32_t>, std::string>;
   bool equal_string_charset = Comparator<std::equal_to<std::string>, std::set<char>>;
   bool int_int = Comparator<int32_t, int32_t>;
@@ -97,12 +87,12 @@ TEST(SFINAETestSuite, IsComparatorTest2) {
   ASSERT_FALSE(int_int);
 }
 
-TEST(SFINAETestSuite, IsComparatorTest3) {
+TEST(ConceptsTestSuite, IsComparatorTest3) {
   bool less_eq_bst = Comparator<std::less_equal<>, BST<int32_t>>;
   ASSERT_TRUE(less_eq_bst);
 }
 
-TEST(SFINAETestSuite, AreComparableTest1) {
+TEST(ConceptsTestSuite, AreComparableTest1) {
   bool int_long_less = ComparableType<int64_t, int32_t, std::less<>>;
   bool char_size_less = ComparableType< char, size_t, std::less<>>;
   bool uint16_int64_equals = ComparableType<uint16_t, int64_t, std::equal_to<>>;
@@ -115,7 +105,7 @@ TEST(SFINAETestSuite, AreComparableTest1) {
   ASSERT_TRUE(container_int);
 }
 
-TEST(SFINAETestSuite, AreComparableTest2) {
+TEST(ConceptsTestSuite, AreComparableTest2) {
   bool ints_string_less = ComparableType<std::string, int32_t, std::less<int32_t>>;
   bool bst_vector_less = ComparableType<std::vector<char>, BST<std::string>, std::less<>>;
   bool string_int64_equals = ComparableType<int64_t, std::string, std::equal_to<>>;

@@ -18,7 +18,7 @@ add_executable(
         bst_traversal_unit_tests.cpp
         tree_unit_tests.cpp
         tree_traversal_unit_tests.cpp
-        sfinae_structures_tests.cpp
+        concepts_tests.cpp
         test_functions.cpp
         test_functions.hpp
         BstUnitTestSuite.cpp

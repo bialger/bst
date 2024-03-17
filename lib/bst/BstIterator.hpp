@@ -7,7 +7,7 @@
 #include "lib/tree/InOrder.hpp"
 #include "lib/tree/PreOrder.hpp"
 #include "lib/tree/PostOrder.hpp"
-#include "bst_sfinae.hpp"
+#include "BstConcepts.hpp"
 
 namespace bialger {
 

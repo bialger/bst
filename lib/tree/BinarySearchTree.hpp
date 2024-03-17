@@ -7,7 +7,7 @@
 
 #include "ITemplateTree.hpp"
 #include "TreeNode.hpp"
-#include "tree_sfinae.hpp"
+#include "TreeConcepts.hpp"
 
 namespace bialger {
 

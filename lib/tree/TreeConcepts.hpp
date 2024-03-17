@@ -1,5 +1,5 @@
-#ifndef TREE_SFINAE_HPP_
-#define TREE_SFINAE_HPP_
+#ifndef LIB_TREE_TREE_CONCEPTS_HPP_
+#define LIB_TREE_TREE_CONCEPTS_HPP_
 
 #include <type_traits>
 
@@ -29,4 +29,4 @@ concept AllocatorType = requires(Allocator& alloc) {
 
 } // bialger
 
-#endif //TREE_SFINAE_HPP_
+#endif //LIB_TREE_TREE_CONCEPTS_HPP_

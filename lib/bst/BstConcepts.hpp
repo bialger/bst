@@ -1,5 +1,5 @@
-#ifndef BST_SFINAE_HPP_
-#define BST_SFINAE_HPP_
+#ifndef LIB_BST_BST_CONCEPTS_HPP_
+#define LIB_BST_BST_CONCEPTS_HPP_
 
 #include <type_traits>
 #include <cstdint>
@@ -30,4 +30,4 @@ concept Predicate = requires(Pred& p, T& t) {
 
 } // bialger
 
-#endif //BST_SFINAE_HPP_
+#endif //LIB_BST_BST_CONCEPTS_HPP_

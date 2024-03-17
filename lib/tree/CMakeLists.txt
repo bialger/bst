@@ -11,7 +11,7 @@ add_library(tree
         InOrder.hpp
         PostOrder.cpp
         PostOrder.hpp
-        tree_sfinae.hpp
+        TreeConcepts.hpp
 )
 
 target_include_directories(tree PUBLIC ${PROJECT_SOURCE_DIR})
