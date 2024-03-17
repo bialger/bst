@@ -23,7 +23,7 @@ struct Equivalent {
 
 template<typename Compare>
 struct Equivalent<void, Compare> {
-  template<typename U, typename V, std::enable_if_t<are_comparable<Compare, U, V>::value, bool> = true>
+  template<typename U, ComparableType<U, Compare> V>
   bool operator()(const U& lhs, const V& rhs) const {
     return !comparator_(lhs, rhs) && !comparator_(rhs, lhs);
   }
@@ -37,7 +37,7 @@ struct Equivalent<void, Compare> {
   Compare comparator_{};
 };
 
-template<typename T, typename U, typename Less, typename Allocator>
+template<Allocable T, typename U, Comparator<T> Less, AllocatorType Allocator>
 class BinarySearchTree : public ITemplateTree<T, U> {
  public:
   using Equals = Equivalent<void, Less>;
@@ -167,26 +167,17 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     return FindFirst(key) != nullptr;
   }
 
-  template<typename K,
-      std::enable_if_t<comparator_transparent<Less>::value
-                           && are_comparable<Less, T, K>::value
-                           && are_comparable<Equals, T, K>::value, bool> = true>
+  template<ComparableType<T, Less> K>
   [[nodiscard]] NodeType* FindFirst(const K& key) const {
     return FindFirst(root_, key);
   }
 
-  template<typename K,
-      std::enable_if_t<comparator_transparent<Less>::value
-                           && are_comparable<Less, T, K>::value
-                           && are_comparable<Equals, T, K>::value, bool> = true>
+  template<ComparableType<T, Less> K>
   [[nodiscard]] NodeType* FindNext(const K& key) const {
     return FindNextByKey(root_, key);
   }
 
-  template<typename K,
-      std::enable_if_t<comparator_transparent<Less>::value
-                           && are_comparable<Less, T, K>::value
-                           && are_comparable<Equals, T, K>::value, bool> = true>
+  template<ComparableType<T, Less> K>
   [[nodiscard]] bool Contains(const K& key) const {
     return FindFirst(key) != nullptr;
   }
@@ -314,10 +305,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     return node;
   }
 
-  template<typename K,
-      std::enable_if_t<comparator_transparent<Less>::value
-                           && are_comparable<Less, T, K>::value
-                           && are_comparable<Equals, T, K>::value, bool> = true>
+  template<ComparableType<T, Less> K>
   NodeType* FindFirst(NodeType* node, const K& key) const {
     if (node == nullptr) {
       return nullptr;
@@ -356,10 +344,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     return next;
   }
 
-  template<typename K,
-      std::enable_if_t<comparator_transparent<Less>::value
-                           && are_comparable<Less, T, K>::value
-                           && are_comparable<Equals, T, K>::value, bool> = true>
+  template<ComparableType<T, Less> K>
   NodeType* FindNextByKey(NodeType* node, const K& key) const {
     NodeType* next = nullptr;
 

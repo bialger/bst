@@ -13,7 +13,7 @@
 
 namespace bialger {
 
-template<typename T, typename Compare = std::less<>, typename Allocator = std::allocator<T>>
+template<Allocable T, Comparator<T> Compare = std::less<>, AllocatorType Allocator = std::allocator<T>>
 class BST {
   static_assert(std::is_same<typename std::remove_cv<T>::type, T>::value,
                 "std::set must have a non-const, non-volatile value_type");
@@ -95,11 +95,7 @@ class BST {
     }
   }
 
-  template<typename InputIt,
-      std::enable_if_t<
-          std::is_same<InputIt, typename std::remove_cv<T*>::type>::value
-              || (is_iterator<InputIt>::value && has_value_type<InputIt>::value),
-          bool> = true>
+  template<InputIterator<T> InputIt>
   BST(InputIt first, InputIt last,
       const Compare& comp = Compare(),
       const Allocator& alloc = Allocator()) : tree_(false, comp, alloc),
@@ -114,11 +110,7 @@ class BST {
     }
   }
 
-  template<typename InputIt,
-      std::enable_if_t<
-          std::is_same<InputIt, typename std::remove_cv<T*>::type>::value
-              || (is_iterator<InputIt>::value && has_value_type<InputIt>::value),
-          bool> = true>
+  template<InputIterator<T> InputIt>
   BST(InputIt first, InputIt last, const Allocator& alloc) : BST(first, last, Compare(), alloc) {
     for (; first != last; ++first) {
       insert(*first);
@@ -152,56 +144,47 @@ class BST {
     tree_.Clear();
   }
 
-  template<typename Traversal = DefaultTraversal,
-      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
+  template<Traversable Traversal = DefaultTraversal>
   iterator begin() const {
     return iterator(GetTraversalLink<Traversal>());
   }
 
-  template<typename Traversal = DefaultTraversal,
-      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
+  template<Traversable Traversal = DefaultTraversal>
   iterator end() const {
     return iterator(tree_.GetEnd(), GetTraversalLink<Traversal>());
   }
 
-  template<typename Traversal = DefaultTraversal,
-      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
+  template<Traversable Traversal = DefaultTraversal>
   const_iterator cbegin() const {
     return begin<Traversal>();
   }
 
-  template<typename Traversal = DefaultTraversal,
-      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
+  template<Traversable Traversal = DefaultTraversal>
   const_iterator cend() const {
     return end<Traversal>();
   }
 
-  template<typename Traversal = DefaultTraversal,
-      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
+  template<Traversable Traversal = DefaultTraversal>
   reverse_iterator rbegin() const {
     return reverse_iterator(GetTraversalLink<Traversal>());
   }
 
-  template<typename Traversal = DefaultTraversal,
-      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
+  template<Traversable Traversal = DefaultTraversal>
   reverse_iterator rend() const {
     return reverse_iterator(tree_.GetEnd(), GetTraversalLink<Traversal>());
   }
 
-  template<typename Traversal = DefaultTraversal,
-      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
+  template<Traversable Traversal = DefaultTraversal>
   const_reverse_iterator crbegin() const {
     return rbegin<Traversal>();
   }
 
-  template<typename Traversal = DefaultTraversal,
-      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
+  template<Traversable Traversal = DefaultTraversal>
   const_reverse_iterator crend() const {
     return rend<Traversal>();
   }
 
-  template<typename Traversal = DefaultTraversal,
-      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
+  template<Traversable Traversal = DefaultTraversal>
   std::pair<iterator, bool> insert(const T& key) {
     if (tree_.GetComparator()(key, key)) {
       throw std::invalid_argument("Incorrect template parameter Compare: is not strict");
@@ -212,17 +195,12 @@ class BST {
     return {it, result.second};
   }
 
-  template<typename Traversal = DefaultTraversal,
-      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
+  template<Traversable Traversal = DefaultTraversal>
   iterator insert(iterator pos, const T& key) {
     return insert<Traversal>(key).first;
   }
 
-  template<typename InputIt,
-      std::enable_if_t<
-          std::is_same<InputIt, typename std::remove_cv<T*>::type>::value
-              || (is_iterator<InputIt>::value && has_value_type<InputIt>::value),
-          bool> = true>
+  template<InputIterator<T> InputIt>
   void insert(InputIt first, InputIt last) {
     if (first == last) {
       return;
@@ -237,10 +215,7 @@ class BST {
     }
   }
 
-  template<typename Container,
-      std::enable_if_t<
-          is_iterable<Container>::value && has_value_type<Container>::value,
-          bool> = true>
+  template<Iterable<T> Container>
   void insert(const Container& other) {
     insert(other.cbegin(), other.cend());
   }
@@ -287,32 +262,22 @@ class BST {
     return counter;
   }
 
-  template<typename Traversal = DefaultTraversal,
-      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
+  template<Traversable Traversal = DefaultTraversal>
   iterator find(const T& key) {
     return iterator(tree_.FindFirst(key), GetTraversalLink<Traversal>());
   }
 
-  template<typename Traversal = DefaultTraversal,
-      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
+  template<Traversable Traversal = DefaultTraversal>
   const_iterator find(const T& key) const {
     return iterator(tree_.FindFirst(key), GetTraversalLink<Traversal>());
   }
 
-  template<typename K, typename Traversal = DefaultTraversal,
-      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value
-                           && comparator_transparent<Compare>::value
-                           && are_comparable<Compare, T, K>::value
-                           && are_comparable<Equals, T, K>::value, bool> = true>
+  template<ComparableType<T, Compare> K, Traversable Traversal = DefaultTraversal>
   iterator find(const K& key) {
     return iterator(tree_.FindFirst(key), GetTraversalLink<Traversal>());
   }
 
-  template<typename K, typename Traversal = DefaultTraversal,
-      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value
-                           && comparator_transparent<Compare>::value
-                           && are_comparable<Compare, T, K>::value
-                           && are_comparable<Equals, T, K>::value, bool> = true>
+  template<ComparableType<T, Compare> K, Traversable Traversal = DefaultTraversal>
   const_iterator find(const K& key) const {
     return iterator(tree_.FindFirst(key), GetTraversalLink<Traversal>());
   }
@@ -321,10 +286,7 @@ class BST {
     return (find(key) == cend()) ? 0 : 1;
   }
 
-  template<typename K,
-      std::enable_if_t<comparator_transparent<Compare>::value
-                           && are_comparable<Compare, T, K>::value
-                           && are_comparable<Equals, T, K>::value, bool> = true>
+  template<ComparableType<T, Compare> K>
   size_type count(const K& key) const {
     return (find(key) == cend()) ? 0 : 1;
   }
@@ -333,10 +295,7 @@ class BST {
     return find(key) != cend();
   }
 
-  template<typename K,
-      std::enable_if_t<comparator_transparent<Compare>::value
-                           && are_comparable<Compare, T, K>::value
-                           && are_comparable<Equals, T, K>::value, bool> = true>
+  template<ComparableType<T, Compare> K>
   bool contains(const K& key) const {
     return find(key) != cend();
   }
@@ -363,10 +322,7 @@ class BST {
     return iterator(first, traversal);
   }
 
-  template<typename K,
-      std::enable_if_t<comparator_transparent<Compare>::value
-                           && are_comparable<Compare, T, K>::value
-                           && are_comparable<Equals, T, K>::value, bool> = true>
+  template<ComparableType<T, Compare> K>
   iterator lower_bound(const K& key) {
     NodeType* first = tree_.FindFirst(key);
     const ITraversal& traversal = in_order_;
@@ -378,10 +334,7 @@ class BST {
     return iterator(first, traversal);
   }
 
-  template<typename K,
-      std::enable_if_t<comparator_transparent<Compare>::value
-                           && are_comparable<Compare, T, K>::value
-                           && are_comparable<Equals, T, K>::value, bool> = true>
+  template<ComparableType<T, Compare> K>
   const_iterator lower_bound(const K& key) const {
     NodeType* first = tree_.FindFirst(key);
     const ITraversal& traversal = in_order_;
@@ -401,18 +354,12 @@ class BST {
     return const_iterator(tree_.FindNext(key), in_order_);
   }
 
-  template<typename K,
-      std::enable_if_t<comparator_transparent<Compare>::value
-                           && are_comparable<Compare, T, K>::value
-                           && are_comparable<Equals, T, K>::value, bool> = true>
+  template<ComparableType<T, Compare> K>
   iterator upper_bound(const K& key) {
     return iterator(tree_.FindNext(key), in_order_);
   }
 
-  template<typename K,
-      std::enable_if_t<comparator_transparent<Compare>::value
-                           && are_comparable<Compare, T, K>::value
-                           && are_comparable<Equals, T, K>::value, bool> = true>
+  template<ComparableType<T, Compare> K>
   const_iterator upper_bound(const K& key) const {
     return const_iterator(tree_.FindNext(key), in_order_);
   }
@@ -441,10 +388,7 @@ class BST {
     return {const_iterator(first, traversal), const_iterator(next, traversal)};
   }
 
-  template<typename K,
-      std::enable_if_t<comparator_transparent<Compare>::value
-                           && are_comparable<Compare, T, K>::value
-                           && are_comparable<Equals, T, K>::value, bool> = true>
+  template<ComparableType<T, Compare> K>
   std::pair<iterator, iterator> equal_range(const K& key) {
     NodeType* first = tree_.FindFirst(key);
     NodeType* next = tree_.FindNext(key);
@@ -457,10 +401,7 @@ class BST {
     return {iterator(first, traversal), iterator(next, traversal)};
   }
 
-  template<typename K,
-      std::enable_if_t<comparator_transparent<Compare>::value
-                           && are_comparable<Compare, T, K>::value
-                           && are_comparable<Equals, T, K>::value, bool> = true>
+  template<ComparableType<T, Compare> K>
   std::pair<const_iterator, const_iterator> equal_range(const K& key) const {
     NodeType* first = tree_.FindFirst(key);
     NodeType* next = tree_.FindNext(key);
@@ -539,8 +480,7 @@ class BST {
     return tree_.GetComparator();
   }
 
-  template<typename Traversal, typename Type, typename Comp, typename Alloc,
-      std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool>>
+  template<Traversable Traversal, Allocable Type, Comparator<Type> Comp, AllocatorType Alloc>
   friend std::ostream& PrintToStream(const BST<Type, Comp, Alloc>& bst, std::ostream& os);
 
  private:
@@ -552,7 +492,7 @@ class BST {
   key_compare key_compare_;
   value_compare value_compare_;
 
-  template<typename Traversal, std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
+  template<Traversable Traversal>
   [[nodiscard]] const ITraversal& GetTraversalLink() const {
     if constexpr (std::is_same<Traversal, PreOrder>::value) {
       return pre_order_;
@@ -564,12 +504,12 @@ class BST {
   }
 };
 
-template<typename T, typename Compare = std::less<>, typename Allocator = std::allocator<T>>
+template<Allocable T, Comparator<T> Compare = std::less<>, AllocatorType Allocator = std::allocator<T>>
 void swap(BST<T, Compare, Allocator>& first, BST<T, Compare, Allocator>& second) {
   first.swap(second);
 }
 
-template<class Key, class Compare, class Alloc, class Pred>
+template<Allocable Key, Comparator<Key> Compare, AllocatorType Alloc, Predicate<Key> Pred>
 typename BST<Key, Compare, Alloc>::size_type erase_if(BST<Key, Compare, Alloc>& c, Pred pred) {
   auto old_size = c.size();
 
@@ -584,11 +524,10 @@ typename BST<Key, Compare, Alloc>::size_type erase_if(BST<Key, Compare, Alloc>& 
   return old_size - c.size();
 }
 
-template<typename Traversal = InOrder, typename Type, typename Comp = std::less<>, typename Alloc = std::allocator<Type>,
-    std::enable_if_t<std::is_base_of<ITraversal, Traversal>::value, bool> = true>
+template<Traversable Traversal = InOrder, Allocable Type, Comparator<Type> Comp = std::less<>,
+    AllocatorType Alloc = std::allocator<Type>>
 std::ostream& PrintToStream(const BST<Type, Comp, Alloc>& bst, std::ostream& os) {
-  std::function<void(const typename BST<Type, Comp, Alloc>::NodeType*)>
-      print_node = [&](const typename BST<Type, Comp, Alloc>::NodeType* current) -> void {
+  auto print_node = [&](const typename BST<Type, Comp, Alloc>::NodeType* current) -> void {
     os << current->key << ' ';
   };
 
@@ -602,6 +541,10 @@ std::ostream& PrintToStream(const BST<Type, Comp, Alloc>& bst, std::ostream& os)
 
   return os;
 }
+
+static_assert(Iterable<BST<int32_t>, int32_t>, "BST is not iterable.");
+static_assert(InputIterator<BstIterator<int, std::less<int>, std::allocator<int>, false>, int>, "Not iterator");
+static_assert(InputIterator<BstIterator<int, std::less<int>, std::allocator<int>, true>, int>, "Not reversed iterator");
 
 using CharSet [[maybe_unused]] = BST<char>;
 

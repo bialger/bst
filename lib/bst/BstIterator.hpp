@@ -7,13 +7,14 @@
 #include "lib/tree/InOrder.hpp"
 #include "lib/tree/PreOrder.hpp"
 #include "lib/tree/PostOrder.hpp"
+#include "bst_sfinae.hpp"
 
 namespace bialger {
 
-template<typename T, typename Compare, typename Allocator>
+template<Allocable T, Comparator<T> Compare, AllocatorType Allocator>
 class BST;
 
-template<typename T, typename Compare, typename Allocator, bool is_reversed = false>
+template<typename T, Comparator<T> Compare, AllocatorType Allocator, bool is_reversed = false>
 class BstIterator {
  public:
   friend class BST<T, Compare, Allocator>;

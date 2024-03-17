@@ -8,6 +8,14 @@
 
 namespace bialger {
 
+template<typename Container>
+concept Sizeable = requires(Container& c) {
+  { c.size() } -> std::same_as<std::size_t>;
+};
+
+template<typename T>
+concept Integral = std::is_integral<T>::value;
+
 template<typename T>
 struct LessContainer {
  public:
@@ -28,12 +36,12 @@ struct LessContainer<void> {
  public:
   typedef char is_transparent;
 
-  template<typename Container, typename Integer>
+  template<Sizeable Container, Integral Integer>
   bool operator()(const Container& a, const Integer& b) const {
     return a.size() < b;
   }
 
-  template<typename Container, typename Integer>
+  template<Sizeable Container, Integral Integer>
   bool operator()(const Integer& b, const Container& a) const {
     return b < a.size();
   }

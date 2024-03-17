@@ -2,32 +2,30 @@
 #define BST_SFINAE_HPP_
 
 #include <type_traits>
+#include <cstdint>
+
+#include "lib/tree/ITraversal.hpp"
+
 namespace bialger {
 
-template<typename X, typename Enabled = void>
-class is_iterator final : public ::std::false_type {};
+template<typename Traversal>
+concept Traversable = std::is_base_of<ITraversal, Traversal>::value;
 
-template<typename X>
-class is_iterator<X, ::std::void_t<typename X::iterator_category>> final
-    : public ::std::true_type {
+template<typename Iter, typename T>
+concept InputIterator = requires(Iter it, T& t) {
+  t = *it;
+  ++it;
 };
 
-template<typename X, typename Enabled = void, typename EnabledSecond = void>
-class is_iterable final : public ::std::false_type {};
-
-template<typename X>
-class is_iterable<X,
-                  ::std::void_t<typename X::const_iterator>,
-                  ::std::void_t<typename X::const_iterator::iterator_category>> final
-    : public ::std::true_type {
+template<typename Container, typename T>
+concept Iterable = requires(Container& c, T& t) {
+  { c.cbegin() } -> InputIterator<T>;
+  { c.cend() } -> InputIterator<T>;
 };
 
-template<typename X, typename Enabled = void>
-class has_value_type final : public ::std::false_type {};
-
-template<typename X>
-class has_value_type<X, ::std::void_t<typename X::value_type>> final
-    : public ::std::true_type {
+template<typename Pred, typename T>
+concept Predicate = requires(Pred& p, T& t) {
+  { p(t) } -> std::same_as<bool>;
 };
 
 } // bialger

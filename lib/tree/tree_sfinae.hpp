@@ -5,24 +5,26 @@
 
 namespace bialger {
 
-template<typename X, typename Enabled = void>
-class comparator_transparent final : public ::std::false_type {};
-
-template<typename X>
-class comparator_transparent<X, ::std::void_t<typename X::is_transparent>> final
-: public ::std::true_type {
+template<typename Compare, typename T>
+concept Comparator = requires(Compare& comp, T& t, T& u) {
+  { comp(t, u) } -> std::same_as<bool>;
 };
 
-template<typename Compare, typename T, typename K>
-class are_comparable {
-  template<typename C, typename D>
-  static std::true_type test(decltype(Compare()(std::declval<C>(), std::declval<D>()))*);
+template<typename K, typename T, typename Compare>
+concept ComparableType = requires(Compare& comp, T& t, K& k) {
+  typename Compare::is_transparent;
+  { comp(k, t) } -> std::same_as<bool>;
+  { comp(t, k) } -> std::same_as<bool>;
+};
 
-  template<typename C, typename D>
-  static std::false_type test(...);
+template<typename T>
+concept Allocable = sizeof(T) != 0;
 
- public:
-  enum { value = decltype(test<T, K>(0))::value };
+template<typename Allocator>
+concept AllocatorType = requires(Allocator& alloc) {
+  typename Allocator::value_type;
+  { alloc.allocate(1) } -> std::same_as<typename Allocator::value_type*>;
+  { alloc.deallocate(alloc.allocate(1), 1) } -> std::same_as<void>;
 };
 
 } // bialger
