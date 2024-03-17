@@ -8,6 +8,9 @@
 #include "ITemplateTree.hpp"
 #include "TreeNode.hpp"
 #include "TreeConcepts.hpp"
+#include "PreOrder.hpp"
+#include "InOrder.hpp"
+#include "PostOrder.hpp"
 
 namespace bialger {
 
@@ -58,7 +61,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
         allow_duplicates_(other.allow_duplicates_),
         less_(other.less_),
         size_{} {
-    other.PreOrder([&](const NodeType* current) {
+    other.Traverse<PreOrder>([&](const NodeType* current) {
       this->Insert(current->key, current->value);
     });
   }
@@ -73,7 +76,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     node_allocator_ = other.node_allocator_;
 
     Clear();
-    other.PreOrder([&](const NodeType* current) {
+    other.Traverse<PreOrder>([&](const NodeType* current) {
       this->Insert(current->key, current->value);
     });
 
@@ -85,7 +88,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   }
 
   void Clear() override {
-    PostOrder([&](NodeType* current) {
+    Traverse<PostOrder>([&](NodeType* current) {
       DeleteNode(current);
     });
 
@@ -182,28 +185,14 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     return FindFirst(key) != nullptr;
   }
 
-  void InOrder(const std::function<void(const NodeType*)>& callback) const override {
-    InOrder(root_, callback);
+  template<Traversable Traversal>
+  void Traverse(const std::function<void(const NodeType*)>& callback) const {
+    Traverse<Traversal>(root_, callback);
   }
 
-  void PreOrder(const std::function<void(const NodeType*)>& callback) const override {
-    PreOrder(root_, callback);
-  }
-
-  void PostOrder(const std::function<void(const NodeType*)>& callback) const override {
-    PostOrder(root_, callback);
-  }
-
-  void InOrder(const std::function<void(NodeType*)>& callback) override {
-    InOrder(root_, callback);
-  }
-
-  void PreOrder(const std::function<void(NodeType*)>& callback) override {
-    PreOrder(root_, callback);
-  }
-
-  void PostOrder(const std::function<void(NodeType*)>& callback) override {
-    PostOrder(root_, callback);
+  template<Traversable Traversal>
+  void Traverse(const std::function<void(NodeType*)>& callback) {
+    Traverse<Traversal>(root_, callback);
   }
 
   [[nodiscard]] ITreeNode* GetRoot() const override {
@@ -431,64 +420,50 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     return current;
   }
 
-  void InOrder(NodeType* node, const std::function<void(NodeType*)>& callback) {
+  template<Traversable Traversal>
+  void Traverse(NodeType* node, const std::function<void(NodeType*)>& callback) {
     if (node == nullptr) {
       return;
     }
 
-    InOrder(node->left, callback);
-    callback(node);
-    InOrder(node->right, callback);
+    if constexpr (std::is_same<Traversal, PreOrder>::value) {
+      callback(node);
+    }
+
+    Traverse<Traversal>(node->left, callback);
+
+    if constexpr (std::is_same<Traversal, InOrder>::value) {
+      callback(node);
+    }
+
+    Traverse<Traversal>(node->right, callback);
+
+    if constexpr (std::is_same<Traversal, PostOrder>::value) {
+      callback(node);
+    }
   }
 
-  void PreOrder(NodeType* node, const std::function<void(NodeType*)>& callback) {
+  template<Traversable Traversal>
+  void Traverse(const NodeType* node, const std::function<void(const NodeType*)>& callback) const {
     if (node == nullptr) {
       return;
     }
 
-    callback(node);
-    PreOrder(node->left, callback);
-    PreOrder(node->right, callback);
-  }
-
-  void PostOrder(NodeType* node, const std::function<void(NodeType*)>& callback) {
-    if (node == nullptr) {
-      return;
+    if constexpr (std::is_same<Traversal, PreOrder>::value) {
+      callback(node);
     }
 
-    PostOrder(node->left, callback);
-    PostOrder(node->right, callback);
-    callback(node);
-  }
+    Traverse<Traversal>(node->left, callback);
 
-  void InOrder(const NodeType* node, const std::function<void(const NodeType*)>& callback) const {
-    if (node == nullptr) {
-      return;
+    if constexpr (std::is_same<Traversal, InOrder>::value) {
+      callback(node);
     }
 
-    InOrder(node->left, callback);
-    callback(node);
-    InOrder(node->right, callback);
-  }
+    Traverse<Traversal>(node->right, callback);
 
-  void PreOrder(const NodeType* node, const std::function<void(const NodeType*)>& callback) const {
-    if (node == nullptr) {
-      return;
+    if constexpr (std::is_same<Traversal, PostOrder>::value) {
+      callback(node);
     }
-
-    callback(node);
-    PreOrder(node->left, callback);
-    PreOrder(node->right, callback);
-  }
-
-  void PostOrder(const NodeType* node, const std::function<void(const NodeType*)>& callback) const {
-    if (node == nullptr) {
-      return;
-    }
-
-    PostOrder(node->left, callback);
-    PostOrder(node->right, callback);
-    callback(node);
   }
 };
 

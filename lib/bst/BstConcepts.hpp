@@ -4,12 +4,7 @@
 #include <type_traits>
 #include <cstdint>
 
-#include "lib/tree/ITraversal.hpp"
-
 namespace bialger {
-
-template<typename Traversal>
-concept Traversable = std::is_base_of<ITraversal, Traversal>::value;
 
 template<typename Iter, typename T>
 concept InputIterator = requires(Iter it, T& t) {

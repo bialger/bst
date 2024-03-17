@@ -27,7 +27,7 @@ TEST_F(TreeTraversalUnitTestSuite, InOrderTraverseTreeTest0) {
     bst_str.Insert(value, &value);
   }
 
-  bst_str.InOrder([&](StringTree::NodeType* node) -> void {
+  bst_str.Traverse<InOrder>([&](StringTree::NodeType* node) -> void {
     real_traverse_str.push_back(node->key);
   });
 
@@ -48,7 +48,7 @@ TEST_F(TreeTraversalUnitTestSuite, InOrderTraverseTreeTest1) {
 
   InOrder in_order(bst);
   ITraversal& traversal = in_order;
-  bst.InOrder(push_node);
+  bst.Traverse<InOrder>(push_node);
   ITreeNode* begin = traversal.GetFirst();
   ITreeNode* end = bst.GetEnd();
 
@@ -64,7 +64,7 @@ TEST_F(TreeTraversalUnitTestSuite, InOrderReversedTraverseTreeTest1) {
 
   InOrder in_order(bst);
   ITraversal& traversal = in_order;
-  bst.InOrder(push_node);
+  bst.Traverse<InOrder>(push_node);
   ITreeNode* rbegin = traversal.GetLast();
   ITreeNode* rend = bst.GetEnd();
 
@@ -82,7 +82,7 @@ TEST_F(TreeTraversalUnitTestSuite, PreOrderTraverseTreeTest1) {
 
   PreOrder pre_order(bst);
   ITraversal& traversal = pre_order;
-  bst.PreOrder(push_node);
+  bst.Traverse<PreOrder>(push_node);
   ITreeNode* begin = traversal.GetFirst();
   ITreeNode* end = bst.GetEnd();
 
@@ -98,7 +98,7 @@ TEST_F(TreeTraversalUnitTestSuite, PreOrderReversedTraverseTreeTest1) {
 
   PreOrder pre_order(bst);
   ITraversal& traversal = pre_order;
-  bst.PreOrder(push_node);
+  bst.Traverse<PreOrder>(push_node);
   ITreeNode* rbegin = traversal.GetLast();
   ITreeNode* rend = bst.GetEnd();
 
@@ -116,7 +116,7 @@ TEST_F(TreeTraversalUnitTestSuite, PostOrderTraverseTreeTest1) {
 
   PostOrder post_order(bst);
   ITraversal& traversal = post_order;
-  bst.PostOrder(push_node);
+  bst.Traverse<PostOrder>(push_node);
   ITreeNode* begin = traversal.GetFirst();
   ITreeNode* end = bst.GetEnd();
 
@@ -132,7 +132,7 @@ TEST_F(TreeTraversalUnitTestSuite, PostOrderReversedTraverseTreeTest1) {
 
   PostOrder post_order(bst);
   ITraversal& traversal = post_order;
-  bst.PostOrder(push_node);
+  bst.Traverse<PostOrder>(push_node);
   ITreeNode* rbegin = traversal.GetLast();
   ITreeNode* rend = bst.GetEnd();
 
@@ -154,7 +154,7 @@ TEST_F(TreeTraversalUnitTestSuite, InOrderFullTraverseTreeTest) {
 
   InOrder in_order(bst);
   ITraversal& traversal = in_order;
-  bst.InOrder(push_node);
+  bst.Traverse<InOrder>(push_node);
   ITreeNode* begin = traversal.GetFirst();
   ITreeNode* end = bst.GetEnd();
 
@@ -166,7 +166,7 @@ TEST_F(TreeTraversalUnitTestSuite, InOrderFullTraverseTreeTest) {
   real_traverse.clear();
   class_traverse.clear();
 
-  bst.InOrder(push_node);
+  bst.Traverse<InOrder>(push_node);
   ITreeNode* rbegin = traversal.GetLast();
   ITreeNode* rend = bst.GetEnd();
 
@@ -188,7 +188,7 @@ TEST_F(TreeTraversalUnitTestSuite, PreOrderFullTraverseTreeTest) {
 
   PreOrder pre_order(bst);
   ITraversal& traversal = pre_order;
-  bst.PreOrder(push_node);
+  bst.Traverse<PreOrder>(push_node);
   ITreeNode* begin = traversal.GetFirst();
   ITreeNode* end = bst.GetEnd();
 
@@ -200,7 +200,7 @@ TEST_F(TreeTraversalUnitTestSuite, PreOrderFullTraverseTreeTest) {
   real_traverse.clear();
   class_traverse.clear();
 
-  bst.PreOrder(push_node);
+  bst.Traverse<PreOrder>(push_node);
   ITreeNode* rbegin = traversal.GetLast();
   ITreeNode* rend = bst.GetEnd();
 
@@ -222,7 +222,7 @@ TEST_F(TreeTraversalUnitTestSuite, PostOrderFullTraverseTreeTest) {
 
   PostOrder post_order(bst);
   ITraversal& traversal = post_order;
-  bst.PostOrder(push_node);
+  bst.Traverse<PostOrder>(push_node);
   ITreeNode* begin = traversal.GetFirst();
   ITreeNode* end = bst.GetEnd();
 
@@ -234,7 +234,7 @@ TEST_F(TreeTraversalUnitTestSuite, PostOrderFullTraverseTreeTest) {
   real_traverse.clear();
   class_traverse.clear();
 
-  bst.PostOrder(push_node);
+  bst.Traverse<PostOrder>(push_node);
   ITreeNode* rbegin = traversal.GetLast();
   ITreeNode* rend = bst.GetEnd();
 

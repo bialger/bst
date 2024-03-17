@@ -3,7 +3,12 @@
 
 #include <type_traits>
 
+#include "lib/tree/ITraversal.hpp"
+
 namespace bialger {
+
+template<typename Traversal>
+concept Traversable = std::is_base_of<ITraversal, Traversal>::value;
 
 template<typename Compare, typename T>
 concept Comparator = requires(Compare& comp, T& t, T& u) {

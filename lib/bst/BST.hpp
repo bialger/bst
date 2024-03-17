@@ -16,7 +16,7 @@ namespace bialger {
 template<Allocable T, Comparator<T> Compare = std::less<>, AllocatorType Allocator = std::allocator<T>>
 class BST {
   static_assert(std::is_same<typename std::remove_cv<T>::type, T>::value,
-                "std::set must have a non-const, non-volatile value_type");
+                "bialger::BST must have a non-const, non-volatile value_type");
 
  private:
   using TreeType = BinarySearchTree<T, const T*, Compare, Allocator>;
@@ -485,8 +485,14 @@ class BST {
     return tree_.GetEquivalent();
   }
 
-  template<Traversable Traversal, Allocable Type, Comparator<Type> Comp, AllocatorType Alloc>
-  friend std::ostream& PrintToStream(const BST<Type, Comp, Alloc>& bst, std::ostream& os);
+  template<Traversable Traversal = InOrder>
+  std::ostream& PrintToStream(std::ostream& os) {
+    tree_.template Traverse<Traversal>([&](const NodeType* current) -> void {
+      os << current->key << ' ';
+    });
+
+    return os;
+  }
 
  private:
   TreeType tree_;
@@ -529,29 +535,11 @@ typename BST<Key, Compare, Alloc>::size_type erase_if(BST<Key, Compare, Alloc>& 
   return old_size - c.size();
 }
 
-template<Traversable Traversal = InOrder, Allocable Type, Comparator<Type> Comp = std::less<>,
-    AllocatorType Alloc = std::allocator<Type>>
-std::ostream& PrintToStream(const BST<Type, Comp, Alloc>& bst, std::ostream& os) {
-  auto print_node = [&](const typename BST<Type, Comp, Alloc>::NodeType* current) -> void {
-    os << current->key << ' ';
-  };
+using CharSet = BST<char>;
 
-  if constexpr (std::is_same<Traversal, PreOrder>::value) {
-    bst.tree_.PreOrder(print_node);
-  } else if (std::is_same<Traversal, InOrder>::value) {
-    bst.tree_.InOrder(print_node);
-  } else {
-    bst.tree_.PostOrder(print_node);
-  }
-
-  return os;
-}
-
-static_assert(Iterable<BST<int32_t>, int32_t>, "BST is not iterable.");
-static_assert(InputIterator<BstIterator<int, std::less<>, std::allocator<int>, false>, int>, "Not iterator");
-static_assert(InputIterator<BstIterator<int, std::less<>, std::allocator<int>, true>, int>, "Not reversed iterator");
-
-using CharSet [[maybe_unused]] = BST<char>;
+static_assert(Iterable<CharSet, char>, "BST is not iterable.");
+static_assert(InputIterator<CharSet::iterator, char>, "BST iterator is not an input iterator");
+static_assert(InputIterator<CharSet::reverse_iterator, char>, "BST reversed iterator is not an input iterator");
 
 } // bialger
 

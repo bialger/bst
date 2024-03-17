@@ -24,14 +24,6 @@ class ITemplateTree : public ITree {
   [[nodiscard]] virtual NodeType* FindFirst(const T& key) const = 0;
   [[nodiscard]] virtual NodeType* FindNext(const T& key) const = 0;
   [[nodiscard]] virtual bool Contains(const T& key) const  = 0;
-
-  virtual void InOrder(const std::function<void(NodeType*)>& callback) = 0;
-  virtual void PreOrder(const std::function<void(NodeType*)>& callback) = 0;
-  virtual void PostOrder(const std::function<void(NodeType*)>& callback) = 0;
-
-  virtual void InOrder(const std::function<void(const NodeType*)>& callback) const = 0;
-  virtual void PreOrder(const std::function<void(const NodeType*)>& callback) const = 0;
-  virtual void PostOrder(const std::function<void(const NodeType*)>& callback) const = 0;
 };
 
 } // bialger
