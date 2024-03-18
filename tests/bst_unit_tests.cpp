@@ -872,3 +872,56 @@ TEST_F(BstUnitTestSuite, TransparentTest4) {
     }
   }
 }
+
+TEST_F(BstUnitTestSuite, StlCompatabilityTest1) {
+  bst.insert(values);
+  size_t mod3_counter = 0;
+  size_t mod3_counter_stl = 0;
+
+  for (int32_t value : bst) {
+    mod3_counter += (value % 3 == 0) ? 1 : 0;
+  }
+
+  std::for_each(bst.begin(), bst.end(), [&](int32_t current) -> void {
+    mod3_counter_stl += (current % 3 == 0) ? 1 : 0;
+  });
+
+  ASSERT_EQ(mod3_counter_stl, mod3_counter);
+}
+
+TEST_F(BstUnitTestSuite, StlCompatabilityTest2) {
+  bst.insert(values);
+  const size_t distance = 250 + (dist(rng) % (size / 4));
+  const size_t range_start = (dist(rng) % (size / 2));
+  const size_t range_end = range_start + distance;
+  auto first = bst.begin();
+  auto last = bst.begin();
+
+  for (size_t i = 0; i < range_start; ++i) {
+    ++first;
+  }
+
+  for (size_t i = 0; i < range_end; ++i) {
+    ++last;
+  }
+
+  int64_t stl_distance = std::distance(first, last);
+
+  ASSERT_EQ(stl_distance, distance);
+}
+
+TEST_F(BstUnitTestSuite, StlCompatabilityTest3) {
+  bst.insert(values_unique);
+  std::sort(values_unique.begin(), values_unique.end());
+
+  for (int32_t value = static_cast<int32_t>((distance - 1) * size); value <= distance * size; ++value) {
+    auto vector_lower = std::lower_bound(values_unique.begin(), values_unique.end(), value);
+    auto bst_lower = std::lower_bound(bst.begin(), bst.end(), value);
+
+    if (vector_lower != values_unique.end()) {
+      ASSERT_EQ(*vector_lower, *bst_lower);
+    } else {
+      ASSERT_TRUE(bst_lower == bst.end());
+    }
+  }
+}
