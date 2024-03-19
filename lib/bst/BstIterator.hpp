@@ -14,7 +14,7 @@ namespace bialger {
 template<Allocable T, Comparator<T> Compare, AllocatorType Allocator>
 class BST;
 
-template<typename T, Comparator<T> Compare, AllocatorType Allocator, bool is_reversed = false>
+template<Allocable T, Comparator<T> Compare, AllocatorType Allocator, bool is_reversed = false>
 class BstIterator {
  public:
   friend class BST<T, Compare, Allocator>;
