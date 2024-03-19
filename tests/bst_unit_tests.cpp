@@ -543,8 +543,7 @@ TEST_F(BstUnitTestSuite, EraseTest1) {
   bst.insert(values);
 
   for (auto it = bst.begin(); it != bst.end();) {
-    auto current = it++;
-    bst.erase(current);
+    it = bst.erase(it);
   }
 
   ASSERT_EQ(bst.size(), 0);
@@ -924,4 +923,31 @@ TEST_F(BstUnitTestSuite, StlCompatabilityTest3) {
       ASSERT_TRUE(bst_lower == bst.end());
     }
   }
+}
+
+TEST_F(BstUnitTestSuite, InsertAndAllocatorTest) {
+  custom_bst.insert(values);
+
+  ASSERT_EQ(custom_bst.get_allocator().GetAllocationsCount(), custom_bst.size());
+  ASSERT_EQ(custom_bst.get_allocator().GetDeallocationsCount(), 0);
+}
+
+TEST_F(BstUnitTestSuite, EraseAndAllocatorTest) {
+  custom_bst.insert(values);
+
+  for (auto it = custom_bst.begin(); it != custom_bst.end();) {
+    it = custom_bst.erase(it);
+  }
+
+  ASSERT_EQ(custom_bst.get_allocator().GetAllocationsCount(), custom_bst.get_allocator().GetDeallocationsCount());
+  ASSERT_EQ(custom_bst.size(), 0);
+}
+
+TEST_F(BstUnitTestSuite, ClearAndAllocatorTest) {
+  custom_bst.insert(values);
+
+  custom_bst.clear();
+
+  ASSERT_EQ(custom_bst.get_allocator().GetAllocationsCount(), custom_bst.get_allocator().GetDeallocationsCount());
+  ASSERT_EQ(custom_bst.size(), 0);
 }
