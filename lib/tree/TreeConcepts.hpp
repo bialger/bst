@@ -25,6 +25,11 @@ concept ComparableType = requires(Compare& comp, T& t, K& k) {
 template<typename T>
 concept Allocable = sizeof(T) != 0;
 
+template<typename T>
+concept EquallyComparable = requires(T& t, T& u) {
+  { t = u } -> std::same_as<T&>;
+};
+
 template<typename Allocator>
 concept AllocatorType = requires(Allocator& alloc) {
   typename Allocator::value_type;

@@ -223,8 +223,26 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     return Allocator(node_allocator_);
   }
 
-  bool AreEqual(const T& lhs, const T& rhs) const {
+  bool AreEqual(const T& lhs, const T& rhs) const requires EquallyComparable<T> {
     return (lhs == rhs) || equals_(lhs, rhs);
+  }
+
+  bool AreEqual(const T& lhs, const T& rhs) const {
+    if (equals_(lhs, rhs)) {
+      return true;
+    }
+
+    const char* lhs_bytes = &lhs;
+    const char* rhs_bytes = &rhs;
+    size_t size = sizeof(T);
+
+    for (size_t i = 0; i < size; ++i) {
+      if (lhs_bytes[i] != rhs_bytes[i]) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
  protected:
