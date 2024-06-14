@@ -67,9 +67,6 @@ class BST {
                      key_compare_(),
                      value_compare_() {
     std::swap(tree_, other.tree_);
-    std::swap(pre_order_, other.pre_order_);
-    std::swap(in_order_, other.in_order_);
-    std::swap(post_order_, other.post_order_);
     std::swap(allocator_, other.allocator_);
     std::swap(key_compare_, other.key_compare_);
     std::swap(value_compare_, other.value_compare_);
@@ -163,9 +160,6 @@ class BST {
     }
 
     std::swap(tree_, other.tree_);
-    std::swap(pre_order_, other.pre_order_);
-    std::swap(in_order_, other.in_order_);
-    std::swap(post_order_, other.post_order_);
     std::swap(allocator_, other.allocator_);
     std::swap(key_compare_, other.key_compare_);
     std::swap(value_compare_, other.value_compare_);
@@ -502,6 +496,9 @@ class BST {
 
   void swap(BST& other) {
     std::swap(tree_, other.tree_);
+    std::swap(allocator_, other.allocator_);
+    std::swap(key_compare_, other.key_compare_);
+    std::swap(value_compare_, other.value_compare_);
   }
 
   key_allocator get_allocator() const {
