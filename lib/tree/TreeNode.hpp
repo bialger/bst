@@ -1,6 +1,8 @@
 #ifndef LIB_TREE_TREENODE_HPP_
 #define LIB_TREE_TREENODE_HPP_
 
+#include <utility>
+
 #include "ITreeNode.hpp"
 
 namespace bialger {
@@ -19,6 +21,31 @@ class TreeNode : public ITreeNode {
 
   TreeNode() = delete;
   TreeNode(const T& key, const U& value) : key(key), value(value), parent(nullptr), left(nullptr), right(nullptr) {};
+
+  TreeNode(const TreeNode& other) = delete;
+  TreeNode& operator=(const TreeNode& other) = delete;
+  ~TreeNode() override = default;
+
+  TreeNode(TreeNode&& other) noexcept {
+    std::exchange(key, other.key);
+    std::exchange(value, other.value);
+    std::exchange(parent, other.parent);
+    std::exchange(left, other.left);
+    std::exchange(right, other.right);
+  }
+
+  TreeNode& operator=(TreeNode&& other) noexcept {
+    if (this == &other) {
+      return *this;
+    }
+
+    std::exchange(key, other.key);
+    std::exchange(value, other.value);
+    std::exchange(parent, other.parent);
+    std::exchange(left, other.left);
+    std::exchange(right, other.right);
+    return *this;
+  }
 
   [[nodiscard]] bool IsRoot() const override {
     return parent == nullptr;
