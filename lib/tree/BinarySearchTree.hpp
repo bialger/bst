@@ -266,6 +266,7 @@ class BinarySearchTree : public ITemplateTree<T, U> {
   }
 
   void DeleteNode(NodeType* node) {
+    NodeAllocatorTraits::destroy(node_allocator_, node);
     NodeAllocatorTraits::deallocate(node_allocator_, node, 1);
     --size_;
   }
