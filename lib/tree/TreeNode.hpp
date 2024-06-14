@@ -27,11 +27,11 @@ class TreeNode : public ITreeNode {
   ~TreeNode() override = default;
 
   TreeNode(TreeNode&& other) noexcept {
-    std::exchange(key, other.key);
-    std::exchange(value, other.value);
-    std::exchange(parent, other.parent);
-    std::exchange(left, other.left);
-    std::exchange(right, other.right);
+    std::swap(key, other.key);
+    std::swap(value, other.value);
+    std::swap(parent, other.parent);
+    std::swap(left, other.left);
+    std::swap(right, other.right);
   }
 
   TreeNode& operator=(TreeNode&& other) noexcept {
@@ -39,11 +39,11 @@ class TreeNode : public ITreeNode {
       return *this;
     }
 
-    std::exchange(key, other.key);
-    std::exchange(value, other.value);
-    std::exchange(parent, other.parent);
-    std::exchange(left, other.left);
-    std::exchange(right, other.right);
+    std::swap(key, other.key);
+    std::swap(value, other.value);
+    std::swap(parent, other.parent);
+    std::swap(left, other.left);
+    std::swap(right, other.right);
     return *this;
   }
 

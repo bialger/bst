@@ -59,6 +59,22 @@ class BST {
                           key_compare_(other.key_compare_),
                           value_compare_(other.value_compare_) {}
 
+  BST(BST&& other) noexcept : tree_(),
+                     pre_order_(tree_),
+                     in_order_(tree_),
+                     post_order_(tree_),
+                     allocator_(),
+                     key_compare_(),
+                     value_compare_() {
+    std::swap(tree_, other.tree_);
+    std::swap(pre_order_, other.pre_order_);
+    std::swap(in_order_, other.in_order_);
+    std::swap(post_order_, other.post_order_);
+    std::swap(allocator_, other.allocator_);
+    std::swap(key_compare_, other.key_compare_);
+    std::swap(value_compare_, other.value_compare_);
+  }
+
   explicit BST(const Compare& comp, const Allocator& alloc = Allocator()) : tree_(false, comp, alloc),
                                                                             pre_order_(tree_),
                                                                             in_order_(tree_),
@@ -117,7 +133,7 @@ class BST {
     }
   }
 
-  BST& operator=(std::initializer_list<T>& list) {
+  BST& operator=(const std::initializer_list<T>& list) {
     clear();
     auto it = list.begin();
     auto end = list.end();
@@ -139,6 +155,25 @@ class BST {
     key_compare_ = other.key_compare_;
     value_compare_ = other.value_compare_;
     return *this;
+  }
+
+  BST& operator=(BST&& other) noexcept {
+    if (this == &other) {
+      return *this;
+    }
+
+    std::swap(tree_, other.tree_);
+    std::swap(pre_order_, other.pre_order_);
+    std::swap(in_order_, other.in_order_);
+    std::swap(post_order_, other.post_order_);
+    std::swap(allocator_, other.allocator_);
+    std::swap(key_compare_, other.key_compare_);
+    std::swap(value_compare_, other.value_compare_);
+    return *this;
+  }
+
+  ~BST() {
+    tree_.Clear();
   }
 
   void clear() {

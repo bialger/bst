@@ -1,23 +1,39 @@
 #include "InOrder.hpp"
 
-bialger::InOrder::InOrder(const bialger::ITree& tree): tree_(tree) {}
+bialger::InOrder::InOrder(const bialger::ITree& tree): tree_(&tree) {}
 
 bialger::ITreeNode* bialger::InOrder::GetFirst() const {
-  return GetMin(tree_.GetRoot());
+  if (tree_ == nullptr) {
+    return nullptr;
+  }
+
+  return GetMin(tree_->GetRoot());
 }
 
 bialger::ITreeNode* bialger::InOrder::GetLast() const {
-  return GetMax(tree_.GetRoot());
+  if (tree_ == nullptr) {
+    return nullptr;
+  }
+
+  return GetMax(tree_->GetRoot());
 }
 
 bialger::ITreeNode* bialger::InOrder::GetEnd() const {
-  return tree_.GetEnd();
+  if (tree_ == nullptr) {
+    return nullptr;
+  }
+
+  return tree_->GetEnd();
 }
 
 bialger::ITreeNode* bialger::InOrder::GetPredecessor(bialger::ITreeNode* current) const {
+  if (tree_ == nullptr) {
+    return nullptr;
+  }
+
   if (current == GetFirst()) {
-    return tree_.GetEnd();
-  } else if (current == tree_.GetEnd()) {
+    return tree_->GetEnd();
+  } else if (current == tree_->GetEnd()) {
     return GetLast();
   }
 
@@ -37,10 +53,14 @@ bialger::ITreeNode* bialger::InOrder::GetPredecessor(bialger::ITreeNode* current
 }
 
 bialger::ITreeNode* bialger::InOrder::GetSuccessor(bialger::ITreeNode* current) const {
-  if (current == tree_.GetEnd()) {
+  if (tree_ == nullptr) {
+    return nullptr;
+  }
+
+  if (current == tree_->GetEnd()) {
     return GetFirst();
   } else if (current == GetLast()) {
-    return tree_.GetEnd();
+    return tree_->GetEnd();
   }
 
   if (current->HasRight()) {
@@ -80,4 +100,29 @@ bialger::ITreeNode* bialger::InOrder::GetMax(bialger::ITreeNode* current) {
   }
 
   return current;
+}
+
+bialger::InOrder::InOrder(bialger::InOrder&& other) noexcept : tree_(nullptr) {
+  std::swap(tree_, other.tree_);
+}
+
+bialger::InOrder& bialger::InOrder::operator=(bialger::InOrder&& other) noexcept {
+  if (this == &other) {
+    return *this;
+  }
+
+  tree_ = nullptr;
+  std::swap(tree_, other.tree_);
+  return *this;
+}
+
+bialger::InOrder::InOrder(const bialger::InOrder& other) : tree_(other.tree_) {}
+
+bialger::InOrder& bialger::InOrder::operator=(const bialger::InOrder& other) {
+  if (this == &other) {
+    return *this;
+  }
+
+  tree_ = other.tree_;
+  return *this;
 }

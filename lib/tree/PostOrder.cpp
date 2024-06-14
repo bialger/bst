@@ -1,9 +1,13 @@
 #include "PostOrder.hpp"
 
-bialger::PostOrder::PostOrder(const bialger::ITree& tree) : tree_(tree) {}
+bialger::PostOrder::PostOrder(const bialger::ITree& tree) : tree_(&tree) {}
 
 bialger::ITreeNode* bialger::PostOrder::GetFirst() const {
-  ITreeNode* node = tree_.GetRoot();
+  if (tree_ == nullptr) {
+    return nullptr;
+  }
+
+  ITreeNode* node = tree_->GetRoot();
 
   if (node == nullptr) {
     return node;
@@ -21,17 +25,29 @@ bialger::ITreeNode* bialger::PostOrder::GetFirst() const {
 }
 
 bialger::ITreeNode* bialger::PostOrder::GetLast() const {
-  return tree_.GetRoot();
+  if (tree_ == nullptr) {
+    return nullptr;
+  }
+
+  return tree_->GetRoot();
 }
 
 bialger::ITreeNode* bialger::PostOrder::GetEnd() const {
-  return tree_.GetEnd();
+  if (tree_ == nullptr) {
+    return nullptr;
+  }
+
+  return tree_->GetEnd();
 }
 
 bialger::ITreeNode* bialger::PostOrder::GetPredecessor(bialger::ITreeNode* current) const {
+  if (tree_ == nullptr) {
+    return nullptr;
+  }
+
   if (current == GetFirst()) {
-    return tree_.GetEnd();
-  } else if (current == tree_.GetEnd()) {
+    return tree_->GetEnd();
+  } else if (current == tree_->GetEnd()) {
     return GetLast();
   }
 
@@ -54,14 +70,18 @@ bialger::ITreeNode* bialger::PostOrder::GetPredecessor(bialger::ITreeNode* curre
     parent = current->GetParent();
   }
 
-  return tree_.GetEnd();
+  return tree_->GetEnd();
 }
 
 bialger::ITreeNode* bialger::PostOrder::GetSuccessor(bialger::ITreeNode* current) const {
-  if (current == tree_.GetEnd()) {
+  if (tree_ == nullptr) {
+    return nullptr;
+  }
+
+  if (current == tree_->GetEnd()) {
     return GetFirst();
   } else if (current == GetLast()) {
-    return tree_.GetEnd();
+    return tree_->GetEnd();
   }
 
   ITreeNode* parent = current->GetParent();
@@ -88,5 +108,30 @@ bialger::ITreeNode* bialger::PostOrder::GetSuccessor(bialger::ITreeNode* current
     return parent;
   }
 
-  return tree_.GetEnd();
+  return tree_->GetEnd();
+}
+
+bialger::PostOrder::PostOrder(bialger::PostOrder&& other) noexcept : tree_(nullptr) {
+  std::swap(tree_, other.tree_);
+}
+
+bialger::PostOrder& bialger::PostOrder::operator=(bialger::PostOrder&& other) noexcept {
+  if (this == &other) {
+    return *this;
+  }
+
+  tree_ = nullptr;
+  std::swap(tree_, other.tree_);
+  return *this;
+}
+
+bialger::PostOrder::PostOrder(const bialger::PostOrder& other) : tree_(other.tree_) {}
+
+bialger::PostOrder& bialger::PostOrder::operator=(const bialger::PostOrder& other) {
+  if (this == &other) {
+    return *this;
+  }
+
+  tree_ = other.tree_;
+  return *this;
 }
