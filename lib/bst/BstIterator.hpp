@@ -138,11 +138,11 @@ class BstIterator {
     return tmp;
   }
 
-  bool operator==(const BstIterator& other) {
+  bool operator==(const BstIterator& other) const {
     return current_ == other.current_ && traversal_ == other.traversal_;
   }
 
-  bool operator!=(const BstIterator& other) {
+  bool operator!=(const BstIterator& other) const {
     return !(*this == other);
   }
 
