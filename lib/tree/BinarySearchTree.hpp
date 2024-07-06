@@ -87,6 +87,36 @@ class BinarySearchTree : public ITemplateTree<T, U> {
     Clear();
   }
 
+  BinarySearchTree(BinarySearchTree&& other) noexcept
+      : end_(nullptr),
+        root_(nullptr),
+        node_allocator_(),
+        allow_duplicates_(),
+        less_(),
+        size_{} {
+    std::swap(end_, other.end_);
+    std::swap(root_, other.root_);
+    std::swap(node_allocator_, other.node_allocator_);
+    std::swap(allow_duplicates_, other.allow_duplicates_);
+    std::swap(less_, other.less_);
+    std::swap(size_, other.size_);
+  }
+
+  BinarySearchTree& operator=(BinarySearchTree&& other) noexcept {
+    if (this == &other) {
+      return *this;
+    }
+
+    Clear();
+    std::swap(end_, other.end_);
+    std::swap(root_, other.root_);
+    std::swap(node_allocator_, other.node_allocator_);
+    std::swap(allow_duplicates_, other.allow_duplicates_);
+    std::swap(less_, other.less_);
+    std::swap(size_, other.size_);
+    return *this;
+  }
+
   void Clear() override {
     Traverse<PostOrder>([&](NodeType* current) {
       DeleteNode(current);

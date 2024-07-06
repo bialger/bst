@@ -13,6 +13,12 @@ class InOrder : public ITraversal {
 
   explicit InOrder(const ITree& tree);
 
+  InOrder(const InOrder& other);
+  InOrder& operator=(const InOrder& other);
+  ~InOrder() override = default;
+  InOrder(InOrder&& other) noexcept;
+  InOrder& operator=(InOrder&& other) noexcept;
+
   [[nodiscard]] ITreeNode* GetFirst() const override;
   [[nodiscard]] ITreeNode* GetLast() const override;
   [[nodiscard]] ITreeNode* GetEnd() const override;
@@ -20,7 +26,7 @@ class InOrder : public ITraversal {
   [[nodiscard]] ITreeNode* GetSuccessor(ITreeNode* current) const override;
 
  protected:
-  const ITree& tree_;
+  const ITree* tree_;
 
   [[nodiscard]] static ITreeNode* GetMin(ITreeNode* current);
   [[nodiscard]] static ITreeNode* GetMax(ITreeNode* current);

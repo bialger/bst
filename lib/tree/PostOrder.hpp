@@ -13,13 +13,19 @@ class PostOrder : public ITraversal {
 
   explicit PostOrder(const ITree& tree);
 
+  PostOrder(const PostOrder& other);
+  PostOrder& operator=(const PostOrder& other);
+  ~PostOrder() override = default;
+  PostOrder(PostOrder&& other) noexcept;
+  PostOrder& operator=(PostOrder&& other) noexcept;
+
   [[nodiscard]] ITreeNode* GetFirst() const override;
   [[nodiscard]] ITreeNode* GetLast() const override;
   [[nodiscard]] ITreeNode* GetEnd() const override;
   [[nodiscard]] ITreeNode* GetPredecessor(ITreeNode* current) const override;
   [[nodiscard]] ITreeNode* GetSuccessor(ITreeNode* current) const override;
  private:
-  const ITree& tree_;
+  const ITree* tree_;
 };
 
 } // bialger

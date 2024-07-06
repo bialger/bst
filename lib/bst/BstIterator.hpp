@@ -33,7 +33,7 @@ class BstIterator {
 
  public:
 
-  BstIterator() = delete;
+  BstIterator() : current_(nullptr), traversal_(nullptr), end_(nullptr) {}
 
   explicit BstIterator(const ITraversal& traversal) : traversal_(&traversal), end_(traversal.GetEnd()) {
     current_ = dynamic_cast<NodeType*>(is_reversed ? traversal_->GetLast() : traversal_->GetFirst());
@@ -56,6 +56,24 @@ class BstIterator {
     }
 
     current_ = other.current_;
+    return *this;
+  }
+
+  BstIterator(BstIterator&& other) noexcept
+      : current_(nullptr), traversal_(nullptr), end_(nullptr) {
+    std::swap(current_, other.current_);
+    std::swap(traversal_, other.traversal_);
+    std::swap(end_, other.end_);
+  }
+
+  BstIterator& operator=(BstIterator&& other) noexcept {
+    if (this == &other) {
+      return *this;
+    }
+
+    std::swap(current_, other.current_);
+    std::swap(traversal_, other.traversal_);
+    std::swap(end_, other.end_);
     return *this;
   }
 
@@ -120,11 +138,11 @@ class BstIterator {
     return tmp;
   }
 
-  bool operator==(const BstIterator& other) {
+  bool operator==(const BstIterator& other) const {
     return current_ == other.current_ && traversal_ == other.traversal_;
   }
 
-  bool operator!=(const BstIterator& other) {
+  bool operator!=(const BstIterator& other) const {
     return !(*this == other);
   }
 

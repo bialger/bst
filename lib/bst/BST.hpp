@@ -59,6 +59,19 @@ class BST {
                           key_compare_(other.key_compare_),
                           value_compare_(other.value_compare_) {}
 
+  BST(BST&& other) noexcept: tree_(),
+                             pre_order_(tree_),
+                             in_order_(tree_),
+                             post_order_(tree_),
+                             allocator_(),
+                             key_compare_(),
+                             value_compare_() {
+    std::swap(tree_, other.tree_);
+    std::swap(allocator_, other.allocator_);
+    std::swap(key_compare_, other.key_compare_);
+    std::swap(value_compare_, other.value_compare_);
+  }
+
   explicit BST(const Compare& comp, const Allocator& alloc = Allocator()) : tree_(false, comp, alloc),
                                                                             pre_order_(tree_),
                                                                             in_order_(tree_),
@@ -117,7 +130,7 @@ class BST {
     }
   }
 
-  BST& operator=(std::initializer_list<T>& list) {
+  BST& operator=(const std::initializer_list<T>& list) {
     clear();
     auto it = list.begin();
     auto end = list.end();
@@ -139,6 +152,22 @@ class BST {
     key_compare_ = other.key_compare_;
     value_compare_ = other.value_compare_;
     return *this;
+  }
+
+  BST& operator=(BST&& other) noexcept {
+    if (this == &other) {
+      return *this;
+    }
+
+    std::swap(tree_, other.tree_);
+    std::swap(allocator_, other.allocator_);
+    std::swap(key_compare_, other.key_compare_);
+    std::swap(value_compare_, other.value_compare_);
+    return *this;
+  }
+
+  ~BST() {
+    tree_.Clear();
   }
 
   void clear() {
@@ -467,6 +496,9 @@ class BST {
 
   void swap(BST& other) {
     std::swap(tree_, other.tree_);
+    std::swap(allocator_, other.allocator_);
+    std::swap(key_compare_, other.key_compare_);
+    std::swap(value_compare_, other.value_compare_);
   }
 
   key_allocator get_allocator() const {
@@ -536,10 +568,12 @@ typename BST<Key, Compare, Alloc>::size_type erase_if(BST<Key, Compare, Alloc>& 
 }
 
 using CharSet = BST<char>;
-
 static_assert(Iterable<CharSet, char>, "BST is not iterable.");
 static_assert(InputIterator<CharSet::iterator, char>, "BST iterator is not an input iterator");
+static_assert(std::bidirectional_iterator<CharSet::iterator>, "BST iterator is not an bidirectional iterator");
 static_assert(InputIterator<CharSet::reverse_iterator, char>, "BST reversed iterator is not an input iterator");
+static_assert(std::bidirectional_iterator<CharSet::reverse_iterator>,
+              "BST reversed iterator is not an bidirectional iterator");
 
 } // bialger
 

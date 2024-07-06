@@ -13,6 +13,12 @@ class PreOrder : public ITraversal {
 
   explicit PreOrder(const ITree& tree);
 
+  PreOrder(const PreOrder& other);
+  PreOrder& operator=(const PreOrder& other);
+  ~PreOrder() override = default;
+  PreOrder(PreOrder&& other) noexcept;
+  PreOrder& operator=(PreOrder&& other) noexcept;
+
   [[nodiscard]] ITreeNode* GetFirst() const override;
   [[nodiscard]] ITreeNode* GetLast() const override;
   [[nodiscard]] ITreeNode* GetEnd() const override;
@@ -20,7 +26,7 @@ class PreOrder : public ITraversal {
   [[nodiscard]] ITreeNode* GetSuccessor(ITreeNode* current) const override;
 
  protected:
-  const ITree& tree_;
+  const ITree* tree_;
 };
 
 } // bialger
