@@ -27,6 +27,14 @@ TEST_F(BstUnitTestSuite, NonEmptyTest) {
   ASSERT_FALSE(bst.empty());
 }
 
+TEST_F(BstUnitTestSuite, NonEmptyNonTrivialTest) {
+  BST<std::vector<int32_t>> vector_bst;
+  vector_bst.insert(values);
+  ASSERT_EQ(vector_bst, vector_bst);
+  ASSERT_EQ(vector_bst.size(), 1);
+  ASSERT_FALSE(vector_bst.empty());
+}
+
 TEST_F(BstUnitTestSuite, BeginTest) {
   BST<std::string> string_bst;
   std::string element = "str";
