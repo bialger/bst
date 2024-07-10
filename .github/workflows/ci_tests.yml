@@ -95,10 +95,10 @@ jobs:
         shell: bash
         working-directory: ./cmake-build-debug
         run: |
-          cd bin
+          cd tests
           if [ "$RUNNER_OS" == "Windows" ]; then
               if [ "${{ matrix.config.cxx }}" == "g++" ]; then
-                ./labwork8_tests_.exe
+                ./labwork8_tests.exe
               else
                 cd Debug
                 ./labwork8_tests.exe
