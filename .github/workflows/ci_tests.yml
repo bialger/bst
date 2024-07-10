@@ -79,6 +79,7 @@ jobs:
         shell: bash
         working-directory: ./cmake-build-release
         run: |
+          cd bin
           if [ "$RUNNER_OS" == "Windows" ]; then
               if [ "${{ matrix.config.cxx }}" == "g++" ]; then
                 ./labwork8.exe --help
@@ -87,7 +88,6 @@ jobs:
                 ./labwork8.exe --help
               fi
           else 
-              cd bin
               ./labwork8 --help
           fi
 
@@ -95,6 +95,7 @@ jobs:
         shell: bash
         working-directory: ./cmake-build-debug
         run: |
+          cd bin
           if [ "$RUNNER_OS" == "Windows" ]; then
               if [ "${{ matrix.config.cxx }}" == "g++" ]; then
                 ./labwork8_tests_.exe
@@ -103,7 +104,6 @@ jobs:
                 ./labwork8_tests.exe
               fi
           else
-              cd tests
               ./labwork8_tests
           fi
 
