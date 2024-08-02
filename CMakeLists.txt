@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 
 project(
         labwork8
-        VERSION 0.1
+        VERSION 1.0
         DESCRIPTION "Library for associative STL-compatible container BST"
         LANGUAGES CXX
 )
